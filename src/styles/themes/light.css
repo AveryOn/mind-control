@@ -1,0 +1,5 @@
+
+.theme-light {
+
+    transition: all var(--duration-color) ease !important;
+}
