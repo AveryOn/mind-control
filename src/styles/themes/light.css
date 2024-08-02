@@ -1,5 +1,7 @@
 
 .theme-light {
+    --basic-fg: rgb(48, 48, 48);
+    --basic-bg: rgb(255, 255, 255);
 
     transition: all var(--duration-color) ease !important;
 }

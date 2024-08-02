@@ -1,6 +1,17 @@
 @import url(./themes/index.css);
 @import url(./components/index.css);
 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--basic-bg);
+    color: var(--basic-fg);
+}
+
 /* Главные переменные */
 :root {
     --scrollbar-width: 8px;
