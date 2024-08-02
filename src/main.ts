@@ -6,6 +6,8 @@ import { createPinia } from 'pinia'
 // PrimeVue
 import PrimeVue from 'primevue/config';
 import Aura from '@primevue/themes/aura';
+import 'primeicons/primeicons.css';
+import Tooltip from 'primevue/tooltip';
 // Styles
 import './styles/main.css';
 import '../node_modules/primeflex/primeflex.css';
@@ -18,6 +20,8 @@ const app = createApp(App);
 primeComponents.forEach((component) => {
     app.component(component.name, component);
 });
+
+app.directive('tooltip', Tooltip);
 
 app.use(createPinia());
 app.use(router)

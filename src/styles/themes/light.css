@@ -2,6 +2,11 @@
 .theme-light {
     --basic-fg: rgb(48, 48, 48);
     --basic-bg: rgb(255, 255, 255);
+    --basic-color-fg: rgb(61, 224, 153);
+    --basic-color-hover-fg: rgb(63, 174, 126);
 
+    /* Colours */
+    --required-color: rgb(255, 120, 120);
+    
     transition: all var(--duration-color) ease !important;
 }

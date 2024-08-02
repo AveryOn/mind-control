@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="app">
         <RouterView />
     </div>
 </template>
@@ -13,5 +13,11 @@ onMounted(() => {
 </script>
 
 <style scoped>
-
+.app {
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+    background-color: var(--basic-bg);
+    color: var(--basic-fg);
+}
 </style>

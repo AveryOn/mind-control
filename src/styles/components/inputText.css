@@ -1,0 +1,25 @@
+
+:root {
+    /* Group */
+    --p-inputgroup-addon-background: var(--input-text-bg) !important;
+    --p-inputgroup-addon-color: var(--input-text-fg) !important;
+    --p-inputgroup-addon-border-color: var(--input-text-border-color) !important;
+    /* Input */
+    --p-inputtext-background: var(--input-text-bg) !important;
+    --p-inputtext-color: var(--input-text-fg) !important;
+    --p-inputtext-border-color: var(--input-text-border-color) !important;
+
+
+    --input-text-border-color: rgba(122, 122, 122, 0.835);
+    --input-text-bg: white;
+    --input-text-fg: rgb(47, 47, 47);
+}
+
+.input {
+    box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2) !important;
+    transition: all var(--duration-color) ease;
+}
+.input:focus {
+    box-shadow: none !important;
+    transition: all var(--duration-color) ease;
+}
