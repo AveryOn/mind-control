@@ -20,16 +20,16 @@
 
             <!-- Password -->
             <IconField class="w-full mb-4">
-                <InputText class="input w-full" placeholder="Придумайте пароль" :type="isShowPassword? 'password' : 'text'" v-model="formData.password"/>
+                <InputText class="input w-full" placeholder="Придумайте пароль" :type="!isShowPassword? 'password' : 'text'" v-model="formData.password"/>
                 <InputIcon v-if="!formData.password" class="pi pi-asterisk" style="color: var(--required-color); font-size: small" v-tooltip.bottom="'Обязательное поле'"/>
-                <InputIcon v-else @click="isShowPassword = !isShowPassword" class="input-icon-eye" :class="(isShowPassword)? 'pi pi-eye-slash' : 'pi pi-eye'"/>
+                <InputIcon v-else @click="isShowPassword = !isShowPassword" class="input-icon-eye" :class="(!isShowPassword)? 'pi pi-eye-slash' : 'pi pi-eye'"/>
             </IconField>
 
             <!-- Repeat Password -->
             <IconField class="w-full mb-4">
-                <InputText class="input w-full" placeholder="Повторите пароль" :type="isShowPassword? 'password' : 'text'" v-model="repeatPassword"/>
+                <InputText class="input w-full" placeholder="Повторите пароль" :type="!isShowPassword? 'password' : 'text'" v-model="repeatPassword"/>
                 <InputIcon v-if="!repeatPassword" class="pi pi-asterisk" style="color: var(--required-color); font-size: small" v-tooltip.bottom="'Обязательное поле'"/>
-                <InputIcon v-else @click="isShowPassword = !isShowPassword" class="input-icon-eye" :class="(isShowPassword)? 'pi pi-eye-slash' : 'pi pi-eye'"/>
+                <InputIcon v-else @click="isShowPassword = !isShowPassword" class="input-icon-eye" :class="(!isShowPassword)? 'pi pi-eye-slash' : 'pi pi-eye'"/>
             </IconField>
 
             <Button class="ml-auto" icon="pi pi-send" text raised />

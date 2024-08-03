@@ -39,6 +39,11 @@ body {
     transition: all var(--duration-color) ease;
 }
 
+.mc-block-light {
+    background-color: var(--basic-bg-light);
+    color: var(--basic-fg);
+}
+
 /* Ширина и цвет полосы скроллбара */
 ::-webkit-scrollbar {
     width: var(--scrollbar-width);

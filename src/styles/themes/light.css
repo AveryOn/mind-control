@@ -2,8 +2,15 @@
 .theme-light {
     --basic-fg: rgb(48, 48, 48);
     --basic-bg: rgb(255, 255, 255);
+    --basic-bg-light: rgba(255, 255, 255, 0.75);
     --basic-color-fg: rgb(61, 224, 153);
     --basic-color-hover-fg: rgb(63, 174, 126);
+
+    /* Navigation Panel */
+    --nav-border-color: rgba(128, 128, 128, 0.5);
+    --nav-item-bg: rgba(89, 255, 183, 0.2);
+    --nav-item-hover-bg: rgba(63, 190, 135, 0.36);
+    --nav-item-fg: rgb(69, 100, 95);
 
     /* Colours */
     --required-color: rgb(255, 120, 120);

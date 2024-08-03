@@ -1,6 +1,7 @@
 import MainView from '@/views/MainViews/MainView.vue';
 import OpenTestView from '@/views/MainViews/OpenTestView.vue';
 import StatisticsView from '@/views/MainViews/StatisticsView.vue';
+import StudentsView from '@/views/MainViews/StudentsView.vue';
 import TestsView from '@/views/MainViews/TestsView.vue';
 import NotFoundView from '@/views/MetaViews/NotFoundView.vue';
 import type { RouteRecordRaw } from 'vue-router';
@@ -36,6 +37,14 @@ export default [
                 path: 'test/:testId',
                 name: 'test',
                 component: OpenTestView,
+                meta: {
+                    requiredAuth: true,
+                },
+            },
+            {
+                path: 'students',
+                name: 'students',
+                component: StudentsView,
                 meta: {
                     requiredAuth: true,
                 },

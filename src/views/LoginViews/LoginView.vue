@@ -19,10 +19,10 @@
                 <InputGroupAddon>
                     <i class="pi pi-key"></i>
                 </InputGroupAddon>
-                <InputText placeholder="Пароль" />
+                <InputText placeholder="Пароль" type="password"/>
             </InputGroup>
             <Button class="ml-auto" icon="pi pi-send" text raised />
-            <p class="mt-3 mr-auto">Нет учетной записи? <a class="link ml-2" @click="handlerOpenLogup">Создай её!</a></p>
+            <p class="mt-3 mr-auto">Нет учетной записи? <a class="link ml-2" @click="handlerOpenLogup">Создайте её!</a></p>
         </form>
     </div>
 </template>

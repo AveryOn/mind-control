@@ -5,6 +5,8 @@ import InputGroupAddon from 'primevue/inputgroupaddon';
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
 import Button from 'primevue/button';
+import Splitter from 'primevue/splitter';
+import SplitterPanel from 'primevue/splitterpanel';
 
 export default [
     Image,
@@ -14,4 +16,6 @@ export default [
     IconField,
     InputIcon,
     Button,
+    Splitter,
+    SplitterPanel,
 ] as any[]
