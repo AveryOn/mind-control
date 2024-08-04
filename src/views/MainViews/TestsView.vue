@@ -6,86 +6,50 @@
         <h1 class="viewer-header">Тесты</h1>
 
         <!-- КОНТЕНТНАЯ ЧАСТЬ -->
-        <section class="h-full overflow-hidden">
-
+        <section class="h-full overflow-auto px-5 py-4">
             <!-- ОКНО ПРИВЕТСТВИЯ -->
-            <div 
-            class="w-full h-full flex flex-column align-items-center gap-3 justify-content-center"
-            v-if="true"
-            >
-                <h1 class="light-text">Здесь будут отображаться все тесты</h1>
-                <div class="w-max">
-                    <ConfirmPopup>
-                        <template #container="{ message, acceptCallback, rejectCallback }">
-                            <div class="rounded px-4 py-2">
-                                <span>{{ message.message }}</span>
-                                <div class="flex justify-content-end gap-2 mt-2">
-                                    <Button label="Да" @click="acceptCallback" text raised size="small" severity="secondary"></Button>
-                                    <Button label="Нет" @click="rejectCallback" text raised size="small"></Button>
-                                </div>
-                            </div>
-                        </template>
-                    </ConfirmPopup>
-                    <Button 
-                    label="Создать" 
-                    icon="pi pi-plus" 
-                    text raised 
-                    iconPos="top" 
-                    @click="confirmOpenCreate($event)"
-                    />
+            <welcomeTestListComp v-if="false"/>
 
-                    <Button
-                    v-if="isExistsDraftTest"
-                    class="ml-4"
-                    label="Черновик" 
-                    icon="pi pi-file-edit" 
-                    text raised 
-                    severity="warn"
-                    iconPos="top" 
-                    @click="router.push({ name: 'createTest' })"
-                    />
-                </div>
-            </div>
+            <!-- СПИСОК ТЕСТОВ -->
+            <testListComp :test-list="testList"/> 
         </section>
 
     </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useConfirm } from "primevue/useconfirm";
-const confirm = useConfirm();
+import welcomeTestListComp from '@/components/MainComponents/testList/welcomeTestListComp.vue';
+import testListComp from '@/components/MainComponents/testList/testListComp.vue';
+import { ref, type Ref } from 'vue';
+import type { Test } from '@/types/testTypes';
 
-const router = useRouter();
+const testList: Ref<Test[]> = ref<Test[]>([
+    { 
+        id: 1,
+        title: 'Tested Test',
+        summary: 'Something Tested Summary',
+        group: { id: 1, createdAt: '123', title: 'Frontend', updatedAt: '123' },
+        participants: [{ id: 1, createdAt: '124124', login: 'alex@123', name: 'Alex Some', updatedAt: '123124' }],
+        questions: [{number: 1, question: 'How many time?', type: 'text'}],
+    },
+    { 
+        id: 2,
+        title: 'Second Test',
+        summary: 'Something Second Summary',
+        group: { id: 1, createdAt: '123', title: 'Frontend', updatedAt: '123' },
+        participants: [{ id: 1, createdAt: '124124', login: 'alex@123', name: 'Alex Some', updatedAt: '123124' }],
+        questions: [{number: 1, question: 'How many time?', type: 'text'}],
+    },
+    { 
+        id: 3,
+        title: 'Third Test',
+        summary: 'Something Third Summary',
+        group: { id: 1, createdAt: '123', title: 'Frontend', updatedAt: '123' },
+        participants: [{ id: 1, createdAt: '124124', login: 'alex@123', name: 'Alex Some', updatedAt: '123124' }],
+        questions: [{number: 1, question: 'How many time?', type: 'text'}],
+    },
 
-const isExistsDraftTest = ref(false);
-
-function confirmOpenCreate(event: Event) {
-    try {
-        if(isExistsDraftTest.value === true) {
-            return confirm.require({
-                target: event.currentTarget as HTMLElement,
-                message: 'У вас есть незавершенный черновик теста, всё равно создать новый?',
-                icon: 'pi pi-exclamation-triangle',
-                accept: () => {
-                    localStorage.removeItem('draft_new_test');
-                    localStorage.removeItem('draft_test_step');
-                    router.push({ name: 'createTest' });
-                },
-                reject: () => { return }
-            });
-        }
-        router.push({ name: 'createTest' });
-    } catch (err) {
-        console.error('views/MainViews/TestsView.vue: confirmOpenCreate => ', err);
-        throw err;
-    }
-}
-
-onMounted(() => {
-    if(localStorage.getItem('draft_new_test')) isExistsDraftTest.value = true;
-})
+]);
 
 </script>
 

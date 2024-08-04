@@ -15,6 +15,15 @@
     --nav-item-hover-bg: rgba(63, 190, 135, 0.36);
     --nav-item-fg: rgb(69, 100, 95);
 
+    /* TEST LIST */
+    --test-item-bg: white;
+    --test-item-mark-color: rgb(242, 154, 46);
+    --test-item-mark-success-color: rgb(165, 234, 81);
+    --test-item-separator-color: rgba(146, 146, 146, 0.5);
+    --test-item-sign-fg: gray;
+    --test-item-meta-fg: rgb(253, 179, 109);
+    --test-item-meta-size: 1.1rem;
+
     /* Colours */
     --required-color: rgb(255, 120, 120);
     
