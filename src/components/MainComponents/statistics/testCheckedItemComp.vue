@@ -2,6 +2,7 @@
     <article 
     class="checked-test flex flex-column align-items-center justify-content-around shadow-1 py-2" 
     :class="'failed'"                    
+    @click="emit('openStatisticsTest', props.testData)"
     >
         <!-- Название теста -->
         <h3 class="text-lg font-medium">{{ props.testData.title }}</h3>
@@ -21,11 +22,15 @@
 
 <script setup lang="ts">
 import type { Test } from '@/types/testTypes';
-import { defineProps } from 'vue';
+import { defineProps, defineEmits } from 'vue';
 
 const props = defineProps<{
     testData: Test;
 }>();
+
+const emit = defineEmits({
+    openStatisticsTest: (testData: Test) => true,
+});
 
 </script>
 

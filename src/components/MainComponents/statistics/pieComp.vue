@@ -1,5 +1,5 @@
 <template>
-    <div class="doughnut-gram-container">
+    <div class="statistic-block doughnut-gram-container">
         <Chart class="doughnut-gram" type="doughnut" :data="chartData" :options="chartOptions"/>
     </div>
 </template>
@@ -48,8 +48,11 @@ onMounted(() => {
 });
 </script>
 
-<style>
+<style scoped>
 .doughnut-gram-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 260px;
     height: 260px;
 }

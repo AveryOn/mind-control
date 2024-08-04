@@ -31,16 +31,24 @@
             </div>
 
             <!-- БЛОК СПИСКА ВЫПОЛНЕННЫХ ПРОВЕРЕННЫХ ТЕСТОВ  -->
-            <div class="list-block w-max max-w-full mt-3">
+            <div class="list-block w-full mt-3">
                 <h1 class="font-medium text-3xl">Вывести статистику по тесту</h1>
-                <div class="checked-tests-block pt-3 pb-2 px-3">
-                    <testCheckedItemComp 
+                <div class="checked-tests-block statistic-block pt-3 pb-2 px-3">
+                    <testCheckedItemComp
                     v-for="test in testList" 
+                    @open-statistics-test="(testData: Test) => openStatisticsTest(testData)"
                     :test-data="test"
                     :key="test"
                     />
                 </div>
             </div>
+
+            <!-- БЛОК ОБЩЕЙ СТАТИСТИКИ ЗА КАКОЕ-ТО ВРЕМЯ -->
+            <div class="w-full my-4">
+                <h1 class="font-medium text-3xl mb-4">Общая статистика</h1>
+                <barComp />
+            </div>
+
         </section>
     </div>
 </template>
@@ -49,6 +57,7 @@
 import { useMainStore } from '@/stores/mainStore';
 import testCheckedItemComp from '@/components/MainComponents/statistics/testCheckedItemComp.vue';
 import pieComp from '@/components/MainComponents/statistics/pieComp.vue';
+import barComp from '@/components/MainComponents/statistics/barComp.vue';
 import type { Test } from '@/types/testTypes';
 import { ref, type Ref } from 'vue';
 
@@ -82,6 +91,15 @@ const testList: Ref<Test[]> = ref<Test[]>([
 
 ]);
 
+function openStatisticsTest(testData: Test) {
+    try {
+        // 
+    } catch (err) {
+        console.error('views/MainViews/StatisticsView.vue: openStatisticsTest => ', err);
+        throw err;
+    }
+}
+
 </script>
 
 <style scoped>
@@ -97,7 +115,7 @@ const testList: Ref<Test[]> = ref<Test[]>([
 }
 .list-block {
     border-bottom: 2px solid var(--statistic-separator-color);
-    padding-bottom: 1rem;
+    padding-bottom: 2rem;
 }
 
 </style>
