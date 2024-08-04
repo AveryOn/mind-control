@@ -1,7 +1,7 @@
 <template>
     <div 
     class="relative overflow-auto flex flex-column align-items-center justify-content-start py-6" 
-    style="height: 100% !important; border: 1px solid black;"
+    style="height: 100% !important;"
     >
         <div 
             class="w-full h-full flex flex-column align-items-center gap-3 justify-content-center"
@@ -32,6 +32,17 @@
         text raised 
         @click="handlerAppendNewQuestion"
         />
+
+        <!-- КНОПКА СОЗДАТЬ ТЕСТ -->
+        <Button
+        class="w-4 mt-5 mb-2"
+        v-show="props.questions.length"
+        label="Создать тест" 
+        icon="pi pi-folder-plus" 
+        raised 
+        :loading="props.isLoadingCreate"
+        @click="emit('confirmCreationTest')"
+        />
     </div>
 </template>
 
@@ -41,12 +52,14 @@ import type { Question } from '@/types/testTypes';
 import questionItem from './questions/questionItem.vue';
 
 const props = defineProps<{
-    questions: Question[],
+    questions: Question[];
+    isLoadingCreate?: boolean;
 }>();
 
 const emit = defineEmits({
     appendQuestion: (question: Question) => question,
     updateQuestion: (data: Question) => data,
+    confirmCreationTest: () => true,
 });
 
 function handlerAppendNewQuestion() {
@@ -56,8 +69,6 @@ function handlerAppendNewQuestion() {
     }
     emit('appendQuestion', { number: no, question: '', type: 'text', });
 }
-
-
 
 </script>
 

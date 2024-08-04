@@ -6,12 +6,12 @@
         <h1 class="viewer-header">Тесты <span class="nest-piece">></span> Новый тест</h1>
 
         <!-- КОНТЕНТНАЯ ЧАСТЬ -->
-        <section class="relative h-full w-full overflow-auto flexflex-column align-items-center" style="border: 1px solid black;">
+        <section class="relative h-full w-full overflow-auto flexflex-column align-items-center">
 
             <!-- TIME LINE -->
             <div 
             class="absolute top-0 right-0 left-0 w-10 mx-auto overflow-hidden flex align-items-center" 
-            style="height: 12%; border: 1px solid black;"
+            style="height: 12%;"
             >
                 <Timeline :value="steps" layout="horizontal" class="px-4 w-full">
                     <template #marker="slotProps">
@@ -35,10 +35,10 @@
             <!-- BODY -->
             <div 
             class="absolute bottom-0 right-0 left-0 overflow-auto w-full flex flex-column align-items-center justify-content-center px-4" 
-            style="height: 88%; border: 1px solid black;">
+            style="height: 88%;">
                 <Carousel
                 class="h-hull w-full m-auto overflow-auto flex flex-column justify-content-center"
-                :value="products" 
+                :value="forms" 
                 :numVisible="1" 
                 :numScroll="1" 
                 :page="currentStep-1" 
@@ -73,7 +73,9 @@
                     v-if="slotProps.index === 4" 
                     @append-question="handlerAppendQuestion"
                     @update-question="(data: Question) => handlerUpdateQuestion(data)"
+                    @confirm-creation-test="handlerConfirmCreateTest"
                     :questions="questions"
+                    :is-loading-create="isLoadingCreate"
                     />
                 </template>
             </Carousel>
@@ -95,13 +97,13 @@ import { type GroupTest, type GroupTestInput, type Participant, type Participant
 const currentStep = ref(1);
 const questions: Ref<Question[]> = ref([]);
 const steps = ref([
-    { id: 1, step: 'Название', isComplete: false },
-    { id: 2, step: 'Описание', isComplete: false },
-    { id: 3, step: 'Группа', isComplete: false },
-    { id: 4, step: 'Участники', isComplete: false },
-    { id: 5, step: 'Вопросы', isComplete: false },
+    { id: 1, step: 'Название', isComplete: false, isError: false },
+    { id: 2, step: 'Описание', isComplete: false, isError: false },
+    { id: 3, step: 'Группа', isComplete: false, isError: false },
+    { id: 4, step: 'Участники', isComplete: false, isError: false },
+    { id: 5, step: 'Вопросы', isComplete: false, isError: false },
 ]);
-const products = ref([
+const forms = ref([
     { id: 1, label: 'title' },
     { id: 2, label: 'summary' },
     { id: 3, label: 'group' },
@@ -109,16 +111,18 @@ const products = ref([
     { id: 5, label: 'questions' },
 ]);
 const initialData: Ref<TestCreate | null> = ref(null);
+const isLoadingCreate = ref<boolean>(false);
 
 
-type TimelineEvent = { id: number, step: string | number, isComplete: boolean };
-type StylesTimelineEvent = { complete: boolean, current: boolean };
+type TimelineEvent = { id: number, step: string | number, isComplete: boolean, isError: boolean };
+type StylesTimelineEvent = { complete: boolean, current: boolean, error: boolean };
 
 const computeStylesTimelineEvent: ComputedRef<(event: TimelineEvent) => StylesTimelineEvent> = computed(() => {
     return (event: TimelineEvent) => {
-        const readyClassList: StylesTimelineEvent = { complete: false, current: false };
+        const readyClassList: StylesTimelineEvent = { complete: false, current: false, error: false };
         if(event.id === currentStep.value) readyClassList.current = true;
         if(event.isComplete === true) readyClassList.complete = true;
+        if(event.isError === true) readyClassList.error = true;
         return readyClassList;
     }
 });
@@ -128,6 +132,35 @@ function updateStep(stepId: number) {
         currentStep.value = stepId;
         updateStepState();
     }, 150)
+}
+
+function handlerConfirmCreateTest() {
+    try {
+        isLoadingCreate.value = true;
+        let isError = false;
+        if(!initialData) return;
+        if(!initialData.value?.title) {
+            steps.value[0].isError = true;
+            isError = true;
+        }
+        if(!initialData.value?.group) {
+            steps.value[2].isError = true;
+            isError = true;
+        }
+        if(!questions.value.length) {
+            steps.value[4].isError = true;
+            isError = true;
+        }
+        if(isError === true) return;
+        
+        // ВЫПОЛНЯЕТСЯ ЗАПРОС
+
+    } catch (err) {
+        console.error('views/MainViews/CreateTestView: handlerConfirmCreateTest => ', err);
+        throw err;
+    } finally {
+        isLoadingCreate.value = false;
+    }
 }
 
 function handlerAppendQuestion(newQuestion: Question) {
@@ -217,12 +250,28 @@ function updateDraftNewTestLS(
 ): TestCreate {
     try {
         const testDataDraft = createDraftNewTestLS();
-        if(summary !== undefined) testDataDraft.summary = summary;
-        if(title !== undefined) testDataDraft.title = title;
-        if(group !== undefined) testDataDraft.group = group;
-        if(participants !== undefined) testDataDraft.participants = participants;
-        if(questions !== undefined) testDataDraft.questions = questions;
+        if(summary !== undefined) {
+            testDataDraft.summary = summary;
+            steps.value[1].isError = false;
+        }
+        if(title !== undefined) {
+            testDataDraft.title = title;
+            steps.value[0].isError = false;
+        }
+        if(group !== undefined) {
+            testDataDraft.group = group;
+            steps.value[2].isError = false;
+        }
+        if(participants !== undefined) {
+            testDataDraft.participants = participants;
+            steps.value[3].isError = false;
+        }
+        if(questions !== undefined) {
+            testDataDraft.questions = questions;
+            steps.value[4].isError = false;
+        }
         localStorage.setItem('draft_new_test', JSON.stringify(testDataDraft));
+        initialData.value = testDataDraft;
         return testDataDraft;
     } catch (err) {
         console.error('views/MainViews/CreateTestView: createDraftNewTestLS => ', err);

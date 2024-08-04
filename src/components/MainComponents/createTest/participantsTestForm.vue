@@ -1,5 +1,5 @@
 <template>
-    <div class="relative h-full overflow-hidden flex flex-column align-items-center justify-content-center py-4" style="border: 1px solid black;">
+    <div class="relative h-full overflow-hidden flex flex-column align-items-center justify-content-center py-4">
         <form class="flex flex-column align-items-center" @submit.prevent>
             <h2 class="light-text mb-4">Выберите участников, которым будет назначен данный тест</h2>
             <div class="flex align-items-center gap-2 p-1">

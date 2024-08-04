@@ -25,6 +25,11 @@
     border: 2px dashed var(--timeline-event-current-color);
 }
 
+.timeline-event.error {
+    border: 2px dashed var(--required-color);
+    background-color: var(--required-color);
+}
+
 .timeline-signature {
     cursor: pointer;
     color: var(--subtitle-text);
@@ -36,4 +41,8 @@
 
 .timeline-signature.current {
     color: var(--timeline-event-current-color);
+}
+
+.timeline-signature.error {
+    color: var(--required-color);
 }
