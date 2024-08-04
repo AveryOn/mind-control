@@ -5,7 +5,7 @@
     --basic-bg-light: rgba(255, 255, 255, 0.75);
     --basic-color-fg: rgb(61, 224, 153);
     --basic-color-hover-fg: rgb(63, 174, 126);
-    --basic-border-color: rgba(128, 128, 128, 0.516);
+    --basic-border-color: rgba(128, 128, 128, 0.5);
 
     --subtitle-text: rgba(80, 80, 80, 0.7);
 
@@ -26,6 +26,9 @@
 
     /* Colours */
     --required-color: rgb(255, 120, 120);
+
+    /* STATISTICS */
+    --statistic-block-bg: white;
     
     transition: all var(--duration-color) ease !important;
 }

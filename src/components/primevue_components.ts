@@ -16,7 +16,7 @@ import MultiSelect from 'primevue/multiselect';
 import ConfirmPopup from 'primevue/confirmpopup';
 import Badge from 'primevue/badge';
 import Chip from 'primevue/chip';
-
+import Chart from 'primevue/chart';
 
 export default [
     Image,
@@ -37,4 +37,5 @@ export default [
     ConfirmPopup,
     Badge,
     Chip,
+    Chart,
 ] as any[]
