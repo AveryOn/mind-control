@@ -13,6 +13,8 @@ import './styles/main.css';
 import '../node_modules/primeflex/primeflex.css';
 // Components
 import primeComponents from '@/components/primevue_components';
+// Services
+import primeServices from './services/primeServices';
 
 
 const app = createApp(App);
@@ -21,7 +23,12 @@ primeComponents.forEach((component) => {
     app.component(component.name, component);
 });
 
+primeServices.forEach((plugin) => {
+    app.use(plugin);
+})
+
 app.directive('tooltip', Tooltip);
+
 
 app.use(createPinia());
 app.use(router)

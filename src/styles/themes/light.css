@@ -5,6 +5,9 @@
     --basic-bg-light: rgba(255, 255, 255, 0.75);
     --basic-color-fg: rgb(61, 224, 153);
     --basic-color-hover-fg: rgb(63, 174, 126);
+    --basic-border-color: rgba(128, 128, 128, 0.516);
+
+    --subtitle-text: rgba(80, 80, 80, 0.7);
 
     /* Navigation Panel */
     --nav-border-color: rgba(128, 128, 128, 0.5);

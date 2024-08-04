@@ -1,0 +1,39 @@
+
+:root {
+    --p-timeline-event-connector-color: var(--timeline-connector-color) !important;
+    --p-timeline-horizontal-event-content-padding: .2rem !important;
+
+    --timeline-event-fg: rgb(255, 255, 255);
+    --timeline-event-bg: rgba(123, 123, 123, 0.5);
+    --timeline-event-complete: rgb(133, 236, 133);
+    --timeline-connector-color: rgba(123, 123, 123, 0.5);
+    --timeline-event-current-color: rgba(255, 124, 58, 0.75);
+}
+
+.timeline-event {
+    background-color: var(--timeline-event-bg);
+    padding: 0.35rem;
+    border-radius: 50%;
+    color: var(--timeline-event-fg);
+    cursor: pointer;
+}
+.timeline-event.complete {
+    background-color: var(--timeline-event-complete);
+}
+
+.timeline-event.current {
+    border: 2px dashed var(--timeline-event-current-color);
+}
+
+.timeline-signature {
+    cursor: pointer;
+    color: var(--subtitle-text);
+}
+
+.timeline-signature.complete {
+    color: var(--timeline-event-complete);
+}
+
+.timeline-signature.current {
+    color: var(--timeline-event-current-color);
+}

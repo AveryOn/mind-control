@@ -1,0 +1,9 @@
+
+
+.question-block {
+    background-color: var(--basic-bg) !important;
+    color: var(--base-fg);
+    box-shadow: var(--shadow);
+    border-radius: 4px;
+    z-index: 99 !important;
+}

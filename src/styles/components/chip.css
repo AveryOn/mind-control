@@ -1,0 +1,17 @@
+
+:root {
+    --p-chip-border-radius: 5px !important;
+    --p-chip-padding-y: 0.15rem !important;
+    --p-chip-padding-x: 1rem !important;
+    --p-chip-background: var(--chip-bg) !important;
+    --p-chip-color: var(--chip-fg) !important;
+    --p-chip-icon-color: var(--chip-fg) !important;
+    --p-chip-remove-icon-color: var(--chip-fg) !important;
+
+    --chip-bg: rgba(199, 199, 199, 0.7);
+    --chip-fg: rgba(35, 35, 35, 0.7);
+}
+
+.p-chip.correct {
+    background: rgba(60, 249, 117, 0.55) !important;
+}

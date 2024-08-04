@@ -1,5 +1,5 @@
 <template>
-    <div class="topbar w-11 shadow-3 border-round-lg py-1 px-4 flex align-items-center justify-content-center">
+    <div class="topbar w-11 shadow-3 border-round-lg py-1 px-4 mt-1 flex align-items-center justify-content-center">
         <div class="logo-block mr-auto">
             <img class="logo" src="@/assets/logo.png" alt="logo">
         </div>

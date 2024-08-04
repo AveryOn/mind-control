@@ -6,6 +6,8 @@
 :root {
     --duration-color: 0.4s;
     --font: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    --shadow: 0px 1px 6px 2px rgba(0, 0, 0, 0.2);
+    
 
     /* Scroll Bar */
     --scrollbar-width: 8px;
@@ -42,6 +44,29 @@ body {
 .mc-block-light {
     background-color: var(--basic-bg-light);
     color: var(--basic-fg);
+}
+
+.viewer-header {
+    font-size: 1.64rem;
+    border-bottom: 1px solid var(--basic-border-color);
+    padding: 0rem 1.5rem;
+    font-weight: normal;
+    color: var(--subtitle-text);
+}
+
+.light-text {
+    color: var(--subtitle-text);
+    font-weight: 400;
+}
+
+.required-text {
+    color: var(--required-color);
+}
+
+.nest-piece {
+    color: var(--basic-color-fg);
+    font-weight: normal;
+    margin: 0 0.4rem;
 }
 
 /* Ширина и цвет полосы скроллбара */

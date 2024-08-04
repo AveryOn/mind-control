@@ -1,5 +1,15 @@
 @import url(./inputText.css);
 @import url(./splitter.css);
+@import url(./timeline.css);
+@import url(./carousel.css);
+@import url(./select.css);
+@import url(./popover.css);
+@import url(./button.css);
+@import url(./checkbox.css);
+@import url(./questionBlock.css);
+@import url(./bagde.css);
+@import url(./chip.css);
+
 
 :root {
     

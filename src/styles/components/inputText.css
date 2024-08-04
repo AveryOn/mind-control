@@ -9,6 +9,10 @@
     --p-inputtext-color: var(--input-text-fg) !important;
     --p-inputtext-border-color: var(--input-text-border-color) !important;
 
+    /* Text AREA */
+    --p-textarea-background: var(--input-text-bg) !important;
+    --p-textarea-color: var(--input-text-fg) !important;
+    --p-textarea-border-color: var(--input-text-border-color) !important;
 
     --input-text-border-color: rgba(122, 122, 122, 0.835);
     --input-text-bg: white;

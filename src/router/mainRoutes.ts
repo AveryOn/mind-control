@@ -1,3 +1,4 @@
+import CreateTestView from '@/views/MainViews/CreateTestView.vue';
 import MainView from '@/views/MainViews/MainView.vue';
 import OpenTestView from '@/views/MainViews/OpenTestView.vue';
 import StatisticsView from '@/views/MainViews/StatisticsView.vue';
@@ -29,6 +30,14 @@ export default [
                 path: 'tests',
                 name: 'tests',
                 component: TestsView,
+                meta: {
+                    requiredAuth: true,
+                },
+            },
+            {
+                path: 'tests/new',
+                name: 'createTest',
+                component: CreateTestView,
                 meta: {
                     requiredAuth: true,
                 },
