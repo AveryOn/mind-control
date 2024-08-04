@@ -76,9 +76,9 @@ function toggleMenuExpanded(): void {
     height: max-content;
     background-color: var(--nav-item-bg);
     color: var(--nav-item-fg);
-    padding: .9rem 1.1rem;
+    padding: .5rem .8rem;
     margin: 0 .3rem;
-    margin-bottom: 0.15rem;
+    margin-bottom: 0.2rem;
     border-radius: 5px;
     transition: all .3s ease;
     cursor: pointer;

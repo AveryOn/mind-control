@@ -155,6 +155,10 @@ function handlerConfirmCreateTest() {
         
         // ВЫПОЛНЯЕТСЯ ЗАПРОС
 
+        // После удаляется черновик теста с LocalStorage
+        localStorage.removeItem('draft_new_test');
+        localStorage.removeItem('draft_test_step');
+
     } catch (err) {
         console.error('views/MainViews/CreateTestView: handlerConfirmCreateTest => ', err);
         throw err;
