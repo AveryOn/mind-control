@@ -6,7 +6,7 @@
         <h1 class="viewer-header">Статистика</h1>
 
         <!-- КОНТЕНТНАЯ ЧАСТЬ -->
-        <section class="h-full overflow-auto px-5 py-4" style="width: 98%; border: 1px solid black;">
+        <section class="h-full overflow-auto px-5 py-4" style="width: 98%;">
 
             <!-- БЛОК ОБЩЕЙ ИНФОРМАЦИИ -->
             <div class="general-info-block w-max flex align-items-start justify-content-start gap-4">

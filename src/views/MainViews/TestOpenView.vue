@@ -3,8 +3,9 @@
         <!-- ЗАГОЛОВОК -->
         <h1 class="viewer-header">Тесты <span class="nest-piece">></span> {{ testData?.title }}</h1>
 
-        <!-- НЕ ПРОВЕРЕННЫЙ ЧАТ -->
-        <div v-if="testData?.result?.isChecked  !== true" class="relative h-full overflow-auto flex flex-column align-items-center py-6">
+
+        <!-- НОВЫЙ ТЕСТ -->
+        <div v-if="!testData?.result" class="relative h-full overflow-auto flex flex-column align-items-center py-6">
             <div class="meter-block flex justify-content-center">
                 <MeterGroup :value="meterValue" />
             </div>
@@ -37,7 +38,29 @@
             </div>
         </div>
 
-        <!-- ПРОВЕРЕННЫЙ ЧАТ -->
+        <!-- НЕ ПРОВЕРЕННЫЙ ТЕСТ -->
+        <div v-if="testData?.result && testData?.result?.isChecked !== true" class="relative h-full overflow-auto flex flex-column justify-content-center align-items-center py-6">
+            <div class="notice-nochecked-block min-w-20rem w-max py-4 px-4 flex flex-column justify-content-center align-items-center">
+                <span class="flex flex-column align-items-center">
+                    <i class="notice-nochecked-icon nocheck pi pi-hourglass mt-1 mb-3"></i>
+                    <h1 class="notice-nochecked-title font-light pb-3">Тест ожидает проверки</h1>
+                </span>
+                <div class="flex flex-column align-content-center pt-3 px-3">
+                    <span class="font-light text-center"></span>
+                    <Button
+                    class="w-max mt-3"
+                    label="Назад" 
+                    text 
+                    raised 
+                    size="small"
+                    icon="pi pi-arrow-left"
+                    @click="router.go(-1)"
+                    />
+                </div>
+            </div>
+        </div>
+
+        <!-- ПРОВЕРЕННЫЙ ТЕСТ -->
         <div v-if="testData?.result?.isChecked === true" class="relative h-full overflow-auto flex flex-column justify-content-center align-items-center py-6">
             <div class="notice-nochecked-block w-20rem py-4 px-3 flex flex-column justify-content-center align-items-center">
                 <span v-if="testData?.result?.isSuccess === true" class="flex flex-column align-items-center">
@@ -209,6 +232,9 @@ onBeforeUnmount(() => {
 }
 .notice-nochecked-icon.failed {
     color: var(--required-color);
+}
+.notice-nochecked-icon.nocheck {
+    color: var(--warn-color);
 }
 .notice-nochecked-title {
     border-bottom: 2px solid var(--basic-border-color);

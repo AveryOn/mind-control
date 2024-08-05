@@ -45,6 +45,7 @@
 
     /* Colours */
     --required-color: rgb(255, 120, 120);
+    --warn-color: rgb(249, 179, 49);
     --success-color: rgb(149, 235, 92);
 
     /* STATISTICS */
