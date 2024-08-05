@@ -1,3 +1,4 @@
+import type { Student } from "./usersType";
 
 export type QuestionTypes =  'text' | 'checkbox' | 'radio';
 export type RadioAnswer = { answer: string, isCorrect?: boolean };
@@ -38,6 +39,7 @@ export type Answer = {
     id: number;
     questionId: number;
     answer: any;
+    isCorrect?: boolean;
 }
 
 export type Result = {
@@ -46,11 +48,26 @@ export type Result = {
     testId?: number;
     isSuccess?: boolean;
     successCount?: number | null;
+    questionsCount?: number;
     isChecked?: boolean;
     checkDate?: string | null;
     duration?: number;
     createdAt?: string;
     updatedAt?: string;
+}
+
+export type ResultForCheck = Result & {
+    test: {
+        id: number;
+        title: string;
+        summary: string;
+        group: GroupTestInput | GroupTest;
+        questionsCount?: number;
+        createdAt?: string;
+    };
+    questions: Question[];
+    answers: Answer[];
+    student: Student;
 }
 
 export type Test = {

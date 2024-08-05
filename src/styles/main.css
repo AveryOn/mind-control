@@ -69,6 +69,18 @@ body {
     margin: 0 0.4rem;
 }
 
+.success-fg {
+    color: rgb(115, 220, 45);
+}
+
+.failed-fg {
+    color: var(--required-color);
+}
+
+.warn-fg {
+    color: var(--warn-color);
+}
+
 /* Ширина и цвет полосы скроллбара */
 ::-webkit-scrollbar {
     width: var(--scrollbar-width);

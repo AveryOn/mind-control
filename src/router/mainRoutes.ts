@@ -62,6 +62,14 @@ export default [
                 },
             },
             {
+                path: 'tests/check/test/:testId/result/:resultId',
+                name: 'checkResult',
+                component: () => import('@/views/MainViews/ResultCheckView.vue'),
+                meta: {
+                    requiredAuth: true,
+                },
+            },
+            {
                 path: 'tests/new',
                 name: 'createTest',
                 component: () => import('@/views/MainViews/CreateTestView.vue'),

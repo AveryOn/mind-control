@@ -1,6 +1,4 @@
 :root {
-    --p-datatable-header-background: rgb(255, 0, 0) !important;
-    --p-datatable-header-border-color: red !important;
     --p-datatable-row-background: white !important;
     --p-datatable-header-cell-background: white !important;
     --p-datatable-header-cell-color: var(--basic-fg) !important;
@@ -9,4 +7,26 @@
     --p-datatable-row-color: var(--basic-fg) !important;
     --p-datatable-row-hover-background: rgb(219, 255, 223) !important;
     --p-datatable-row-hover-color: rgba(6, 6, 6, 0.507) !important;
+
+    --datatable-border-radius: 10px;
 }
+
+/* .p-datatable-table-container {
+    border-radius: var(--datatable-border-radius) !important;
+}
+
+.p-datatable-table {
+    border-radius: var(--datatable-border-radius) !important;
+}
+
+.p-datatable-mask {
+    border-radius: var(--datatable-border-radius) !important;
+}
+
+.p-datatable {
+    border-radius: var(--datatable-border-radius) !important;
+}
+
+.p-datatable-column-header-content {
+    border-radius: var(--datatable-border-radius) !important;
+} */

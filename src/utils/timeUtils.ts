@@ -22,7 +22,7 @@ export function computeMinutesByMs(milliseconds: number | undefined) {
 export function formattedDateByTemplate(date: string | Date | null | undefined, template?: string ) {
     try {
         if(date) {
-            return moment(date).format(template ?? 'DD-MM-YYYY');
+            return moment(date).format(template ?? 'DD.MM.YYYY');
         }
     } catch (err) {
         console.error('/src/utils/timeUtils.ts: formattedDateByTemplate => ', err);
