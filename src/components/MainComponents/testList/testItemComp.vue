@@ -4,11 +4,11 @@
     :class="computeClassesTestItem"
     >
         <div class="px-3 mr-auto flex align-items-center">
-            <i class="test-play-icon pi pi-play mr-2"></i> 
+            <i v-if="store.appRole === 'student'" class="test-play-icon pi pi-play mr-2"></i> 
             <h2 class="test-item-title text-xl">
                 {{ props.testData.title }}
-                <span class="font-light font-italic sign-nocheck" v-if="props.testData.result?.isChecked === false">- Не проверено</span>
-                <span class="font-light font-italic sign-nocheck" v-if="!props.testData.result">- Новый</span>
+                <span class="font-light font-italic sign-nocheck" v-if="store.appRole === 'student' && props.testData.result?.isChecked === false">- Не проверено</span>
+                <span class="font-light font-italic sign-nocheck" v-if="store.appRole === 'student' && !props.testData.result">- Новый</span>
             </h2>
         </div>
 
@@ -75,9 +75,9 @@ const props = defineProps<{
 }>();
 
 const computeClassesTestItem = computed(() => {
-    if(props.testData.result?.isSuccess === true) return 'success';
-    if(props.testData.result?.isChecked === true && props.testData.result.isSuccess === false) return 'failed';
-    if(props.testData.result?.isChecked === false) return 'no-checked';
+    if(store.appRole === 'student' && props.testData.result?.isSuccess === true) return 'success';
+    if(store.appRole === 'student' && props.testData.result?.isChecked === true && props.testData.result.isSuccess === false) return 'failed';
+    if(store.appRole === 'student' && props.testData.result?.isChecked === false) return 'no-checked';
 });
 
 </script>

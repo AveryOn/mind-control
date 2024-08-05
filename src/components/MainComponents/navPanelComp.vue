@@ -25,7 +25,7 @@
             </li>
 
             <!-- ТЕСТЫ -->
-            <li 
+            <li
             class="menu-item" 
             @click="router.push({ name: 'tests' })" 
             v-tooltip.right="'Тесты'"
@@ -37,6 +37,7 @@
 
             <!-- УЧЕНИКИ -->
             <li 
+            v-if="store.appRole === 'teacher'"
             class="menu-item" 
             @click="router.push({ name: 'students' })" 
             v-tooltip.right="'Ученики'"
@@ -62,7 +63,9 @@
 import { useRoute, useRouter } from 'vue-router';
 import { ref } from 'vue';
 import gsap from 'gsap';
+import { useMainStore } from '@/stores/mainStore';
 
+const store = useMainStore();
 const route = useRoute();
 const router = useRouter();
 

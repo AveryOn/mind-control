@@ -15,16 +15,24 @@
 
         <!-- ЗАГОЛОВОК -->
         <h1 class="viewer-header">Группы</h1>
-        <Button class="ml-auto mt-2 mr-4" @click="isShowCreateGroup = true" text raised label="Создать" icon="pi pi-plus" />
+        <Button 
+        v-if="store.appRole === 'teacher'"
+        class="ml-auto mt-2 mr-4" 
+        @click="isShowCreateGroup = true" 
+        text 
+        raised 
+        label="Создать" 
+        icon="pi pi-plus" 
+        />
 
         <!-- КОНТЕНТНАЯ ЧАСТЬ -->
         <section class="h-full overflow-auto px-5 py-4">
 
             <!-- ОКНО ПРИВЕТСТВИЯ -->
-            <div v-if="false" class="w-full h-full flex flex-column align-items-center gap-3 justify-content-center">
+            <div v-if="!store.groups.length" class="w-full h-full flex flex-column align-items-center gap-3 justify-content-center">
   
                 <h1 class="light-text">Здесь будут отображаться группы</h1>
-                <div class="w-max">
+                <div v-if="store.appRole === 'teacher'" class="w-max">
                     <Button 
                     label="Создать" 
                     icon="pi pi-plus" 
@@ -39,7 +47,7 @@
             <div class="w-full h-max flex align-items-center flex-wrap gap-3">
                 <groupItemComp 
                 v-for="group in store.groups" :key="group.id"
-                @click="router.push({ name: 'groupTests', params: { groupId: group.id } })"
+                @click="() => handlerOpenGroup(group)"
                 :group-data="group"
                 />
             </div>
@@ -51,6 +59,7 @@
 <script setup lang="ts">
 import groupItemComp from "@/components/MainComponents/groupList/groupItemComp.vue";
 import { useMainStore } from "@/stores/mainStore";
+import type { GroupTest } from "@/types/testTypes";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
@@ -58,6 +67,17 @@ const router = useRouter();
 const store = useMainStore();
 
 const isShowCreateGroup = ref(false);
+
+
+function handlerOpenGroup(group: GroupTest) {
+    try {
+        router.push({ name: 'groupTests', params: { groupId: group.id } })
+        store.opennedGroup = group;
+    } catch (err) {
+        console.error('/src/views/MainViews/GroupsView.vue: handlerOpenGroup => ', err);
+        throw err;
+    }
+}
 
 </script>
 

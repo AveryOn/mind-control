@@ -6,9 +6,17 @@ import { ref, type Ref } from 'vue';
 
 export const useMainStore = defineStore('mainStore', () => {
 
-    const appRole: Ref<Role> = ref<Role>('student');
+    const appRole: Ref<Role> = ref<Role>('teacher');
 
-    const students: Ref<Student[]> = ref<Student[]>([]);
+    const students: Ref<Student[]> = ref<Student[]>([
+        { id: 1, name: 'Alex Name', login: 'alex123', createdAt: '2023-10-01T10:00:00', updatedAt: '2023-10-01T10:00:00' },
+        { id: 2, name: 'Bob Name', login: 'bob123', createdAt: '2023-10-01T10:00:00', updatedAt: '2023-10-01T10:00:00' },
+        { id: 3, name: 'Nick Name', login: 'nick123', createdAt: '2023-10-01T10:00:00', updatedAt: '2023-10-01T10:00:00' },
+        { id: 4, name: 'Thomas Name', login: 'thomas123', createdAt: '2023-10-01T10:00:00', updatedAt: '2023-10-01T10:00:00' },
+        { id: 5, name: 'John', login: 'john123', createdAt: '2023-10-01T10:00:00', updatedAt: '2023-10-01T10:00:00' },
+        { id: 6, name: 'Steven Name', login: 'steven123', createdAt: '2023-10-01T10:00:00', updatedAt: '2023-10-01T10:00:00' },
+        { id: 7, name: 'Jerry Name', login: 'jerry123', createdAt: '2023-10-01T10:00:00', updatedAt: '2023-10-01T10:00:00' },
+    ]);
     const groups: Ref<GroupTest[]> = ref<GroupTest[]>([
         { id: 1, title: 'Tested Group 1', createdAt: '2023-10-01T10:15:23', updatedAt: '2023-10-01T10:15:23'},
         { id: 2, title: 'Tested Group 2', createdAt: '2023-10-01T10:15:23', updatedAt: '2023-10-01T10:15:23'},
@@ -110,7 +118,8 @@ export const useMainStore = defineStore('mainStore', () => {
             { answer: 'const' }, { answer: 'let' }, { answer: 'var' },
         ] },
     ]);
-    const opennedTest: Ref<Test | null> = ref(null);
+    const opennedTest: Ref<Test | null> = ref<Test | null>(null);
+    const opennedGroup: Ref<GroupTest | null> = ref<GroupTest | null>(null);
 
     return {
         appRole,
@@ -119,5 +128,6 @@ export const useMainStore = defineStore('mainStore', () => {
         tests,
         currentTestQuestions,
         opennedTest,
+        opennedGroup,
     }
 })

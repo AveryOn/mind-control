@@ -1,5 +1,6 @@
 <template>
-    <div class="w-full h-full overflow-hidden flex flex-column align-items-stretch">
+    <!-- #############################   ДЛЯ УЧЕНИКА  ####################################### -->
+    <div v-if="store.appRole === 'student'" class="w-full h-full overflow-hidden flex flex-column align-items-stretch">
         <!-- ЗАГОЛОВОК -->
         <h1 class="viewer-header">Тесты <span class="nest-piece">></span> {{ testData?.title }}</h1>
 
@@ -49,7 +50,7 @@
                     <span class="font-light text-center"></span>
                     <Button
                     class="w-max mt-3"
-                    label="Назад" 
+                    label="Назад"
                     text 
                     raised 
                     size="small"
@@ -85,6 +86,13 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- #############################   ДЛЯ УЧИТЕЛЯ  ####################################### -->
+    <div v-else-if="store.appRole === 'teacher'" class="w-full h-full overflow-hidden flex flex-column align-items-stretch">
+        <!-- ЗАГОЛОВОК -->
+        <h1 class="viewer-header">Тесты <span class="nest-piece">></span> {{ testData?.title }}</h1>
+
     </div>
 </template>
 

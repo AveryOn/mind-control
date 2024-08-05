@@ -1,0 +1,12 @@
+:root {
+    --p-datatable-header-background: rgb(255, 0, 0) !important;
+    --p-datatable-header-border-color: red !important;
+    --p-datatable-row-background: white !important;
+    --p-datatable-header-cell-background: white !important;
+    --p-datatable-header-cell-color: var(--basic-fg) !important;
+    --p-datatable-border-color: var(--basic-border-color) !important;
+    --p-datatable-header-cell-color: var(--basic-fg) !important;
+    --p-datatable-row-color: var(--basic-fg) !important;
+    --p-datatable-row-hover-background: rgb(219, 255, 223) !important;
+    --p-datatable-row-hover-color: rgba(6, 6, 6, 0.507) !important;
+}

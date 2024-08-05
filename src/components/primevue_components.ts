@@ -22,6 +22,8 @@ import RadioButton from 'primevue/radiobutton';
 import Checkbox from 'primevue/checkbox';
 import Tag from 'primevue/tag';
 import MeterGroup from 'primevue/metergroup';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
 
 
 export default [
@@ -49,4 +51,6 @@ export default [
     Checkbox,
     Tag,
     MeterGroup,
+    DataTable,
+    Column,
 ] as any[]
