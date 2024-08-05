@@ -5,10 +5,36 @@
             {{ props.questionData.question }}
         </h1>
 
+        <!-- ВАРИАНТЫ ОТВЕТА -->
+        <div v-if="props.questionData.type !== 'text'" class="">
+            <span class="">Варианты ответа:<span class="sign-qua-answers ml-3">({{ computeSignForVariantsAnswer }})</span></span>
+            <div class="w-full flex flex-column align-items-start pt-3 px-3">
+                <!-- CheckBox -->
+                <Tag 
+                class="mb-2" 
+                v-if="props.questionData.type === 'checkbox'" 
+                v-for="(answer, index) in props.questionData.checkboxAnswers" 
+                :value="`${index+1 + ')'}  ${answer.answer}`"
+                :key="answer.answer"
+                ></Tag>
+                <!-- Radio -->
+                <Tag 
+                class="mb-2" 
+                v-if="props.questionData.type === 'radio'" 
+                v-for="(answer, index) in props.questionData.radioAnswers"
+                :value="`${index+1 + ')'}  ${answer.answer}`" 
+                :key="answer.answer"
+                ></Tag>
+            </div>
+        </div>
+
         <!-- Блок отображается после нажатия на кнопку "Ответить". Здесь выводится ответ -->
-        <div class="pt-2" v-show="!!props.answerData.answer">
+        <div class="pt-2">
             <span>Ответ:</span>
-            <div class="block-answer px-5 py-1 mt-2 mx-2">{{ props.answerData}}</div>
+            <div v-if="props.questionData.type === 'checkbox'" class="w-full flex flex-column align-items-start pt-3 px-3">
+                <Tag class="mb-2" v-if="props.questionData.type === 'checkbox'" :value="answer.answer" v-for="answer in checkboxAnswers"></Tag>
+            </div>
+            <div v-else class="block-answer px-5 py-1 mt-2 mx-2">{{ props.answerData.answer ?? '-' }}</div>
         </div>
 
         <!-- БЛОК ПЕРИФЕРИИ -->
@@ -35,12 +61,50 @@
 
 <script setup lang="ts">
 import type { Answer, Question } from '@/types/testTypes';
-import { defineProps } from 'vue';
+import { defineProps, computed, onMounted, type Ref, ref } from 'vue';
 
 const props = defineProps<{
     questionData: Question;
     answerData: Answer;
 }>();
+
+
+const checkboxAnswers: Ref<Answer | null> = ref(null);
+
+const computeSignForVariantsAnswer = computed(() => {
+    try {
+        if(props.questionData.type === 'checkbox') return 'Несколько вариантов';
+        if(props.questionData.type === 'radio') return 'Один вариант';
+    } catch (err) {
+        console.error('/src/components/MainComponents/resultsCheck/questionItemByResultComp.vue: computed[computeSignForVariantsAnswer] => ', err);
+        throw err;
+    }
+});
+
+function parseJsonAnswer(data: any) {
+    try {
+        if(data) {
+            if(typeof data === 'string') {
+                return JSON.parse(data);
+            }
+        }
+        return null;
+    } catch (err) {
+        console.error('/src/components/MainComponents/resultsCheck/questionItemByResultComp.vue: parseJsonAnswer => ', err);
+        throw err;
+    }
+}
+
+onMounted(() => {
+    try {
+        if(props.questionData.type === 'checkbox') {
+            checkboxAnswers.value = parseJsonAnswer(props.answerData.answer);
+        }
+    } catch (err) {
+        console.error('/src/components/MainComponents/resultsCheck/questionItemByResultComp.vue: onMounted[parseJsonAnswer] => ', err);
+        throw err;
+    }
+});
 
 </script>
 
@@ -73,4 +137,9 @@ const props = defineProps<{
     letter-spacing: 1px;
     border-radius: 4px;
 } 
+
+.sign-qua-answers {
+    color: rgba(128, 128, 128, 0.727);
+    font-style: italic;
+}
 </style>
