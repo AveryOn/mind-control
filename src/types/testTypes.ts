@@ -1,7 +1,7 @@
 
 export type QuestionTypes =  'text' | 'checkbox' | 'radio';
-export type RadioAnswer = { answer: string, isCorrect: boolean };
-export type CheckboxAnswer = { answer: string, isCorrect: boolean };
+export type RadioAnswer = { answer: string, isCorrect?: boolean };
+export type CheckboxAnswer = { answer: string, isCorrect?: boolean };
 export type GroupTest = { 
     id: number;
     title: string;
@@ -25,6 +25,8 @@ export type Participant = {
 }
 
 export type Question = {
+    id?: number;
+    testId?: number;
     number: number;
     question: string;
     type: QuestionTypes;
@@ -32,13 +34,37 @@ export type Question = {
     checkboxAnswers?: CheckboxAnswer[];
 }
 
+export type Answer = {
+    id: number;
+    questionId: number;
+    answer: any;
+}
+
+export type Result = {
+    id?: number;
+    userId?: number;
+    testId?: number;
+    isSuccess?: boolean;
+    successCount?: number | null;
+    isChecked?: boolean;
+    checkDate?: string | null;
+    duration?: number;
+    createdAt?: string;
+    updatedAt?: string;
+}
+
 export type Test = {
     id: number;
     title: string;
     summary: string;
     group: GroupTestInput | GroupTest;
-    participants: ParticipantInput[] | Participant[];
-    questions: Question[];
+    participants?: ParticipantInput[] | Participant[];
+    questions?: Question[];
+    participantsCount?: number;
+    questionsCount?: number;
+    result?: Result | null;
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 export type TestCreate = {

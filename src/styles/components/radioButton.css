@@ -1,0 +1,9 @@
+:root {
+    --p-radiobutton-background: var(--radio-bg) !important;
+    --p-radiobutton-checked-background: var(--radio-checked-bg) !important;
+    --p-radiobutton-checked-hover-background: var(--radio-checked-hover-bg) !important;
+    --p-radiobutton-icon-checked-color: var(--radio-checked-bg) !important;
+    --p-radiobutton-icon-checked-hover-color: var(--radio-checked-hover-bg) !important;
+    --p-radiobutton-border-color: rgba(124, 124, 124, 0.489) !important;
+    --p-radiobutton-checked-border-color: rgba(124, 124, 124, 0.489) !important;
+}

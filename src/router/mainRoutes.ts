@@ -1,8 +1,10 @@
 import CreateTestView from '@/views/MainViews/CreateTestView.vue';
+import GroupsView from '@/views/MainViews/GroupsView.vue';
 import MainView from '@/views/MainViews/MainView.vue';
 import OpenTestView from '@/views/MainViews/OpenTestView.vue';
 import StatisticsView from '@/views/MainViews/StatisticsView.vue';
 import StudentsView from '@/views/MainViews/StudentsView.vue';
+import TestOpenView from '@/views/MainViews/TestOpenView.vue';
 import TestsView from '@/views/MainViews/TestsView.vue';
 import NotFoundView from '@/views/MetaViews/NotFoundView.vue';
 import type { RouteRecordRaw } from 'vue-router';
@@ -27,9 +29,33 @@ export default [
                 },
             },
             {
+                path: 'groups',
+                name: 'groups',
+                component: GroupsView,
+                meta: {
+                    requiredAuth: true,
+                },
+            },
+            {
+                path: 'groups/:groupId/tests',
+                name: 'groupTests',
+                component: TestsView,
+                meta: {
+                    requiredAuth: true,
+                },
+            },
+            {
                 path: 'tests',
                 name: 'tests',
                 component: TestsView,
+                meta: {
+                    requiredAuth: true,
+                },
+            },
+            {
+                path: 'tests/test/:testId',
+                name: 'opennedTest',
+                component: TestOpenView,
                 meta: {
                     requiredAuth: true,
                 },

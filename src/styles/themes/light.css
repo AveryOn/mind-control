@@ -17,15 +17,35 @@
 
     /* TEST LIST */
     --test-item-bg: white;
+    --test-item-color: rgb(83, 130, 107);
+    --test-item-answer-text-bg: rgba(170, 170, 170, 0.25);
     --test-item-mark-color: rgb(242, 154, 46);
     --test-item-mark-success-color: rgb(165, 234, 81);
+    --test-item-mark-failed-color: rgb(255, 90, 90);
+    --test-item-mark-nochecked-color: rgb(255, 195, 90);
     --test-item-separator-color: rgba(146, 146, 146, 0.5);
     --test-item-sign-fg: gray;
     --test-item-meta-fg: rgb(253, 179, 109);
     --test-item-meta-size: 1.1rem;
 
+    /* DIALOG */
+    --dialog-bg: white;
+
+    /* GROUPS */
+    --group-item-bg: white;
+    --group-item-hover-bg: rgb(230, 230, 230);
+
+    /* RADIO BTNS */
+    --radio-bg: rgb(236, 236, 236);
+    --radio-checked-bg: rgb(116, 194, 156);
+    --radio-checked-hover-bg: rgb(135, 240, 158);
+
+    /* CHECKBOX */
+    --checkbox-checked-bg: rgb(116, 194, 156);
+
     /* Colours */
     --required-color: rgb(255, 120, 120);
+    --success-color: rgb(149, 235, 92);
 
     /* STATISTICS */
     --statistic-block-bg: white;

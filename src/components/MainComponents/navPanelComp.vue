@@ -1,6 +1,8 @@
 <template>
     <aside class="nav-panel w-max h-full py-1 flex flex-column align-items-center">
         <ul classs="menu w-full">
+
+            <!-- СТАТИСТИКА -->
             <li 
             class="menu-item" 
             @click="router.push({ name: 'statistics' })" 
@@ -10,6 +12,19 @@
                 <i class="pi pi-chart-bar menu-item-icon"></i>
                 <span class="menu-item-label" v-show="expandMenu">Статистика</span>
             </li>
+
+            <!-- ГРУППЫ -->
+            <li 
+            class="menu-item" 
+            @click="router.push({ name: 'groups' })" 
+            v-tooltip.right="'Группы'"
+            :class="(route.name === 'groups')? 'selected' : ''"
+            >
+                <i class="pi pi-bookmark menu-item-icon"></i>
+                <span class="menu-item-label" v-show="expandMenu">Группы</span>
+            </li>
+
+            <!-- ТЕСТЫ -->
             <li 
             class="menu-item" 
             @click="router.push({ name: 'tests' })" 
@@ -19,6 +34,8 @@
                 <i class="pi pi-list menu-item-icon"></i>
                 <span class="menu-item-label" v-show="expandMenu">Тесты</span>
             </li>
+
+            <!-- УЧЕНИКИ -->
             <li 
             class="menu-item" 
             @click="router.push({ name: 'students' })" 
@@ -28,6 +45,7 @@
                 <i class="pi pi-users menu-item-icon"></i>
                 <span class="menu-item-label" v-show="expandMenu">Ученики</span>
             </li>
+
         </ul>
         <Button 
         class="mt-auto ml-auto mr-2 mb-2" 

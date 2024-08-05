@@ -10,7 +10,11 @@
 @import url(./bagde.css);
 @import url(./chip.css);
 @import url(./statistics/index.css);
-
+@import url(./dialog.css);
+@import url(./tests/index.css);
+@import url(./radioButton.css);
+@import url(./tag.css);
+@import url(./meter.css);
 :root {
     
 }

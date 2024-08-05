@@ -12,11 +12,11 @@
             <span class=" mr-2">
                 <i class="pi pi-list" style="font-size: 1.7rem;"></i> 
             </span> 
-            <span class="qs-count">{{ props.testData.questions.length }}</span>
+            <span class="qs-count">{{ props.testData.questionsCount }}</span>
         </div>
 
         <!-- Название теста -->
-        <h3 class="text-lg font-medium" v-tooltip.right="'верные ответы'">1 / {{ props.testData.questions.length }}</h3>
+        <h3 class="text-lg font-medium" v-tooltip.right="'верные ответы'">1 / {{ props.testData.questionsCount}}</h3>
     </article>
 </template>
 

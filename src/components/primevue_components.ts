@@ -17,6 +17,12 @@ import ConfirmPopup from 'primevue/confirmpopup';
 import Badge from 'primevue/badge';
 import Chip from 'primevue/chip';
 import Chart from 'primevue/chart';
+import Dialog from 'primevue/dialog';
+import RadioButton from 'primevue/radiobutton';
+import Checkbox from 'primevue/checkbox';
+import Tag from 'primevue/tag';
+import MeterGroup from 'primevue/metergroup';
+
 
 export default [
     Image,
@@ -38,4 +44,9 @@ export default [
     Badge,
     Chip,
     Chart,
+    Dialog,
+    RadioButton,
+    Checkbox,
+    Tag,
+    MeterGroup,
 ] as any[]

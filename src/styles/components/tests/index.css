@@ -1,0 +1,13 @@
+
+.test-list-item.success {
+    border-left: 5px solid var(--test-item-mark-success-color);
+}
+.test-list-item.failed {
+    border-left: 5px solid var(--test-item-mark-failed-color);
+}
+.test-list-item.no-checked {
+    border-left: 5px solid var(--test-item-mark-nochecked-color);
+}
+
+/* ===== OPENNED TEST */
+
