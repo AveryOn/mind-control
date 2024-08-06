@@ -11,7 +11,7 @@
                     <navPanelComp />
 
                     <!-- RIGHT SIDE (ROUTER) -->
-                    <main class="w-full h-full flex items-center justify-center">
+                    <main class="w-full h-full overflow-hidden flex items-center justify-center">
                         <RouterView />
                     </main>
                 </div>
@@ -29,8 +29,12 @@ import type { UserData } from '@/types/usersType';
 import { getMeData } from '@/api/usersApi';
 import { type FetchedUserData } from '@/types/apiTypes';
 import { useRouter } from 'vue-router';
+import { useMainStore } from '@/stores/mainStore';
+
+const store = useMainStore();
 const router = useRouter();
 const isLoadingData = ref(false);
+
 
 async function initUserData() {
     try {
@@ -38,14 +42,15 @@ async function initUserData() {
         let userDataStorage: any = localStorage.getItem('user_data');
         if(userDataStorage) {
             userDataReady = JSON.parse(userDataStorage);
+            store.userData = userDataReady;
         } 
         // Если в localStorage нет данных пользователя то идет получение их с сервера
         else {
             const fetchedUserData: FetchedUserData = await getMeData();
             if(!fetchedUserData) throw 'Не удалось получить данные пользователя';
             localStorage.setItem('user_data', JSON.stringify(fetchedUserData));
+            store.userData = fetchedUserData;
         }
-        console.log(userDataReady!);
     } catch (err) {
         console.error('/src/views/MainViews/MainView.vue: onBeforeMount => ', err);
         router.push({ name: 'reception' });

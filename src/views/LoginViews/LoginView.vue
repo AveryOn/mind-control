@@ -7,7 +7,7 @@
 
         <form @submit.prevent class="w-5 flex flex-column align-items-center justify-content-center">
             <!-- Login -->
-            <InputGroup class="mb-4 shadow-2">
+            <InputGroup class="mb-4 shadow-2 border-round-lg">
                 <InputGroupAddon>
                     <i class="pi pi-user"></i>
                 </InputGroupAddon>
@@ -22,7 +22,7 @@
             </InputGroup>
 
             <!-- Password -->
-            <InputGroup class="mb-3 shadow-2">
+            <InputGroup class="mb-3 shadow-2 border-round-lg">
                 <InputGroupAddon>
                     <i class="pi pi-key"></i>
                 </InputGroupAddon>
@@ -57,6 +57,7 @@ import { onMounted, ref, type Ref } from 'vue';
 import { loginApi } from '@/api/authApi';
 import type { LoginInputData } from '@/types/apiTypes';
 import { useMainStore } from '@/stores/mainStore';
+import { hasSpecSymbols } from '@/utils/validation';
 
 const store = useMainStore();
 const router = useRouter();
@@ -67,19 +68,7 @@ const isInvalidLogin: Ref<boolean> = ref(false);
 const isInvalidPassword: Ref<boolean> = ref(false);
 const isLoadingConfirmData: Ref<boolean> = ref(false);
 
-function hasSpecSymbols(value: string): boolean {
-    let unacceptableSymbols = `!@#$%^&*()-=+|{}[]/?.>,<'"~`;
-    try {
-        let isHasSpecSym = false;
-        value.split('').forEach((item) => {
-            if (unacceptableSymbols.includes(item)) return isHasSpecSym = true;
-        });
-        return isHasSpecSym;
-    } catch (err) {
-        console.error('/src/views/LoginViews/LoginView.vue: hasSpecSymbols => ', err);
-        throw err;
-    }
-}
+
 
 function validationForm(): boolean {
     try {

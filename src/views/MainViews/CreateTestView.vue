@@ -2,6 +2,7 @@
     <div 
     class="w-full h-full overflow-auto flex flex-column align-items-stretch" 
     >
+
         <!-- ЗАГОЛОВОК -->
         <h1 class="viewer-header">Тесты <span class="nest-piece">></span> Новый тест</h1>
 
@@ -44,41 +45,41 @@
                 :page="currentStep-1" 
                 @update:page="(page) => updateStep(page+1)"
                 >
-                <template #item="slotProps">
-                    <nameTestForm 
-                    v-if="slotProps.index === 0" 
-                    @update-test-name="(value) => handlerUpdateTestName(value)"
-                    @next-step="updateStep(currentStep+1)"
-                    :initial-test-name="initialData?.title"
-                    />
-                    <summaryTestForm 
-                    v-if="slotProps.index === 1"
-                    @update-test-summary="(value) => handlerUpdateTestSummary(value)"
-                    @next-step="updateStep(currentStep+1)"
-                    :initial-test-summary="initialData?.summary"
-                    />
-                    <groupTestForm 
-                    v-if="slotProps.index === 2"
-                    @update-test-group="(group) => handlerUpdateTestGroup(group)"
-                    @next-step="updateStep(currentStep+1)"
-                    :initial-test-group="initialData?.group"
-                    />
-                    <participantsTestForm 
-                    v-if="slotProps.index === 3"
-                    @update-test-participants="(participants) => handlerUpdateTestParticipants(participants)"
-                    @next-step="updateStep(currentStep+1)"
-                    :initial-test-participants="initialData?.participants"
-                    />
-                    <questionsTestForm 
-                    v-if="slotProps.index === 4" 
-                    @append-question="handlerAppendQuestion"
-                    @update-question="(data: Question) => handlerUpdateQuestion(data)"
-                    @confirm-creation-test="handlerConfirmCreateTest"
-                    :questions="questions"
-                    :is-loading-create="isLoadingCreate"
-                    />
-                </template>
-            </Carousel>
+                    <template #item="slotProps">
+                        <nameTestForm 
+                        v-if="slotProps.index === 0" 
+                        @update-test-name="(value) => handlerUpdateTestName(value)"
+                        @next-step="updateStep(currentStep+1)"
+                        :initial-test-name="initialData?.title"
+                        />
+                        <summaryTestForm 
+                        v-if="slotProps.index === 1"
+                        @update-test-summary="(value) => handlerUpdateTestSummary(value)"
+                        @next-step="updateStep(currentStep+1)"
+                        :initial-test-summary="initialData?.summary"
+                        />
+                        <groupTestForm 
+                        v-if="slotProps.index === 2"
+                        @update-test-group="(group) => handlerUpdateTestGroup(group)"
+                        @next-step="updateStep(currentStep+1)"
+                        :initial-test-group="initialData?.group"
+                        />
+                        <participantsTestForm 
+                        v-if="slotProps.index === 3"
+                        @update-test-participants="(participants) => handlerUpdateTestParticipants(participants)"
+                        @next-step="updateStep(currentStep+1)"
+                        :initial-test-participants="initialData?.participants"
+                        />
+                        <questionsTestForm 
+                        v-if="slotProps.index === 4" 
+                        @append-question="handlerAppendQuestion"
+                        @update-question="(data: Question) => handlerUpdateQuestion(data)"
+                        @confirm-creation-test="handlerConfirmCreateTest"
+                        :questions="questions"
+                        :is-loading-create="isLoadingCreate"
+                        />
+                    </template>
+                </Carousel>
             </div>
         </section>
 
@@ -93,6 +94,7 @@ import groupTestForm from "@/components/MainComponents/createTest/groupTestForm.
 import participantsTestForm from "@/components/MainComponents/createTest/participantsTestForm.vue";
 import questionsTestForm from "@/components/MainComponents/createTest/questionsTestForm.vue";
 import { type GroupTest, type GroupTestInput, type Participant, type ParticipantInput, type Question, type Test, type TestCreate } from "@/types/testTypes";
+
 
 const currentStep = ref(1);
 const questions: Ref<Question[]> = ref([]);
@@ -154,10 +156,11 @@ function handlerConfirmCreateTest() {
         if(isError === true) return;
         
         // ВЫПОЛНЯЕТСЯ ЗАПРОС
-
+        console.log(initialData.value);
+        
         // После удаляется черновик теста с LocalStorage
-        localStorage.removeItem('draft_new_test');
-        localStorage.removeItem('draft_test_step');
+        // localStorage.removeItem('draft_new_test');
+        // localStorage.removeItem('draft_test_step');
 
     } catch (err) {
         console.error('views/MainViews/CreateTestView: handlerConfirmCreateTest => ', err);
@@ -166,6 +169,7 @@ function handlerConfirmCreateTest() {
         isLoadingCreate.value = false;
     }
 }
+
 
 function handlerAppendQuestion(newQuestion: Question) {
     questions.value.push(newQuestion);

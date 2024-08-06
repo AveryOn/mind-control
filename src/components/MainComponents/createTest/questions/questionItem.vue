@@ -8,7 +8,7 @@
             v-model="formQuestion.question"
             @update:modelValue="handlerUpdateQuestionQuery"
             class="input w-10" 
-            rows="1" cols="50" 
+            rows="3" cols="50" 
             placeholder="Вопрос" 
             style="resize: vertical" 
             />
@@ -30,7 +30,7 @@
 
         <!-- ЕСЛИ тип radio -->
         <div v-show="formQuestion.type === 'radio'" class="answers-block w-full">
-            <h2 class="mt-3 mb-2">Введите варианты ответа (radio)</h2>
+            <h2 class="mt-3 mb-2">Введите варианты ответа</h2>
             <div class="w-full flex flex-column align-items-center">
                 <div class="w-10 gap-1 flex flex-wrap align-items-center justify-content-center">
                     <Chip 
@@ -57,7 +57,7 @@
 
         <!-- ЕСЛИ тип checkbox -->
         <div  v-show="formQuestion.type === 'checkbox'" class="answers-block w-full">
-            <h2 class="mt-3 mb-2">Введите варианты ответа (checkbox)</h2>
+            <h2 class="mt-3 mb-2">Введите варианты ответа</h2>
             <div class="w-full flex flex-column align-items-center">
                 <div class="w-10 gap-1 flex flex-wrap align-items-center justify-content-center">
                     <Chip 

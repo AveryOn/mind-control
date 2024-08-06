@@ -33,7 +33,13 @@
 
         <!-- КОНТЕНТНАЯ ЧАСТЬ -->
         <section class="h-full overflow-auto px-5 pb-4 pt-3">
-            <div class="w-full h-max shadow-3 border-round-lg overflow-hidden">
+
+            <!-- ОКНО ПРИВЕТСТВИЯ -->
+            <div v-if="!store.students.length" class="w-full h-full flex flex-column align-items-center gap-3 justify-content-center">
+                <h1 class="light-text">Здесь будут отображаться ученики</h1>
+            </div>
+
+            <div v-else class="w-full h-max shadow-3 border-round-lg overflow-hidden">
                 <DataTable 
                 :value="store.students" 
                 tableStyle="min-width: 50rem"

@@ -3,6 +3,13 @@
     class="relative overflow-auto flex flex-column align-items-center justify-content-start py-6" 
     style="height: 100% !important;"
     >
+        <Dialog v-model:visible="isShowConfirmDialog" modal :header="'Завершить создание теста?'" :style="{ width: '30rem' }">
+            <div class="flex justify-content-end gap-2 pr-2">
+                <Button type="button" label="Отмена" severity="secondary" text raised @click="isShowConfirmDialog = false"></Button>
+                <Button type="button" label="Да" text raised @click="handlerConfirmCreateTest"></Button>
+            </div>
+        </Dialog>
+
         <div 
             class="w-full h-full flex flex-column align-items-center gap-3 justify-content-center"
             v-if="!props.questions.length"
@@ -41,13 +48,13 @@
         icon="pi pi-folder-plus" 
         raised 
         :loading="props.isLoadingCreate"
-        @click="emit('confirmCreationTest')"
+        @click="isShowConfirmDialog = true"
         />
     </div>
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue';
+import { defineProps, defineEmits, ref } from 'vue';
 import type { Question } from '@/types/testTypes';
 import questionItem from './questions/questionItem.vue';
 
@@ -61,6 +68,18 @@ const emit = defineEmits({
     updateQuestion: (data: Question) => data,
     confirmCreationTest: () => true,
 });
+
+const isShowConfirmDialog = ref(false);
+
+function handlerConfirmCreateTest() {
+    try {
+        emit('confirmCreationTest');
+        isShowConfirmDialog.value = false;
+    } catch (err) {
+        console.error('/src/components/MainComponents/createTest/questionsTestForm.vue: handlerConfirmCreateTest => ', err);
+        throw err;
+    }
+}
 
 function handlerAppendNewQuestion() {
     let no = 0;
