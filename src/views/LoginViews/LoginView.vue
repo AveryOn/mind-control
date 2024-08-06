@@ -11,7 +11,14 @@
                 <InputGroupAddon>
                     <i class="pi pi-user"></i>
                 </InputGroupAddon>
-                <InputText placeholder="Логин" />
+                <InputText 
+                placeholder="Логин" 
+                v-model="login"
+                :invalid="isInvalidLogin"
+                />
+                <InputGroupAddon>
+                    <i class="pi pi-question-circle light-text cursor-pointer" v-tooltip.right="`- мин. 3 символа \n - запрещены спецсимволы`"></i>
+                </InputGroupAddon>
             </InputGroup>
 
             <!-- Password -->
@@ -19,9 +26,25 @@
                 <InputGroupAddon>
                     <i class="pi pi-key"></i>
                 </InputGroupAddon>
-                <InputText placeholder="Пароль" type="password"/>
+                <InputText 
+                placeholder="Пароль" 
+                type="password"
+                v-model="password"
+                :invalid="isInvalidPassword"
+                />
+                <InputGroupAddon>
+                    <i class="pi pi-question-circle light-text cursor-pointer" v-tooltip.right="'мин. 6 символов'"></i>
+                </InputGroupAddon>
             </InputGroup>
-            <Button class="ml-auto" icon="pi pi-send" text raised />
+            <!-- CONFIRM BUTTON -->
+            <Button 
+            class="ml-auto" 
+            icon="pi pi-send" 
+            text 
+            raised 
+            :loading="isLoadingConfirmData"
+            @click="handlerConfirmForm"
+            />
             <p class="mt-3 mr-auto">Нет учетной записи? <a class="link ml-2" @click="handlerOpenLogup">Создайте её!</a></p>
         </form>
     </div>
@@ -30,9 +53,79 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import gsap from 'gsap';
-import { onMounted } from 'vue';
+import { onMounted, ref, type Ref } from 'vue';
+import { loginApi } from '@/api/authApi';
+import type { LoginInputData } from '@/types/apiTypes';
+import { useMainStore } from '@/stores/mainStore';
 
+const store = useMainStore();
 const router = useRouter();
+
+const login: Ref<string> = ref('');
+const password: Ref<string> = ref('');
+const isInvalidLogin: Ref<boolean> = ref(false);
+const isInvalidPassword: Ref<boolean> = ref(false);
+const isLoadingConfirmData: Ref<boolean> = ref(false);
+
+function hasSpecSymbols(value: string): boolean {
+    let unacceptableSymbols = `!@#$%^&*()-=+|{}[]/?.>,<'"~`;
+    try {
+        let isHasSpecSym = false;
+        value.split('').forEach((item) => {
+            if (unacceptableSymbols.includes(item)) return isHasSpecSym = true;
+        });
+        return isHasSpecSym;
+    } catch (err) {
+        console.error('/src/views/LoginViews/LoginView.vue: hasSpecSymbols => ', err);
+        throw err;
+    }
+}
+
+function validationForm(): boolean {
+    try {
+        let isValid = true;
+        if(!login) {
+            isInvalidLogin.value = true;
+            isValid = false;
+        }
+        if(login.value.length < 3) {
+            isInvalidLogin.value = true;
+            isValid = false;
+        }
+        if(hasSpecSymbols(login.value)) {
+            isInvalidLogin.value = true;
+            isValid = false;
+        }
+        if(!password) {
+            isInvalidPassword.value = true;
+            isValid = false;
+        }
+        return isValid;
+    } catch (err) {
+        console.error('/src/views/LoginViews/LoginView.vue: handlerConfirmForm => ', err);
+        throw err;
+    }
+}
+
+async function handlerConfirmForm(): Promise<void> {
+    isLoadingConfirmData.value = true;
+    try {
+        if(validationForm()) {
+            const dataMe: LoginInputData = await loginApi({ login: login.value, password: password.value });
+            if(dataMe) {
+                localStorage.setItem('user_data', JSON.stringify(dataMe));
+                store.isAuth = true;
+                store.userData = dataMe;
+                router.push({ name: 'main' });
+            }
+        }
+    } catch (err) {
+        console.error('/src/views/LoginViews/LoginView.vue: handlerConfirmForm => ', err);
+        throw err;
+    } finally {
+        isLoadingConfirmData.value = false;
+    }
+}
 
 function handlerOpenLogup() {
     gsap.to('#login-container', { duration: .2, delay: 0, transform: 'translateY(-100%)' }).then(() => {

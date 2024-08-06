@@ -34,6 +34,7 @@
             </div>
         </Dialog>
 
+        <!-- ДОП ДЕЙСТВИЯ В ВЕРХНЕЙ ЧАСТИ ОКНА -->
         <div class="w-20rem mt-2 ml-auto mr-5 gap-2 flex align-items-center">
             <Button 
             v-if="store.appRole === 'teacher' && store.opennedGroup"
@@ -50,14 +51,15 @@
             :options="store.groups" 
             optionLabel="title"
             placeholder="Выберите группу"
-            @change="(event) => router.push({ name: 'groupTests', params: { groupId: event.value.id } })"
-            />
+            @change="(event) => router.push({ name: 'groupTests', params: { groupId: event.value.id } })">
+                <template #empty><span class="light-text font-italic">Групп нет</span></template>
+            </Select>
         </div>
 
         <!-- КОНТЕНТНАЯ ЧАСТЬ -->
         <section class="h-full overflow-auto px-5 pb-4 pt-3">
             <!-- ОКНО ПРИВЕТСТВИЯ -->
-            <welcomeTestListComp v-if="false"/>
+            <welcomeTestListComp v-if="!store.tests.length"/>
 
             <!-- СПИСОК ТЕСТОВ -->
             <testListComp 
