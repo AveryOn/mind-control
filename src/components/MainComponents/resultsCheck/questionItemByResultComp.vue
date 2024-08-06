@@ -1,5 +1,5 @@
 <template>
-    <article class="question-test relative px-5 py-3" >
+    <article class="question-test relative px-5 py-3">
         <Badge class="no" :value="props.questionData.number"></Badge>
         <h1 class="question-test-title pb-2 mx-2">
             {{ props.questionData.question }}
@@ -38,38 +38,98 @@
         </div>
 
         <!-- БЛОК ПЕРИФЕРИИ -->
-        <div class="w-full flex justify-content-end mt-3">
+        <div class="w-full flex justify-content-center mt-3 gap-3">
+
+            <!-- КНОПКА ИЗМЕНИТЬ ПРИНЯТОЕ РЕШЕНИЕ  -->
+            <Button
+            v-if="checkState !== null"
+            class="ml-auto"
+            label="Изменить" 
+            text 
+            raised 
+            severity="warn"
+            icon="pi pi-pencil" 
+            @click="checkState = null"
+            />
+            <!-- МЕТКА ВЕРНО/НЕВЕРНО -->
+            <span 
+            v-if="checkState !== null" 
+            class="mark-result-answer px-3 py-2" 
+            :class="(checkState === true)? 'success' : 'failed'"
+            >
+                {{ (checkState === true)? 'Верно' : 'Не верно' }}
+            </span>
+            <span v-else-if="store.openResultForCheck?.isChecked === true" class="mark-result-answer px-3 py-2" :class="computeClassMarkResultAnswer">{{ computeMarkResultAnswer }}</span>
+
             <!-- Кнопка  -  ВЕРНО -->
-            <Button 
+            <Button
+            v-if="store.openResultForCheck?.isChecked !== true && checkState === null"
             label="Верно" 
             text 
             raised 
             icon="pi pi-check" 
             style="color: var(--test-item-color);" 
+            @click="() => handlerUpdateAnswer(true)"
             />
-            <!-- Кнопка  -  ИЗМЕНИТЬ -->
-            <Button 
+            <!-- Кнопка  -  НЕВЕРНО -->
+            <Button
+            v-if="store.openResultForCheck?.isChecked !== true && checkState === null"
             label="Не верно" 
             text 
             raised 
             severity="warn" 
-            icon="pi pi-times" 
+            icon="pi pi-times"
+            @click="() => handlerUpdateAnswer(false)"
             />
         </div>
     </article>
 </template>
 
 <script setup lang="ts">
+import { useMainStore } from '@/stores/mainStore';
 import type { Answer, Question } from '@/types/testTypes';
-import { defineProps, computed, onMounted, type Ref, ref } from 'vue';
+import { defineProps, defineEmits, computed, onMounted, type Ref, ref, nextTick } from 'vue';
+
+const store = useMainStore();
 
 const props = defineProps<{
     questionData: Question;
     answerData: Answer;
+    draftItemData?: any;
 }>();
 
+const emit = defineEmits({
+    updateResultItem: (answer: Answer) => true,
+});
 
+const checkState: Ref<boolean | null> = ref(null);
 const checkboxAnswers: Ref<Answer | null> = ref(null);
+
+const computeClassMarkResultAnswer = computed(() => {
+    try {
+        if(store.openResultForCheck?.isChecked === true) {
+            if(props.answerData.isCorrect === true) return 'success';
+            if(props.answerData.isCorrect === false) return 'failed';
+        }
+        return '';
+    } catch (err) {
+        console.error('/src/components/MainComponents/resultsCheck/questionItemByResultComp.vue: computed[computeSignResultAnswer] => ', err);
+        throw err;
+    }
+});
+
+const computeMarkResultAnswer = computed(() => {
+    try {
+        if(store.openResultForCheck?.isChecked === true) {
+            if(props.answerData.isCorrect === true) return 'Верно';
+            if(props.answerData.isCorrect === false) return 'Не верно';
+        }
+        return '';
+    } catch (err) {
+        console.error('/src/components/MainComponents/resultsCheck/questionItemByResultComp.vue: computed[computeSignResultAnswer] => ', err);
+        throw err;
+    }
+});
 
 const computeSignForVariantsAnswer = computed(() => {
     try {
@@ -80,6 +140,16 @@ const computeSignForVariantsAnswer = computed(() => {
         throw err;
     }
 });
+
+function handlerUpdateAnswer(isCorrect: boolean) {
+    try {
+        emit('updateResultItem', { ...props.answerData, isCorrect });
+        checkState.value = isCorrect;
+    } catch (err) {
+        console.error('/src/components/MainComponents/resultsCheck/questionItemByResultComp.vue: handlerUpdateAnswer => ', err);
+        throw err;
+    }
+}
 
 function parseJsonAnswer(data: any) {
     try {
@@ -95,7 +165,7 @@ function parseJsonAnswer(data: any) {
     }
 }
 
-onMounted(() => {
+onMounted(async () => {
     try {
         if(props.questionData.type === 'checkbox') {
             checkboxAnswers.value = parseJsonAnswer(props.answerData.answer);
@@ -103,6 +173,10 @@ onMounted(() => {
     } catch (err) {
         console.error('/src/components/MainComponents/resultsCheck/questionItemByResultComp.vue: onMounted[parseJsonAnswer] => ', err);
         throw err;
+    }
+    await nextTick();
+    if(props.draftItemData) {
+        checkState.value = props.draftItemData?.isCorrect;
     }
 });
 
@@ -141,5 +215,19 @@ onMounted(() => {
 .sign-qua-answers {
     color: rgba(128, 128, 128, 0.727);
     font-style: italic;
+}
+.mark-result-answer {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+    border-radius: 5px;
+    box-shadow: var(--shadow);
+}
+.mark-result-answer.success {
+    background-color: rgba(157, 255, 96, 0.802);
+}
+.mark-result-answer.failed {
+    background-color: var(--required-color);
 }
 </style>
