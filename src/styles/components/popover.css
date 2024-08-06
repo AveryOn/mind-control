@@ -1,0 +1,11 @@
+
+:root {
+    --p-popover-background: var(--basic-bg) !important;
+    --p-popover-color: var(--basic-fg) !important;
+    --p-popover-border-color: var(--basic-border-color) !important;
+
+    /* Confirm Popup */
+    --p-confirmpopup-background: var(--basic-bg) !important;
+    --p-confirmpopup-border-color: var(--basic-border-color) !important;
+    --p-confirmpopup-color: var(--basic-fg) !important;
+}

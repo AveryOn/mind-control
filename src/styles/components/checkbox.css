@@ -1,0 +1,5 @@
+
+:root {
+    --p-checkbox-background: var(--basic-bg) !important;
+    --p-checkbox-checked-background: var(--checkbox-checked-bg) !important ;
+}

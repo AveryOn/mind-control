@@ -1,0 +1,36 @@
+
+:root {
+    --p-select-background: var(--select-bg) !important;
+    --p-select-border-color: var(--select-border-color) !important;
+    --p-select-color: var(--select-fg) !important;
+    --p-select-overlay-background: var(--select-bg) !important;
+    --p-select-overlay-border-color: var(--select-border-color) !important;
+    --p-select-overlay-color: var(--select-fg) !important;
+
+    /* Option */
+    --p-select-option-color: var(--select-fg) !important;
+    --p-select-option-selected-color: var(--select-fg) !important;
+    --p-select-option-focus-color: var(--select-fg) !important;
+    --p-select-option-selected-color: var(--select-fg)!important;
+    --p-select-option-selected-focus-color: var(--select-fg)!important;
+    --p-select-option-focus-background: var(--select--option-hover-bg) !important;
+
+    /* Multi Select */
+    --p-multiselect-background: var(--select-bg) !important;
+    --p-multiselect-border-color: var(--select-border-color) !important;
+    --p-multiselect-color: var(--select-fg) !important;
+    --p-multiselect-overlay-background: var(--select-bg) !important;
+    --p-multiselect-overlay-border-color: var(--select-border-color) !important;
+    --p-multiselect-overlay-color: var(--select-fg) !important;
+    --p-multiselect-option-color: var(--select-fg) !important;
+    --p-multiselect-option-focus-background: var(--select--option-hover-bg) !important;
+    --p-multiselect-option-focus-color: var(--select-fg) !important;
+    --p-multiselect-option-selected-color: var(--select-fg)!important;
+    --p-multiselect-option-selected-focus-color: var(--select-fg)!important;
+
+
+    --select-bg: white;
+    --select--option-hover-bg: rgba(150, 150, 150, 0.4);
+    --select-fg: rgb(50, 50, 50);
+    --select-border-color: rgba(128, 128, 128, 0.65);
+}

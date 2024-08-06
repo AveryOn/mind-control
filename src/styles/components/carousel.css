@@ -1,0 +1,8 @@
+
+.p-carousel-indicator-list {
+    display: none !important;
+}
+
+.p-carousel-content-container {
+    overflow: auto !important;
+}

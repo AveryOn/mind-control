@@ -1,0 +1,55 @@
+
+.theme-light {
+    --basic-fg: rgb(48, 48, 48);
+    --basic-bg: rgb(255, 255, 255);
+    --basic-bg-light: rgba(255, 255, 255, 0.75);
+    --basic-color-fg: rgb(61, 224, 153);
+    --basic-color-hover-fg: rgb(63, 174, 126);
+    --basic-border-color: rgba(128, 128, 128, 0.5);
+
+    --subtitle-text: rgba(80, 80, 80, 0.7);
+
+    /* Navigation Panel */
+    --nav-border-color: rgba(128, 128, 128, 0.5);
+    --nav-item-bg: rgba(89, 255, 183, 0.2);
+    --nav-item-hover-bg: rgba(63, 190, 135, 0.36);
+    --nav-item-fg: rgb(69, 100, 95);
+
+    /* TEST LIST */
+    --test-item-bg: white;
+    --test-item-color: rgb(83, 130, 107);
+    --test-item-answer-text-bg: rgba(170, 170, 170, 0.25);
+    --test-item-mark-color: rgb(242, 154, 46);
+    --test-item-mark-success-color: rgb(165, 234, 81);
+    --test-item-mark-failed-color: rgb(255, 90, 90);
+    --test-item-mark-nochecked-color: rgb(255, 195, 90);
+    --test-item-separator-color: rgba(146, 146, 146, 0.5);
+    --test-item-sign-fg: gray;
+    --test-item-meta-fg: rgb(253, 179, 109);
+    --test-item-meta-size: 1.1rem;
+
+    /* DIALOG */
+    --dialog-bg: white;
+
+    /* GROUPS */
+    --group-item-bg: white;
+    --group-item-hover-bg: rgb(230, 230, 230);
+
+    /* RADIO BTNS */
+    --radio-bg: rgb(236, 236, 236);
+    --radio-checked-bg: rgb(116, 194, 156);
+    --radio-checked-hover-bg: rgb(135, 240, 158);
+
+    /* CHECKBOX */
+    --checkbox-checked-bg: rgb(116, 194, 156);
+
+    /* Colours */
+    --required-color: rgb(255, 120, 120);
+    --warn-color: rgb(249, 179, 49);
+    --success-color: rgb(149, 235, 92);
+
+    /* STATISTICS */
+    --statistic-block-bg: white;
+    
+    transition: all var(--duration-color) ease !important;
+}

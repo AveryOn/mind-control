@@ -1,0 +1,5 @@
+
+:root {
+    --p-dialog-background: var(--dialog-bg) !important;
+    --p-dialog-color: var(--basic-fg) !important;
+}
