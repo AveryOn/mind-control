@@ -80,6 +80,7 @@ const store = useMainStore();
 const isInvalidTitleInp = ref(false);
 const errorMsgInp = ref('');
 const isLoadingCreationGroup = ref(false);
+const isLoadingData = ref(false);
 const isShowCreateGroup = ref(false);
 const titleGroup = ref('');
 
@@ -120,11 +121,11 @@ function validationForm(): boolean {
 }
 
 async function handlerCreateGroup () {
-    isLoadingCreationGroup.value = true;
     try {
+        isLoadingCreationGroup.value = true;
         if(validationForm()) {
-            const newGroup = await createNewGroup(titleGroup.value); 
-            store.groups.push(newGroup);
+            const { data, meta } = await createNewGroup(titleGroup.value); 
+            store.groups.push(data.group);
             titleGroup.value = '';
             isShowCreateGroup.value = false;
         }
@@ -145,6 +146,7 @@ function handlerOpenGroup(group: GroupTest) {
         throw err;
     }
 }
+
 
 </script>
 

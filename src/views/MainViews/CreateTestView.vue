@@ -93,8 +93,13 @@ import summaryTestForm from "@/components/MainComponents/createTest/summaryTestF
 import groupTestForm from "@/components/MainComponents/createTest/groupTestForm.vue";
 import participantsTestForm from "@/components/MainComponents/createTest/participantsTestForm.vue";
 import questionsTestForm from "@/components/MainComponents/createTest/questionsTestForm.vue";
-import { type GroupTest, type GroupTestInput, type Participant, type ParticipantInput, type Question, type Test, type TestCreate } from "@/types/testTypes";
+import { type GroupTest, type GroupTestInput, type Participant, type ParticipantInput, type Question, type Test, type TestCreate, type TestSendDataServer } from "@/types/testTypes";
+import { formatKeysToSnakeCase } from "@/utils/formatted";
+import { createNewTest } from "@/api/testsApi";
+import { useRouter } from "vue-router";
 
+
+const router = useRouter();
 
 const currentStep = ref(1);
 const questions: Ref<Question[]> = ref([]);
@@ -136,7 +141,7 @@ function updateStep(stepId: number) {
     }, 150)
 }
 
-function handlerConfirmCreateTest() {
+async function handlerConfirmCreateTest() {
     try {
         isLoadingCreate.value = true;
         let isError = false;
@@ -156,12 +161,14 @@ function handlerConfirmCreateTest() {
         if(isError === true) return;
         
         // ВЫПОЛНЯЕТСЯ ЗАПРОС
-        console.log(initialData.value);
-        
+        const formattedTestData = formatKeysToSnakeCase(initialData.value);
+        formattedTestData.group_id = formattedTestData.group?.id;
+        Reflect.deleteProperty(formattedTestData, 'group');
+        const res = await createNewTest(formattedTestData as TestSendDataServer);
         // После удаляется черновик теста с LocalStorage
-        // localStorage.removeItem('draft_new_test');
-        // localStorage.removeItem('draft_test_step');
-
+        localStorage.removeItem('draft_new_test');
+        localStorage.removeItem('draft_test_step');
+        router.push({ name: 'tests' });
     } catch (err) {
         console.error('views/MainViews/CreateTestView: handlerConfirmCreateTest => ', err);
         throw err;
@@ -203,7 +210,7 @@ function handlerUpdateTestGroup(group: GroupTestInput | GroupTest) {
     }
 }
 
-function handlerUpdateTestParticipants(participants: ParticipantInput[] | Participant[]) {
+function handlerUpdateTestParticipants(participants: number[]) {
     try {
         updateDraftNewTestLS(undefined, undefined, undefined, participants);
     } catch (err) {
@@ -253,7 +260,7 @@ function updateDraftNewTestLS(
     summary?: string | null, 
     title?: string | null, 
     group?: GroupTestInput | null, 
-    participants?: ParticipantInput[] | [],
+    participants?: number[],
     questions?: Question[] | []
 ): TestCreate {
     try {

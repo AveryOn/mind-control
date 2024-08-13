@@ -26,7 +26,8 @@ import topbarComp from '@/components/MainComponents/topbarComp.vue';
 import navPanelComp from '@/components/MainComponents/navPanelComp.vue';
 import { onBeforeMount, ref } from 'vue';
 import type { UserData } from '@/types/usersType';
-import { getMeData } from '@/api/usersApi';
+import { getMeData, getUsers } from '@/api/usersApi';
+import { getGroups } from '@/api/groupsApi';
 import { type FetchedUserData } from '@/types/apiTypes';
 import { useRouter } from 'vue-router';
 import { useMainStore } from '@/stores/mainStore';
@@ -39,6 +40,7 @@ const isLoadingData = ref(false);
 async function initUserData() {
     try {
         let userDataReady: UserData;
+        // Изначальная попытка получить данные пользователя из localStorage
         let userDataStorage: any = localStorage.getItem('user_data');
         if(userDataStorage) {
             userDataReady = JSON.parse(userDataStorage);
@@ -65,15 +67,17 @@ async function initUserData() {
 }
 
 onBeforeMount( async () => {
+    // Получение данных пользователя
     isLoadingData.value = true;
-    try {
-        await initUserData();
-    } catch (err) {
-        console.error('/src/views/MainViews/MainView.vue: onBeforeMount => ', err);
-        throw err;
-    } finally {
-        isLoadingData.value = false;
-    }
+    initUserData()
+        .then(() => getGroups())
+        .then(({ data, meta }) => store.groups = data.groups)
+        .then(() => getUsers(1, 20))
+        .then(({ data, meta }) => store.students = data.users)
+        .finally(() => isLoadingData.value = false)
+        .catch((err) => {
+            console.error('/src/views/MainViews/MainView.vue: onBeforeMount => ', err);
+        });
 });
 </script>
 

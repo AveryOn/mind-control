@@ -77,3 +77,30 @@ export interface FetchUserList {
         users: UserData[];
     }
 }
+
+// ################################   GROUPS   ##################################
+// Получение данных группы с сервера (При её создании)
+export interface FetchGroupCreationData {
+    meta: HttpMeta;
+    data: {
+        group: {
+            id: number;
+            title: string;
+            createdAt: string;
+            updatedAt: string;
+        };
+    };
+}
+
+// Получение СПИСКА групп с сервера
+export interface FetchGroupsCreationData {
+    meta: HttpMeta;
+    data: {
+        groups: {
+            id: number;
+            title: string;
+            createdAt: string;
+            updatedAt: string;
+        }[];
+    };
+}

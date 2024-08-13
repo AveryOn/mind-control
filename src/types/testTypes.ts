@@ -96,6 +96,20 @@ export type TestCreate = {
     title: string | null;
     summary: string | null;
     group: GroupTestInput | GroupTest | null;
-    participants: ParticipantInput[] | Participant[] | null;
+    participants: number[] | null;
     questions: Question[] | null;
+}
+
+export interface TestSendDataServer {
+    title: string;
+    summary?: string;
+    group_id: number;
+    participants: number[];
+    questions: {
+        number: number;
+        checkbox_answers: {answer: number | string, is_correct: boolean}[];
+        question: string;
+        radio_answers: {answer: number | string, is_correct: boolean}[];
+        type: QuestionTypes;
+    }[];
 }

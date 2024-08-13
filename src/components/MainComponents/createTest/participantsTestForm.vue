@@ -7,11 +7,14 @@
                 class="input w-20rem" 
                 v-model="selectedParticipants" 
                 @update:model-value="(participants) => handlerUpdateParticipants(participants)"
-                :options="participants" 
+                @before-show="uploadStudents"
+                :options="store.students" 
                 optionLabel="name"
+                optionValue="id"
                 size="large"  
                 filter 
                 placeholder="Участники"
+                :loading="isLoadingStudents"
                 :maxSelectedLabels="3"
                 >
                     <template #empty>
@@ -43,29 +46,45 @@
 </template>
 
 <script setup lang="ts">
+import { getUsers } from "@/api/usersApi";
+import { useMainStore } from "@/stores/mainStore";
 import type { Participant, ParticipantInput } from "@/types/testTypes";
 import { useConfirm } from "primevue/useconfirm";
 import { type Ref, ref, defineEmits, defineProps, onMounted, nextTick } from 'vue';
 
+const store = useMainStore();
 const confirm = useConfirm();
 
 const props = defineProps<{
-    initialTestParticipants?: ParticipantInput[] | Participant[] | null;
+    initialTestParticipants?: number[] | null;
 }>();
 
 const emit = defineEmits({
-    updateTestParticipants: (participants: Participant[] | ParticipantInput[]) => participants,
+    updateTestParticipants: (participants: number[]) => participants,
     nextStep: () => true,
 });
 
-const selectedParticipants: Ref<Participant[] | ParticipantInput[]> = ref([]);
-const participants: Ref<ParticipantInput[] | Participant[]> = ref([
-    { id: 1, name: 'Alex Mercer' },
-    { id: 2, name: 'Irina Sorokina' },
-    { id: 3, name: 'Tom Person' },
-]);
+const selectedParticipants: Ref<number[]> = ref([]);
+const participants: Ref<ParticipantInput[] | Participant[]> = ref([]);
+const isLoadingStudents = ref(false);
 
-const handlerSaveParticipants = (event: Event) => {
+// Получение списка учеников, если их нет в сторе
+async function uploadStudents() {
+    try {
+        isLoadingStudents.value = true;
+        if(!store.students.length) {
+            const { data, meta } = await getUsers();
+            store.students = data.users;
+        }
+    } catch (err) {
+        console.error('components/MainComponents/createTest/participantsTestForm.vue: uploadStudents => ', err);
+        throw err;
+    } finally {
+        isLoadingStudents.value = false;
+    }
+}
+
+function handlerSaveParticipants(event: Event) {
     if(!selectedParticipants.value.length) {
         return confirm.require({
             target: event.currentTarget as undefined | HTMLElement,
@@ -79,9 +98,9 @@ const handlerSaveParticipants = (event: Event) => {
     return emit('nextStep');
 };
 
-function handlerUpdateParticipants(participants: Participant[] | ParticipantInput[]) {
+function handlerUpdateParticipants(participants: number[]) {
     try {
-        emit('updateTestParticipants', participants);
+        emit('updateTestParticipants', selectedParticipants.value);
     } catch (err) {
         console.error('components/MainComponents/createTest/participantsTestForm.vue: handlerUpdateParticipants => ', err);
         throw err;

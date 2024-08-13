@@ -1,6 +1,6 @@
 <template>
     <div class="group-item flex flex-column align-items-center py-3">
-        <h1 >{{ props.groupData.title }}</h1>
+        <h1 class="text-center px-2">{{ props.groupData.title }}</h1>
     </div>
 </template>
 
@@ -29,5 +29,8 @@ const props = defineProps<{
     transition: all 0.7s ease;
     background-color: var(--group-item-hover-bg);
 }
-
+.group-item h1 {
+    font-weight: normal;
+    font-size: 1.4rem;
+}
 </style>
