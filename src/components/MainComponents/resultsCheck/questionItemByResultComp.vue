@@ -28,7 +28,7 @@
             </div>
         </div>
 
-        <!-- Блок отображается после нажатия на кнопку "Ответить". Здесь выводится ответ -->
+        <!-- Здесь выводится ответ -->
         <div class="pt-2">
             <span>Ответ:</span>
             <div v-if="props.questionData.type === 'checkbox'" class="w-full flex flex-column align-items-start pt-3 px-3">

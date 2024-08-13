@@ -42,6 +42,14 @@ export type Answer = {
     isCorrect?: boolean;
 }
 
+export type AnswerStudent = {
+    id: number;
+    resultId: number;
+    questionId: number;
+    answer: string | string[];
+    isCorrect: boolean;
+}
+
 export type Result = {
     id?: number;
     userId?: number;
