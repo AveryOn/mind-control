@@ -36,7 +36,15 @@
 
             <!-- ОКНО ПРИВЕТСТВИЯ -->
             <div v-if="!store.students.length" class="w-full h-full flex flex-column align-items-center gap-3 justify-content-center">
-                <h1 class="light-text">Здесь будут отображаться ученики</h1>
+                <ProgressSpinner 
+                v-show="isLoadingData"
+                style="width: 90px; height: 90px" 
+                strokeWidth="4" 
+                fill="transparent"
+                animationDuration=".5s" 
+                aria-label="Custom ProgressSpinner"
+                />
+                <h1 v-show="!isLoadingData" class="light-text">Здесь будет отображаться список учеников</h1>
             </div>
 
             <div v-else class="w-full h-max shadow-3 border-round-lg overflow-hidden">
@@ -83,17 +91,21 @@
 </template>
 
 <script setup lang="ts">
+import { getUsers } from '@/api/usersApi';
 import { useMainStore } from '@/stores/mainStore';
 import type { GroupTest } from '@/types/testTypes';
 import { formattedDateByTemplate } from '@/utils/timeUtils';
-import { ref, type Ref } from 'vue';
+import { onMounted, ref, type Ref } from 'vue';
 
 
 const store = useMainStore();
 
 const selectedGroup: Ref<GroupTest | null> = ref(null);
 const isLoadingAddGroup = ref(false);
+const isLoadingData = ref(false); 
 const isShowAddInGroup = ref(false);
+const page = ref(1);
+const perPage = ref(20);
 
 function handlerAddStudentToGroup() {
     isLoadingAddGroup.value = true;
@@ -106,6 +118,21 @@ function handlerAddStudentToGroup() {
         isLoadingAddGroup.value = false;
     }
 }
+
+onMounted(async () => {
+    // Получение списка пользователей
+    if(store.isAuth && store.appRole === 'teacher') {
+        try {
+            isLoadingData.value = true;
+            const { data: { users }, meta } = await getUsers(page.value, perPage.value);
+            store.students = users;
+        } catch (err) {
+            console.error(err);
+        } finally {
+            isLoadingData.value = false;
+        }
+    }
+});
 
 </script>
 

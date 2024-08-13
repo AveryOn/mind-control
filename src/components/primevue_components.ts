@@ -24,6 +24,7 @@ import Tag from 'primevue/tag';
 import MeterGroup from 'primevue/metergroup';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
+import ProgressSpinner from 'primevue/progressspinner';
 
 
 export default [
@@ -53,4 +54,5 @@ export default [
     MeterGroup,
     DataTable,
     Column,
+    ProgressSpinner,
 ] as any[]

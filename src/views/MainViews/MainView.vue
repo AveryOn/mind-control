@@ -43,13 +43,19 @@ async function initUserData() {
         if(userDataStorage) {
             userDataReady = JSON.parse(userDataStorage);
             store.userData = userDataReady;
+            console.log(userDataReady);
+            
+            store.appRole = userDataReady.role;
+            store.isAuth = true;
         } 
         // Если в localStorage нет данных пользователя то идет получение их с сервера
         else {
-            const fetchedUserData: FetchedUserData = await getMeData();
-            if(!fetchedUserData) throw 'Не удалось получить данные пользователя';
-            localStorage.setItem('user_data', JSON.stringify(fetchedUserData));
-            store.userData = fetchedUserData;
+            const { data: { user }, meta }: FetchedUserData = await getMeData();
+            if(!user) throw 'Не удалось получить данные пользователя';
+            localStorage.setItem('user_data', JSON.stringify(user));
+            store.userData = user;
+            store.appRole = user.role;
+            store.isAuth = true;
         }
     } catch (err) {
         console.error('/src/views/MainViews/MainView.vue: onBeforeMount => ', err);

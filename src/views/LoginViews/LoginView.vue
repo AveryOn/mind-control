@@ -69,7 +69,7 @@ const isInvalidPassword: Ref<boolean> = ref(false);
 const isLoadingConfirmData: Ref<boolean> = ref(false);
 
 
-
+// Валидация формы
 function validationForm(): boolean {
     try {
         let isValid = true;
@@ -96,15 +96,18 @@ function validationForm(): boolean {
     }
 }
 
+// Подтверждение формы
 async function handlerConfirmForm(): Promise<void> {
     isLoadingConfirmData.value = true;
     try {
         if(validationForm()) {
-            const dataMe: LoginInputData = await loginApi({ login: login.value, password: password.value });
-            if(dataMe) {
-                localStorage.setItem('user_data', JSON.stringify(dataMe));
+            const { data, meta }: LoginInputData = await loginApi({ login: login.value, password: password.value });
+            if(data) {
+                localStorage.setItem('user_data', JSON.stringify(data.user));
+                localStorage.setItem('token', data.token.token);
                 store.isAuth = true;
-                store.userData = dataMe;
+                store.appRole = data.user.role;
+                store.userData = data.user;
                 router.push({ name: 'main' });
             }
         }
