@@ -104,3 +104,38 @@ export interface FetchGroupsCreationData {
         }[];
     };
 }
+
+
+// ################################   TESTS   ##################################
+
+// Объект данных теста, который приходит с сервера при создании (Админ / Учитель)
+export interface CreationTestData {
+    id: number;
+    title: string;
+    summary: string | null;
+    questionsCount: number;
+    participantsCount: number | null;
+    createdAt: string;
+    updatedAt: string;
+    group: {
+        id: number;
+        title: string;
+        createdAt: string;
+        updatedAt: string;
+    };
+}
+
+// Тело ответа от сервера при создании нового теста  (Админ / Учитель)
+export interface ResponseCreationTestData {
+    meta: HttpMeta;
+    data: CreationTestData;
+}
+
+
+// Тело ответа при получении списка тестов (Админ / Учитель)
+export interface ResponseGetTestsTeacher {
+    meta: HttpMeta;
+    data: {
+        tests: CreationTestData[];
+    };
+}

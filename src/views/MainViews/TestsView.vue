@@ -57,9 +57,20 @@
         </div>
 
         <!-- КОНТЕНТНАЯ ЧАСТЬ -->
-        <section class="h-full overflow-auto px-5 pb-4 pt-3">
+        <section class="relative h-full overflow-auto px-5 pb-4 pt-3">
+            <!-- Окно значка закгрузки данных -->
+            <span v-if="isLoadingData" class="w-full h-full flex align-items-center justify-content-center">
+                <ProgressSpinner 
+                class="m-auto"
+                style="width: 90px; height: 90px" 
+                strokeWidth="4" 
+                fill="transparent"
+                animationDuration=".5s" 
+                aria-label="Custom ProgressSpinner"
+                />
+            </span>
             <!-- ОКНО ПРИВЕТСТВИЯ -->
-            <welcomeTestListComp v-if="!store.tests.length"/>
+            <welcomeTestListComp v-if="!store.tests.length && !isLoadingData"/>
 
             <!-- СПИСОК ТЕСТОВ -->
             <testListComp 
@@ -74,19 +85,25 @@
 <script setup lang="ts">
 import welcomeTestListComp from '@/components/MainComponents/testList/welcomeTestListComp.vue';
 import testListComp from '@/components/MainComponents/testList/testListComp.vue';
-import { watch, ref, type Ref, onMounted } from 'vue';
-import type { GroupTest, Test } from '@/types/testTypes';
+import { watch, ref, type Ref, onMounted, reactive, type Reactive } from 'vue';
+import type { GroupTest, Test, TestTeacher } from '@/types/testTypes';
 import { useMainStore } from '@/stores/mainStore';
 import { useRoute, useRouter } from 'vue-router';
 import type { Student } from '@/types/usersType';
+import { getTestsTeacher } from '@/api/testsApi';
 
 const route = useRoute();
 const router = useRouter();
 const store = useMainStore();
 
+const isLoadingData = ref(false);
 const isShowAddNewStudentInGroup = ref(false);
 const isLoadingAddedStudent = ref(false);
 const selectedStudent: Ref<Student | null> = ref(null);
+const pagination: Reactive<{page: number, perPage: number}> = reactive({
+    page: 1,
+    perPage: 10,
+});
 
 function handlerAddStudentToGroup() {
     isLoadingAddedStudent.value = true;
@@ -115,7 +132,7 @@ function initSelectedGroup(groupId: string | string[] | undefined) {
     }
 }
 
-function handlerOpenTest(test: Test) {
+function handlerOpenTest(test: Test | TestTeacher) {
     try {
         store.opennedTest = test;
         router.push({ name: 'opennedTest', params: { testId: test.id } });
@@ -131,8 +148,26 @@ watch(() => route.params.groupId, (newValue) => {
     }
 });
 
-onMounted(() => {
+onMounted(async () => {
     initSelectedGroup(route.params.groupId);
+
+    // Получение списка тестов
+    try {
+        isLoadingData.value = true;
+        // Если роль teacher
+        if(store.appRole === 'teacher' && !store.tests.length) {
+            const { data: { tests }, meta } = await getTestsTeacher(pagination.page, pagination.perPage);
+            store.tests = tests;
+        } 
+        // Если роль student
+        else if(store.appRole === 'student') {
+            // запрос для ученика
+        }
+    } catch (err) {
+        console.error(err);
+    } finally {
+        isLoadingData.value = false;
+    }
 })
 
 </script>

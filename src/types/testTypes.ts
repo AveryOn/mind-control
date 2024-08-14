@@ -92,6 +92,23 @@ export type Test = {
     updatedAt?: string;
 }
 
+export interface TestTeacher {
+    id: number;
+    title: string;
+    summary: string | null;
+    questionsCount: number;
+    participantsCount: number | null;
+    createdAt: string;
+    updatedAt: string;
+    group: {
+        id: number;
+        title: string;
+        createdAt: string;
+        updatedAt: string;
+    };
+    result: null;
+} 
+
 export type TestCreate = {
     title: string | null;
     summary: string | null;

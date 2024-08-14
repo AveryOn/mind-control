@@ -65,19 +65,19 @@
 
 <script setup lang="ts">
 import { useMainStore } from '@/stores/mainStore';
-import type { Test } from '@/types/testTypes';
+import type { Test, TestTeacher } from '@/types/testTypes';
 import { computeMinutesByMs } from '@/utils/timeUtils';
 import { computed, defineProps } from 'vue';
 
 const store = useMainStore();
 const props = defineProps<{
-    testData: Test,
+    testData: Test | TestTeacher,
 }>();
 
 const computeClassesTestItem = computed(() => {
-    if(store.appRole === 'student' && props.testData.result?.isSuccess === true) return 'success';
-    if(store.appRole === 'student' && props.testData.result?.isChecked === true && props.testData.result.isSuccess === false) return 'failed';
-    if(store.appRole === 'student' && props.testData.result?.isChecked === false) return 'no-checked';
+    if(store.appRole === 'student' && props.testData.result?.isSuccess! === true) return 'success';
+    if(store.appRole === 'student' && props.testData.result?.isChecked! === true && props.testData.result.isSuccess === false) return 'failed';
+    if(store.appRole === 'student' && props.testData.result?.isChecked! === false) return 'no-checked';
 });
 
 </script>

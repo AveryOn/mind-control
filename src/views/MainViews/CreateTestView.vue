@@ -164,7 +164,7 @@ async function handlerConfirmCreateTest() {
         const formattedTestData = formatKeysToSnakeCase(initialData.value);
         formattedTestData.group_id = formattedTestData.group?.id;
         Reflect.deleteProperty(formattedTestData, 'group');
-        const res = await createNewTest(formattedTestData as TestSendDataServer);
+        const result = await createNewTest(formattedTestData as TestSendDataServer);
         // После удаляется черновик теста с LocalStorage
         localStorage.removeItem('draft_new_test');
         localStorage.removeItem('draft_test_step');

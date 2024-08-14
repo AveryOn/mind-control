@@ -10,19 +10,19 @@
 </template>
 
 <script setup lang="ts">
-import type { Test } from '@/types/testTypes';
+import type { Test, TestTeacher } from '@/types/testTypes';
 import testItemComp from './testItemComp.vue';
 import { defineProps, defineEmits } from 'vue';
 
 const props = defineProps<{
-    testList: Test[];
+    testList: Test[] | TestTeacher[];
 }>();
 
 const emit = defineEmits({
-    openTest: (test: Test) => true,
+    openTest: (test: Test | TestTeacher) => true,
 });
 
-function handlerOpenTest(test: Test) {
+function handlerOpenTest(test: Test | TestTeacher) {
     try {
         emit('openTest', test);
     } catch (err) {
