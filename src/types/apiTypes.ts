@@ -125,6 +125,15 @@ export interface CreationTestData {
     };
 }
 
+export interface TestForStudent {
+    result: {
+        isCheck: boolean;
+        isSuccess: boolean | null;
+        successCount: number | null;
+        duration: number;
+    } | null & CreationTestData;
+}
+
 // Тело ответа от сервера при создании нового теста  (Админ / Учитель)
 export interface ResponseCreationTestData {
     meta: HttpMeta;
@@ -137,5 +146,36 @@ export interface ResponseGetTestsTeacher {
     meta: HttpMeta;
     data: {
         tests: CreationTestData[];
+    };
+}
+
+// Тело ответа при получении списка тестов (Ученик)
+export interface ResponseGetTestsStudent {
+    meta: HttpMeta;
+    data: {
+        tests: TestForStudent[];
+    };
+}
+
+// ################################   QUESTIONS   ##################################
+
+// Объект вопроса, который получает клиент (Ученик)
+export interface ResponseStudentQuestion {
+    id: number;
+    testId: number;
+    number: number;
+    question: string;
+    type: 'text' | 'radio' | 'checkbox';
+    radioAnswers: { answer: string }[];
+    checkboxAnswers: { answer: string }[];
+    createdAt: string;
+    updatedAt: string;
+}
+
+// Тело ответа при получении списка тестов (Ученик)
+export interface ResponseGetQuestionsStudent {
+    meta: HttpMeta;
+    data: {
+        questions: ResponseStudentQuestion[];
     };
 }

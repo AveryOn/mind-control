@@ -17,7 +17,7 @@ export async function createNewTest(testData: TestSendDataServer): Promise<Respo
         const { data: { data, meta } } = response;
         return { data, meta };
     } catch (err) {
-        console.error('/src/api/testsApi.ts.ts: createNewTest => ', err);
+        console.error('/src/api/testsApi.ts: createNewTest => ', err);
         throw err;
     }
 }
@@ -35,7 +35,27 @@ export async function getTestsTeacher(page?: number, per_page?: number): Promise
         const { data: { data, meta } } = response;
         return { data, meta };
     } catch (err) {
-        console.error('/src/api/testsApi.ts.ts: getTestsTeacher => ', err);
+        console.error('/src/api/testsApi.ts: getTestsTeacher => ', err);
         throw err;
     }
 }
+
+// Получить список тестов (Ученик)
+export async function getTestsStudent(page?: number, per_page?: number): Promise<ResponseGetTestsTeacher> {
+    try {
+        const response = await axios.get(hostname + '/api/student/tests', {
+            params: { page, per_page, },
+            headers: {
+                ...{ "Content-Type": 'application/x-www-form-urlencoded' } as HttpContentType,
+                ...{ "Authorization": 'Bearer ' + localStorage.getItem('token') } as HttpAuthorization,
+            }
+        });
+        const { data: { data, meta } } = response;
+        return { data, meta };
+    } catch (err) {
+        console.error('/src/api/testsApi.ts: getTestsStudent => ', err);
+        throw err;
+    }
+}
+
+

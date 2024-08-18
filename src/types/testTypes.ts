@@ -3,6 +3,8 @@ import type { Student } from "./usersType";
 export type QuestionTypes =  'text' | 'checkbox' | 'radio';
 export type RadioAnswer = { answer: string, isCorrect?: boolean };
 export type CheckboxAnswer = { answer: string, isCorrect?: boolean };
+export type RadioAnswerStudent = { answer: string };
+export type CheckboxAnswerStudent = { answer: string };
 export type GroupTest = { 
     id: number;
     title: string;
@@ -33,6 +35,18 @@ export type Question = {
     type: QuestionTypes;
     radioAnswers?: RadioAnswer[];
     checkboxAnswers?: CheckboxAnswer[];
+}
+
+export type QuestionStudent = {
+    id: number;
+    testId: number;
+    number: number;
+    question: string;
+    type: 'text' | 'radio' | 'checkbox';
+    radioAnswers: { answer: string }[];
+    checkboxAnswers: { answer: string }[];
+    createdAt: string;
+    updatedAt: string;
 }
 
 export type Answer = {

@@ -7,6 +7,7 @@
             <i v-if="store.appRole === 'student'" class="test-play-icon pi pi-play mr-2"></i> 
             <h2 class="test-item-title text-xl">
                 {{ props.testData.title }}
+                - {{ props.testData.id }}
                 <span class="font-light font-italic sign-nocheck" v-if="store.appRole === 'student' && props.testData.result?.isChecked === false">- Не проверено</span>
                 <span class="font-light font-italic sign-nocheck" v-if="store.appRole === 'student' && !props.testData.result">- Новый</span>
             </h2>

@@ -90,7 +90,7 @@ import type { GroupTest, Test, TestTeacher } from '@/types/testTypes';
 import { useMainStore } from '@/stores/mainStore';
 import { useRoute, useRouter } from 'vue-router';
 import type { Student } from '@/types/usersType';
-import { getTestsTeacher } from '@/api/testsApi';
+import { getTestsStudent, getTestsTeacher } from '@/api/testsApi';
 
 const route = useRoute();
 const router = useRouter();
@@ -160,8 +160,10 @@ onMounted(async () => {
             store.tests = tests;
         } 
         // Если роль student
-        else if(store.appRole === 'student') {
+        else if(store.appRole === 'student' && !store.tests.length) {
             // запрос для ученика
+            const { data: { tests }, meta } = await getTestsStudent(pagination.page, pagination.perPage);
+            store.tests = tests;
         }
     } catch (err) {
         console.error(err);

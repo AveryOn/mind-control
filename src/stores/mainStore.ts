@@ -1,5 +1,5 @@
 import type { Role } from '@/types/appTypes';
-import type { GroupTest, Question, Result, ResultForCheck, Test, TestTeacher } from '@/types/testTypes';
+import type { GroupTest, Question, QuestionStudent, Result, ResultForCheck, Test, TestTeacher } from '@/types/testTypes';
 import type { Student, UserData } from '@/types/usersType';
 import { defineStore } from 'pinia'
 import { ref, type Ref } from 'vue';
@@ -14,7 +14,7 @@ export const useMainStore = defineStore('mainStore', () => {
     const groups: Ref<GroupTest[]> = ref<GroupTest[]>([]);
     const tests: Ref<Test[] | TestTeacher[]> = ref<Test[] | TestTeacher[]>([]);
 
-    const currentTestQuestions: Ref<Question[]> = ref<Question[]>([]);
+    const currentTestQuestions: Ref<QuestionStudent[] | Question[]> = ref<QuestionStudent[] | Question[]>([]);
 
     const opennedTest: Ref<Test | TestTeacher | null> = ref<Test | TestTeacher | null>(null);
     const opennedGroup: Ref<GroupTest | null> = ref<GroupTest | null>(null);

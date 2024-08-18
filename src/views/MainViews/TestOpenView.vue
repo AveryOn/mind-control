@@ -15,7 +15,7 @@
             </div>
 
             <questionTestItemComp 
-            v-for="(question, index) in questions" 
+            v-for="(question, index) in store.currentTestQuestions" 
             @update-answer="(data) => updateAnswer(data, index)"
             :question-data="question"
             :initial-value="draftAnswers[index]"
@@ -162,20 +162,21 @@
 <script setup lang="ts">
 import { useMainStore } from '@/stores/mainStore';
 import type { Question, Result, Test } from '@/types/testTypes';
-import { onBeforeUnmount, onMounted, ref, type Ref, computed } from 'vue';
+import { onBeforeUnmount, onMounted, ref, type Ref, computed, onBeforeMount } from 'vue';
 import questionTestItemComp from '@/components/MainComponents/testOpen/questionTestItemComp.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { computeMinutesByMs, formattedDateByTemplate } from '@/utils/timeUtils';
+import { getQuestionsStudent } from '@/api/questionsApi';
 
 const store = useMainStore();
 const route = useRoute();
 const router = useRouter();
 
 const isLoadingSendTest = ref(false);
+const isLoadingQuestions = ref(false);
 const isShowConfirmDialog = ref(false);
 const meterValue = ref([{ label: 'Выполнено', value: 55, color: 'var(--meter-basic-filled)' }]);
 const testData: Ref<null | Test> = ref(null);
-const questions: Ref<Question[]> = ref<Question[]>([]);
 const draftAnswers: Ref<{answer: any, questionId: number}[]> = ref([]);
 
 function initDraftTestInProcess() {
@@ -183,7 +184,7 @@ function initDraftTestInProcess() {
         let draftTestInProcess: any = localStorage.getItem(`draft_test_${testData.value?.id}_in_process`);
         if(!draftTestInProcess) {
             draftTestInProcess = [];
-            questions.value.forEach((question) => {
+            store.currentTestQuestions.forEach((question) => {
                 draftTestInProcess.push({ answer: null, questionId: question.id });
             });
             localStorage.setItem(`draft_test_${testData.value?.id}_in_process`, JSON.stringify(draftTestInProcess));
@@ -221,7 +222,7 @@ function confirmSendTest() {
 
 function computeFilledPercent(currentFilledCount: number) {
     try {
-        const total = questions.value.length;
+        const total = store.currentTestQuestions.length;
         let filledPerc =  Math.ceil(currentFilledCount / (total / 100));
         return filledPerc
     } catch (err) {
@@ -267,6 +268,21 @@ function handlerOpenResultForCheck(data: Result) {
     }
 }
 
+onBeforeMount(async () => {
+    // Получение списка вопросов для текущего теста
+    try {
+        isLoadingQuestions.value = true;
+        if(route.params.testId) {
+            const { data: { questions }, meta } = await getQuestionsStudent(+route.params.testId);
+            store.currentTestQuestions = questions;
+        }
+    } catch (err) {
+        console.error('/src/views/MainViews/TestOpenView.vue: onBeforeMount[getQuestionsStudent] => ', err);
+        throw err;
+    } finally {
+        isLoadingQuestions.value = false;
+    }
+});
 onMounted(() => {
     // ЗАПРОС НА СЕРВЕР (STUDENT)
     if(store.appRole === 'student') {
@@ -294,7 +310,6 @@ onMounted(() => {
             });
         }
     }
-    questions.value = store.currentTestQuestions;
     draftAnswers.value = initDraftTestInProcess();
     meterValue.value[0].value = computeFilledPercent(countFilledState());
 });

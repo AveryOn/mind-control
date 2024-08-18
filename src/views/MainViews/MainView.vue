@@ -70,10 +70,22 @@ onBeforeMount( async () => {
     // Получение данных пользователя
     isLoadingData.value = true;
     initUserData()
+        // Получение списка групп
         .then(() => getGroups())
         .then(({ data, meta }) => store.groups = data.groups)
-        .then(() => getUsers(1, 20))
-        .then(({ data, meta }) => store.students = data.users)
+        // Получение списка пользователей
+        .then(() => {
+            if(store.appRole === 'teacher') {
+                return getUsers(1, 20)
+            } 
+            else return null;
+        })
+        .then((response) => {
+            if(response) {
+                const { data, meta } = response;
+                store.students = data.users
+            }
+        })
         .finally(() => isLoadingData.value = false)
         .catch((err) => {
             console.error('/src/views/MainViews/MainView.vue: onBeforeMount => ', err);
