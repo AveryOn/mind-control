@@ -1,95 +1,18 @@
 <template>
     <!-- #############################   ДЛЯ УЧЕНИКА  ####################################### -->
-    <div v-if="store.appRole === 'student'" class="w-full h-full overflow-hidden flex flex-column align-items-stretch">
-        <!-- ЗАГОЛОВОК -->
-        <h1 class="viewer-header">
-            Тесты <span class="nest-piece">></span> 
-            {{ testData?.title }}
-        </h1>
-
-
-        <!-- НОВЫЙ ТЕСТ -->
-        <div v-if="!testData?.result" class="relative h-full overflow-auto flex flex-column align-items-center py-6">
-            <div class="meter-block flex justify-content-center">
-                <MeterGroup :value="meterValue" />
-            </div>
-
-            <questionTestItemComp 
-            v-for="(question, index) in store.currentTestQuestions" 
-            @update-answer="(data) => updateAnswer(data, index)"
-            :question-data="question"
-            :initial-value="draftAnswers[index]"
-            :key="question.id"
-            />
-
-            <!-- ACTIONS -->
-            <div class="mt-5 flex" style="width: 600px;">
-                <Dialog v-model:visible="isShowConfirmDialog" modal :header="computeHeaderConfirmDialog" :style="{ width: '38rem' }">
-                    <div class="flex justify-content-end gap-2 pr-2">
-                        <Button type="button" label="Отмена" severity="secondary" text raised @click="isShowConfirmDialog = false"></Button>
-                        <Button type="button" label="Да" :loading="isLoadingSendTest" text raised @click="confirmSendTest"></Button>
-                    </div>
-                </Dialog>
-                <Button
-                class="ml-auto"
-                label="Завершить" 
-                text 
-                raised 
-                icon="pi pi-upload"
-                icon-pos="right"
-                @click="prepareConfirmTest"
-                />
-            </div>
-        </div>
-
-        <!-- НЕ ПРОВЕРЕННЫЙ ТЕСТ -->
-        <div v-if="testData?.result && testData?.result?.isChecked !== true" class="relative h-full overflow-auto flex flex-column justify-content-center align-items-center py-6">
-            <div class="notice-nochecked-block min-w-20rem w-max py-4 px-4 flex flex-column justify-content-center align-items-center">
-                <span class="flex flex-column align-items-center">
-                    <i class="notice-nochecked-icon nocheck pi pi-hourglass mt-1 mb-3"></i>
-                    <h1 class="notice-nochecked-title font-light pb-3">Тест ожидает проверки</h1>
-                </span>
-                <div class="flex flex-column align-content-center pt-3 px-3">
-                    <span class="font-light text-center"></span>
-                    <Button
-                    class="w-max mt-3"
-                    label="Назад"
-                    text 
-                    raised 
-                    size="small"
-                    icon="pi pi-arrow-left"
-                    @click="router.go(-1)"
-                    />
-                </div>
-            </div>
-        </div>
-
-        <!-- ПРОВЕРЕННЫЙ ТЕСТ -->
-        <div v-if="testData?.result?.isChecked === true" class="relative h-full overflow-auto flex flex-column justify-content-center align-items-center py-6">
-            <div class="notice-nochecked-block w-20rem py-4 px-3 flex flex-column justify-content-center align-items-center">
-                <span v-if="testData?.result?.isSuccess === true" class="flex flex-column align-items-center">
-                    <i class="notice-nochecked-icon pi pi-check-circle"></i>
-                    <h1 class="notice-nochecked-title font-light pb-3">Тест пройден</h1>
-                </span>
-                <span v-if="testData?.result?.isSuccess === false" class="flex flex-column align-items-center">
-                    <i class="notice-nochecked-icon failed pi pi-info-circle mb-2"></i>
-                    <h1 class="notice-nochecked-title font-light pb-3">Тест провален</h1>
-                </span>
-                <div class="flex flex-column align-content-center pt-3 px-3">
-                    <span class="font-light text-center">Для того чтобы увидеть результаты теста перейдите в раздел статистики</span>
-                    <Button
-                    class="w-max mt-3 mx-auto"
-                    label="Статистика" 
-                    text 
-                    raised 
-                    size="small"
-                    icon="pi pi-chart-bar"
-                    @click="router.push({ name: 'statistics' })"
-                    />
-                </div>
-            </div>
-        </div>
-    </div>
+    <TestOpenForStudent
+    v-if="store.appRole === 'student'"
+    :test-data="testData"
+    :meter-value="meterValue"
+    :is-loading-initial-data="isLoadingInitialData"
+    :draft-answers="draftAnswers"
+    :is-show-confirm-dialog="isShowConfirmDialog"
+    :is-loading-send-test="isLoadingSendTest"
+    @update-answer="(data, index) => updateAnswer(data, index)"
+    @close-confirm-dialog="isShowConfirmDialog = false"
+    @confirm-send-test="confirmSendTest"
+    @prepare-confirm-test="prepareConfirmTest"
+    ></TestOpenForStudent>
 
     <!-- #############################   ДЛЯ УЧИТЕЛЯ  ####################################### -->
     <div v-else-if="store.appRole === 'teacher'" class="w-full h-full overflow-hidden flex flex-column align-items-stretch">
@@ -161,22 +84,23 @@
 
 <script setup lang="ts">
 import { useMainStore } from '@/stores/mainStore';
-import type { Question, Result, Test } from '@/types/testTypes';
-import { onBeforeUnmount, onMounted, ref, type Ref, computed, onBeforeMount } from 'vue';
-import questionTestItemComp from '@/components/MainComponents/testOpen/questionTestItemComp.vue';
+import type { Result, Test, TestStudent, TestTeacher } from '@/types/testTypes';
+import { onBeforeUnmount, onMounted, ref, type Ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { computeMinutesByMs, formattedDateByTemplate } from '@/utils/timeUtils';
 import { getQuestionsStudent } from '@/api/questionsApi';
+import { getTestByIdStudent } from '@/api/testsApi';
+import TestOpenForStudent from '@/components/MainComponents/testOpen/student/testOpenForStudent.vue';
 
 const store = useMainStore();
 const route = useRoute();
 const router = useRouter();
 
 const isLoadingSendTest = ref(false);
-const isLoadingQuestions = ref(false);
+const isLoadingInitialData = ref(false);
 const isShowConfirmDialog = ref(false);
-const meterValue = ref([{ label: 'Выполнено', value: 55, color: 'var(--meter-basic-filled)' }]);
-const testData: Ref<null | Test> = ref(null);
+const meterValue = ref([{ label: 'Выполнено', value: 0, color: 'var(--meter-basic-filled)', icon: '' }]);
+const testData: Ref<null | Test | TestStudent | TestTeacher> = ref(null);
 const draftAnswers: Ref<{answer: any, questionId: number}[]> = ref([]);
 
 function initDraftTestInProcess() {
@@ -254,10 +178,6 @@ function updateAnswer({ answer, questionId }: { answer: any, questionId: number 
     }
 }
 
-const computeHeaderConfirmDialog = computed(() => {
-    if(meterValue.value[0].value < 100) return 'Вы ответили не на все вопросы. Завершить тест?';
-    return 'Вы уверены, что хотите завершить тест?';
-})
 
 function handlerOpenResultForCheck(data: Result) {
     try {
@@ -268,50 +188,39 @@ function handlerOpenResultForCheck(data: Result) {
     }
 }
 
-onBeforeMount(async () => {
-    // Получение списка вопросов для текущего теста
-    try {
-        isLoadingQuestions.value = true;
-        if(route.params.testId) {
-            const { data: { questions }, meta } = await getQuestionsStudent(+route.params.testId);
-            store.currentTestQuestions = questions;
-        }
-    } catch (err) {
-        console.error('/src/views/MainViews/TestOpenView.vue: onBeforeMount[getQuestionsStudent] => ', err);
-        throw err;
-    } finally {
-        isLoadingQuestions.value = false;
-    }
-});
-onMounted(() => {
+onMounted(async () => {
     // ЗАПРОС НА СЕРВЕР (STUDENT)
     if(store.appRole === 'student') {
-        if(store.opennedTest) {
-            testData.value = store.opennedTest;
-        } else {
-            store.tests.forEach((test) => {
-                if(test.id === +route.params.testId) {
-                    testData.value = test;
-                    store.opennedTest = test;
-                }
-            });
-        }
+    // Получение текущего теста по его ID и загрузка вопросов для текущего теста
+    try {
+        isLoadingInitialData.value = true;
+        const { data: { test }, meta } = await getTestByIdStudent(+route.params.testId)
+        testData.value = test;
+        store.opennedTest = test;
+        const { data: { questions } } = await getQuestionsStudent(+route.params.testId);
+        store.currentTestQuestions = questions;
+        draftAnswers.value = initDraftTestInProcess();
+        meterValue.value[0].value = computeFilledPercent(countFilledState()) ?? 0;
+    } catch (err) {
+        console.error('/src/views/MainViews/TestOpenView.vue: onMounted => ', err);
+        throw err;
+    } finally {
+        isLoadingInitialData.value = false;
+    }
     } 
     // ЗАПРОС НА СЕРВЕР (TEACHER)
-    else if (store.appRole === 'teacher') {
-        if(store.opennedTestForCheck) {
-            testData.value = store.opennedTestForCheck;
-        } else {
-            store.tests.forEach((test) => {
-                if(test.id === +route.params.testId) {
-                    testData.value = test;
-                    store.opennedTestForCheck = test;
-                }
-            });
-        }
-    }
-    draftAnswers.value = initDraftTestInProcess();
-    meterValue.value[0].value = computeFilledPercent(countFilledState());
+    // else if (store.appRole === 'teacher') {
+    //     if(store.opennedTestForCheck) {
+    //         testData.value = store.opennedTestForCheck;
+    //     } else {
+    //         store.tests.forEach((test) => {
+    //             if(test.id === +route.params.testId) {
+    //                 testData.value = test;
+    //                 store.opennedTestForCheck = test;
+    //             }
+    //         });
+    //     }
+    // }
 });
 onBeforeUnmount(() => {
     store.opennedTest = null;
@@ -321,34 +230,8 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-.meter-block {
-    bottom: 2rem;
-    right: 5rem;
-    position: fixed;
-    margin: auto;
-    height: max-content;
-    padding: 0.3rem 1rem;
-    z-index: 99;
-    background-color: #fff;
-    border-radius: 5px;
-    box-shadow: var(--shadow);
-}
-.notice-nochecked-block {
-    background-color: var(--dialog-bg);
-    box-shadow: var(--shadow);
-    border-radius: 5px;
-}
-.notice-nochecked-icon {
-    font-size: 4rem;
-    color: var(--success-color);
-}
-.notice-nochecked-icon.failed {
-    color: var(--required-color);
-}
-.notice-nochecked-icon.nocheck {
-    color: var(--warn-color);
-}
-.notice-nochecked-title {
-    border-bottom: 2px solid var(--basic-border-color);
-}
+
+
+
+
 </style>

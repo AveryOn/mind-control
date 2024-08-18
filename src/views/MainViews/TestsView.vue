@@ -134,7 +134,6 @@ function initSelectedGroup(groupId: string | string[] | undefined) {
 
 function handlerOpenTest(test: Test | TestTeacher) {
     try {
-        store.opennedTest = test;
         router.push({ name: 'opennedTest', params: { testId: test.id } });
     } catch (err) {
         console.error('/src/views/MainViews/TestsView.vue: handlerOpenTest => ', err);

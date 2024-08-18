@@ -123,6 +123,29 @@ export interface TestTeacher {
     result: null;
 } 
 
+export interface TestStudent {
+    id: number;
+    title: string;
+    summary: string | null;
+    questionsCount: number;
+    participantsCount: number | null;
+    createdAt: string;
+    updatedAt: string;
+    group: {
+        id: number;
+        title: string;
+        createdAt: string;
+        updatedAt: string;
+    };
+    result: {
+        isChecked: boolean;
+        checkDate: string | null;
+        isSuccess: boolean | null;
+        successCount: number | null;
+        duration: number;
+    } | null;
+} 
+
 export type TestCreate = {
     title: string | null;
     summary: string | null;

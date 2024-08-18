@@ -77,7 +77,7 @@ import { defineProps, defineEmits, onMounted, ref } from 'vue';
 
 const props = defineProps<{
     questionData: Question;
-    initialValue: { answer: any, questionId: number },
+    initialValue?: { answer: any, questionId: number },
 }>();
 
 const emit = defineEmits({
@@ -122,25 +122,43 @@ function handlerAnswer() {
     }
 }
 
-onMounted(() => {
-    if(props.questionData.radioAnswers) {
-        radioVariants.value = props.questionData.radioAnswers;
+// Функция инициирует данные вопроса. Если черновика по текущему вопросу нет, то заполняются исходные данные вопроса
+function initQuestionData() {
+    try {
+        // ПО умолчанию сначала заполняются исходные данные самого вопроса, а потом данные которые есть в черновике (если они есть)
+        if(props.questionData.radioAnswers) {
+            radioVariants.value = props.questionData.radioAnswers;
+        }
+        if(props.questionData.checkboxAnswers) {
+            checkboxVariants.value = props.questionData.checkboxAnswers;
+        }
+        // Если присутствует черновик
+        if(props.initialValue) {
+            if(props.questionData.type === 'checkbox' && props.questionData.id === props.initialValue.questionId) {
+                checkboxAnswers.value = props.initialValue.answer;
+                if(!!props.initialValue.answer) hasAnswer.value = true;
+            }
+            if(props.questionData.type === 'radio' && props.questionData.id === props.initialValue.questionId) {
+                radioField.value = props.initialValue.answer;
+                if(!!props.initialValue.answer) hasAnswer.value = true;
+            }
+            if(props.questionData.type === 'text' && props.questionData.id === props.initialValue.questionId) {
+                textField.value = props.initialValue.answer;
+                if(!!props.initialValue.answer) hasAnswer.value = true;
+            }
+        }
+    } catch (err) {
+        console.error('/src/components/MainComponents/testOpen/questionTestItemComp.vue: initQuestionData => ', err);
+        throw err;
     }
-    if(props.questionData.checkboxAnswers) {
-        checkboxVariants.value = props.questionData.checkboxAnswers;
-    }
+}
 
-    if(props.questionData.type === 'checkbox' && props.questionData.id === props.initialValue.questionId) {
-        checkboxAnswers.value = props.initialValue.answer;
-        if(!!props.initialValue.answer) hasAnswer.value = true;
-    }
-    if(props.questionData.type === 'radio' && props.questionData.id === props.initialValue.questionId) {
-        radioField.value = props.initialValue.answer;
-        if(!!props.initialValue.answer) hasAnswer.value = true;
-    }
-    if(props.questionData.type === 'text' && props.questionData.id === props.initialValue.questionId) {
-        textField.value = props.initialValue.answer;
-        if(!!props.initialValue.answer) hasAnswer.value = true;
+onMounted(() => {
+    try {
+        initQuestionData();
+    } catch (err) {
+        console.error('/src/components/MainComponents/testOpen/questionTestItemComp.vue: onMounted => ', err);
+        throw err;
     }
 });
 

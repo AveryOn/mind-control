@@ -126,12 +126,26 @@ export interface CreationTestData {
 }
 
 export interface TestForStudent {
+    id: number;
+    title: string;
+    summary: string | null;
+    questionsCount: number;
+    participantsCount: number | null;
+    createdAt: string;
+    updatedAt: string;
+    group: {
+        id: number;
+        title: string;
+        createdAt: string;
+        updatedAt: string;
+    };
     result: {
         isCheck: boolean;
+        checkDate: string | null;
         isSuccess: boolean | null;
         successCount: number | null;
         duration: number;
-    } | null & CreationTestData;
+    } | null;
 }
 
 // Тело ответа от сервера при создании нового теста  (Админ / Учитель)
@@ -154,6 +168,14 @@ export interface ResponseGetTestsStudent {
     meta: HttpMeta;
     data: {
         tests: TestForStudent[];
+    };
+}
+
+// Тело ответа при получении теста по ID (Ученик)
+export interface ResponseGetTestByIdStudent {
+    meta: HttpMeta;
+    data: {
+        test: TestForStudent;
     };
 }
 
