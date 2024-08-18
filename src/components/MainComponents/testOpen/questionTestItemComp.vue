@@ -73,7 +73,7 @@
 <script setup lang="ts">
 import type { Question } from '@/types/testTypes';
 import type { Ref } from 'vue';
-import { defineProps, defineEmits, onMounted, ref } from 'vue';
+import { defineProps, defineEmits, onMounted, ref, computed } from 'vue';
 
 const props = defineProps<{
     questionData: Question;
@@ -98,7 +98,7 @@ function handlerAnswer() {
         draftAnswers = draftAnswers.map((answer) => {
             if(answer.questionId === props.questionData.id) {
                 if(props.questionData.type === 'checkbox') {
-                    answer.answer = checkboxAnswers.value;
+                    answer.answer = JSON.stringify(checkboxAnswers.value);
                     return answer;
                 }
                 if(props.questionData.type === 'radio') {
@@ -135,7 +135,7 @@ function initQuestionData() {
         // Если присутствует черновик
         if(props.initialValue) {
             if(props.questionData.type === 'checkbox' && props.questionData.id === props.initialValue.questionId) {
-                checkboxAnswers.value = props.initialValue.answer;
+                checkboxAnswers.value = JSON.parse(props.initialValue.answer);
                 if(!!props.initialValue.answer) hasAnswer.value = true;
             }
             if(props.questionData.type === 'radio' && props.questionData.id === props.initialValue.questionId) {
@@ -143,7 +143,10 @@ function initQuestionData() {
                 if(!!props.initialValue.answer) hasAnswer.value = true;
             }
             if(props.questionData.type === 'text' && props.questionData.id === props.initialValue.questionId) {
-                textField.value = props.initialValue.answer;
+                if(props.initialValue.answer) {
+                    textField.value = props.initialValue.answer;
+                }
+                else textField.value = '';
                 if(!!props.initialValue.answer) hasAnswer.value = true;
             }
         }

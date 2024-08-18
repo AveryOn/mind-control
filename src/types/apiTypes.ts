@@ -201,3 +201,13 @@ export interface ResponseGetQuestionsStudent {
         questions: ResponseStudentQuestion[];
     };
 }
+
+
+// ################################   RESULTS   ##################################
+
+// Объект данных необходимый для создания нового результата по тесту (Ученик)
+export interface RequestCreationResultStd {
+    testId: number;
+    duration: number;
+    answers: { answer: string; questionId: number }[];
+}

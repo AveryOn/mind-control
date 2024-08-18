@@ -1,9 +1,10 @@
 import { useMainStore } from '@/stores/mainStore';
 import type { Result, Test, TestStudent, TestTeacher } from '@/types/testTypes';
-import { onBeforeUnmount, onMounted, ref, type Ref } from 'vue';
+import { onBeforeMount, onBeforeUnmount, onMounted, ref, type Ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { getQuestionsStudent } from '@/api/questionsApi';
 import { getTestByIdStudent } from '@/api/testsApi';
+import { createResultStudent } from '@/api/resultsApi';
 
 // Необходим для работы компонента открытого теста (Ученик / Учитель / Админ) 
 export default function useTestOpen() {
@@ -19,6 +20,7 @@ export default function useTestOpen() {
     const meterValue = ref([{ label: 'Выполнено', value: 0, color: 'var(--meter-basic-filled)', icon: '' }]);
     const testData: Ref<null | Test | TestStudent | TestTeacher> = ref(null);
     const draftAnswers: Ref<{answer: any, questionId: number}[]> = ref([]);
+    const durationComplete: Ref<number> = ref(0);
 
     // #########################################   METHODS   #########################################
     function initDraftTestInProcess() {
@@ -51,11 +53,19 @@ export default function useTestOpen() {
         }
     }
 
-    // Подтвердить создания результата теста (Ученик)
-    function confirmSendTest() {
+    // Подтвердить создание результата теста (Ученик)
+    async function confirmSendTest() {
         try {
             isLoadingSendTest.value = true;
-            console.log('confirmSendTest');
+            console.log('confirmSendTest', draftAnswers.value);
+            if(testData.value && store.userData) {
+                const { data, meta } = await createResultStudent({ 
+                    answers: draftAnswers.value, 
+                    duration: durationComplete.value, 
+                    testId: testData.value.id, 
+                });
+                console.log(data);
+            }
         } catch (err) {
             console.error(`${import.meta.url}: confirmSendTest => `, err);
             throw err;
@@ -111,40 +121,43 @@ export default function useTestOpen() {
 
 
     // #########################################   LIFECYCLE HOOKS   #########################################
-    onMounted(async () => {
+    onBeforeMount(async () => {
         // ЗАПРОС НА СЕРВЕР (STUDENT)
         if(store.appRole === 'student') {
-        // Получение текущего теста по его ID и загрузка вопросов для текущего теста
-        try {
-            isLoadingInitialData.value = true;
-            const { data: { test }, meta } = await getTestByIdStudent(+route.params.testId)
-            testData.value = test;
-            store.opennedTest = test;
-            const { data: { questions } } = await getQuestionsStudent(+route.params.testId);
-            store.currentTestQuestions = questions;
-            draftAnswers.value = initDraftTestInProcess();
-            meterValue.value[0].value = computeFilledPercent(countFilledState()) ?? 0;
-        } catch (err) {
-            console.error('/src/views/MainViews/TestOpenView.vue: onMounted => ', err);
-            throw err;
-        } finally {
-            isLoadingInitialData.value = false;
-        }
-        } 
-        // ЗАПРОС НА СЕРВЕР (TEACHER)
-        // else if (store.appRole === 'teacher') {
-        //     if(store.opennedTestForCheck) {
-        //         testData.value = store.opennedTestForCheck;
-        //     } else {
-        //         store.tests.forEach((test) => {
-        //             if(test.id === +route.params.testId) {
-        //                 testData.value = test;
-        //                 store.opennedTestForCheck = test;
-        //             }
-        //         });
-        //     }
-        // }
-    });
+            // Получение текущего теста по его ID и загрузка вопросов для текущего теста
+            try {
+                isLoadingInitialData.value = true;
+                const { data: { test }, meta } = await getTestByIdStudent(+route.params.testId)
+                testData.value = test;
+                store.opennedTest = test;
+                const { data: { questions } } = await getQuestionsStudent(+route.params.testId);
+                store.currentTestQuestions = questions;
+                draftAnswers.value = initDraftTestInProcess();
+                meterValue.value[0].value = computeFilledPercent(countFilledState()) ?? 0;
+            } catch (err) {
+                console.error('/src/views/MainViews/TestOpenView.vue: onMounted => ', err);
+                throw err;
+            } finally {
+                isLoadingInitialData.value = false;
+            }
+            } 
+            // ЗАПРОС НА СЕРВЕР (TEACHER)
+            // else if (store.appRole === 'teacher') {
+            //     if(store.opennedTestForCheck) {
+            //         testData.value = store.opennedTestForCheck;
+            //     } else {
+            //         store.tests.forEach((test) => {
+            //             if(test.id === +route.params.testId) {
+            //                 testData.value = test;
+            //                 store.opennedTestForCheck = test;
+            //             }
+            //         });
+            //     }
+            // }
+    })
+    // onMounted(async () => {
+
+    // });
     onBeforeUnmount(() => {
         store.opennedTest = null;
     });

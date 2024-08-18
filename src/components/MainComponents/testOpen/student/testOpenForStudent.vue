@@ -6,9 +6,21 @@
             {{ props.testData?.title }}
         </h1>
 
+        <!-- Окно значка закгрузки данных -->
+        <span v-if="props.isLoadingInitialData" class="w-full h-full flex align-items-center justify-content-center">
+            <ProgressSpinner 
+            class="m-auto"
+            style="width: 90px; height: 90px" 
+            strokeWidth="4" 
+            fill="transparent"
+            animationDuration=".5s" 
+            aria-label="Custom ProgressSpinner"
+            />
+        </span>
+
         <!-- НОВЫЙ ТЕСТ -->
         <NewTestComp 
-        v-if="!props.testData?.result"
+        v-else-if="!props.testData?.result && !props.isLoadingInitialData"
         :test-data="props.testData"
         :meter-value="props.meterValue"
         :is-loading-initial-data="props.isLoadingInitialData"
@@ -23,12 +35,12 @@
 
         <!-- НЕ ПРОВЕРЕННЫЙ ТЕСТ -->
         <signNocheckComp 
-        v-if="props.testData?.result && props.testData?.result?.isChecked !== true"
+        v-else-if="props.testData?.result && props.testData?.result?.isChecked !== true && !props.isLoadingInitialData"
         ></signNocheckComp>
 
         <!-- ПРОВЕРЕННЫЙ ТЕСТ -->
         <signCheckComp
-        v-if="props.testData?.result?.isChecked === true"
+        v-else-if="props.testData?.result?.isChecked === true && !props.isLoadingInitialData"
         :test-data="props.testData"
         ></signCheckComp>
 

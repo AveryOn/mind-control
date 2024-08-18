@@ -4,17 +4,6 @@
         <div class="meter-block flex justify-content-center">
             <MeterGroup :value="props.meterValue" />
         </div>
-        <!-- Окно значка закгрузки данных -->
-        <span v-if="isLoadingInitialData" class="w-full h-full flex align-items-center justify-content-center">
-            <ProgressSpinner 
-            class="m-auto"
-            style="width: 90px; height: 90px" 
-            strokeWidth="4" 
-            fill="transparent"
-            animationDuration=".5s" 
-            aria-label="Custom ProgressSpinner"
-            />
-        </span>
 
         <questionTestItemComp 
         v-for="(question, index) in store.currentTestQuestions" 
@@ -54,7 +43,6 @@ import { defineProps, defineEmits, computed } from 'vue';
 const props = defineProps<{
     testData: null | Test | TestStudent | TestTeacher;
     meterValue: { label: string, value: number, color: string, icon: string }[];
-    isLoadingInitialData: boolean;
     draftAnswers: { answer: any, questionId: number }[];
     isShowConfirmDialog: boolean;
     isLoadingSendTest: boolean;
