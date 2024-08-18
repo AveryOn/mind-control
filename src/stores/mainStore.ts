@@ -6,7 +6,7 @@ import { ref, type Ref } from 'vue';
 
 export const useMainStore = defineStore('mainStore', () => {
 
-    const appRole: Ref<Role> = ref<Role>('student');
+    const appRole: Ref<Role | null> = ref<Role | null>(null);
     const isAuth: Ref<boolean> = ref<boolean>(false);
     const userData: Ref<UserData | null> = ref<UserData | null>(null);
 

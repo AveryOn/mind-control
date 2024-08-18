@@ -6,7 +6,20 @@
             Тесты <span class="nest-piece">></span> 
             {{ props.testData?.title }} <span class="nest-piece">></span> Результаты
         </h1>
-        <section class="h-full overflow-auto px-5 pb-4 pt-3">
+
+        <!-- Окно значка закгрузки данных -->
+        <span v-if="props.isLoadingInitialData" class="w-full h-full flex align-items-center justify-content-center">
+            <ProgressSpinner 
+            class="m-auto"
+            style="width: 90px; height: 90px" 
+            strokeWidth="4" 
+            fill="transparent"
+            animationDuration=".5s" 
+            aria-label="Custom ProgressSpinner"
+            />
+        </span>
+
+        <section v-else-if="!props.isLoadingInitialData" class="h-full overflow-auto px-5 pb-4 pt-3">
             <div class="w-full h-max shadow-3" style="border-radius: var(--datatable-border-radius)">
                 <DataTable 
                 class="border-round-lg"
@@ -17,6 +30,9 @@
                 :showGridlines="true"
                 @row-click="(event: any) => emit('handlerOpenResultForCheck', event.data)"
                 >
+                    <template #empty>
+                        <span class="w-full flex align-items-center justify-content-center py-2 font-italic">Данные отсутствуют</span>
+                    </template>
                     <Column class="px-5 text-center" field="id" header="ID результата" style="width: 5%"></Column>
                     <Column class="text-center" field="userId" header="ID ученика" style="width: 5%"></Column>
                     <Column class="text-center" field="testId" header="ID теста" style="width: 5%"></Column>
@@ -29,11 +45,10 @@
                     </Column>
                     <Column class="text-center" field="successCount" header="Кол-во правильных ответов" style="width: 10%">
                         <template #body="{ data }">
-                            <span v-if="data.successCount">
+                            <span>
                                 <Tag class="relative" style="min-width: 2rem;">
                                     <template #default>
-                                        {{ data.successCount }}
-                                        <span class="absolute ml-2 font-medium" style="color: gray; right: -2.5rem;">из {{ data.questionsCount }}</span>
+                                        {{ data.successCount ?? '-' }} / {{ data.questionsCount }}
                                     </template>
                                 </Tag>
                             </span>
@@ -53,7 +68,7 @@
                     </Column>
                     <Column class="text-center" field="duration" header="Время выполнения" style="width: 10%">
                         <template #body="{ data }">
-                            <span>{{ computeMinutesByMs(data.duration) }} мин.</span>
+                            <span>{{ computeMinutesByMs(data.duration) ?? 0 }} мин.</span>
                         </template>
                     </Column>
                     <Column class="text-center" field="createdAt" header="Дата выполнения" style="width: 10%">
@@ -77,6 +92,7 @@ const store = useMainStore();
 
 const props = defineProps<{
     testData: null | Test | TestStudent | TestTeacher;
+    isLoadingInitialData: boolean;
 }>();
 
 const emit = defineEmits({

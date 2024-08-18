@@ -148,6 +148,23 @@ export interface TestForStudent {
     } | null;
 }
 
+export interface TestForTeacher {
+    id: number;
+    title: string;
+    summary: string | null;
+    questionsCount: number;
+    participantsCount: number | null;
+    createdAt: string;
+    updatedAt: string;
+    group: {
+        id: number;
+        title: string;
+        createdAt: string;
+        updatedAt: string;
+    };
+    result: null;
+}
+
 // Тело ответа от сервера при создании нового теста  (Админ / Учитель)
 export interface ResponseCreationTestData {
     meta: HttpMeta;
@@ -176,6 +193,14 @@ export interface ResponseGetTestByIdStudent {
     meta: HttpMeta;
     data: {
         test: TestForStudent;
+    };
+}
+
+// Тело ответа при получении теста по ID (Админ / Учитель)
+export interface ResponseGetTestByIdTeacher {
+    meta: HttpMeta;
+    data: {
+        test: TestForTeacher;
     };
 }
 
@@ -210,4 +235,38 @@ export interface RequestCreationResultStd {
     testId: number;
     duration: number;
     answers: { answer: string; questionId: number }[];
+}
+
+
+// Тело ответа при создании результата теста (Ученик)
+export interface ResponseCreationResultStd {
+    meta: HttpMeta;
+    data: null;
+}
+
+// Объект необходимый для получения результатов теста (Учитель)
+export interface RequestGetResultsTchr {
+    testId: number;
+    page?: number;
+    perPage?: number;
+}
+
+// Тело ответа при получении результатов теста (Учитель)
+export interface ResponseGetResultsTchr {
+    meta: HttpMeta;
+    data: {
+        results: {
+            id: number;
+            userId: number;
+            testId: number;
+            isSuccess: null | boolean;
+            isChecked: boolean;
+            checkDate: string | null;
+            duration: number;
+            successCount: null | number;
+            questionsCount: number;
+            createdAt: string;
+            updatedAt: string;
+        }[]
+    };
 }

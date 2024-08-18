@@ -65,17 +65,17 @@ export type AnswerStudent = {
 }
 
 export type Result = {
-    id?: number;
-    userId?: number;
-    testId?: number;
-    isSuccess?: boolean;
-    successCount?: number | null;
-    questionsCount?: number;
-    isChecked?: boolean;
-    checkDate?: string | null;
-    duration?: number;
-    createdAt?: string;
-    updatedAt?: string;
+    id: number;
+    userId: number;
+    testId: number;
+    isSuccess: null | boolean;
+    successCount: null | number;
+    questionsCount: number;
+    isChecked: boolean;
+    checkDate: string | null;
+    duration: number;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export type ResultForCheck = Result & {

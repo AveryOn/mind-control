@@ -1,4 +1,4 @@
-import type { HttpContentType, HttpAuthorization, ResponseCreationTestData, ResponseGetTestsTeacher, ResponseGetTestByIdStudent } from "@/types/apiTypes";
+import type { HttpContentType, HttpAuthorization, ResponseCreationTestData, ResponseGetTestsTeacher, ResponseGetTestByIdStudent, ResponseGetTestByIdTeacher } from "@/types/apiTypes";
 import axios from 'axios';
 import { hostname } from "@/api/index";
 import type { TestSendDataServer } from "@/types/testTypes";
@@ -71,6 +71,23 @@ export async function getTestByIdStudent(testId: number): Promise<ResponseGetTes
         return { data, meta };
     } catch (err) {
         console.error('/src/api/testsApi.ts: getTestByIdStudent => ', err);
+        throw err;
+    }
+}
+
+// Получить тест по ID (Учитель)
+export async function getTestByIdTeacher(testId: number): Promise<ResponseGetTestByIdTeacher> {
+    try {
+        const response = await axios.get(hostname + `/api/teacher/test/${testId}`, {
+            headers: {
+                ...{ "Content-Type": 'application/x-www-form-urlencoded' } as HttpContentType,
+                ...{ "Authorization": 'Bearer ' + localStorage.getItem('token') } as HttpAuthorization,
+            }
+        });
+        const { data: { data, meta } } = response;
+        return { data, meta };
+    } catch (err) {
+        console.error('/src/api/testsApi.ts: getTestByIdTeacher => ', err);
         throw err;
     }
 }

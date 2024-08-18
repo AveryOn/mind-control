@@ -18,6 +18,7 @@
     <TestOpenForTeacher 
     v-else-if="store.appRole === 'teacher'"
     :test-data="testData"
+    :is-loading-initial-data="isLoadingInitialData"
     @handler-open-result-for-check="(data: any) => handlerOpenResultForCheck(data)"
     >
     </TestOpenForTeacher>
