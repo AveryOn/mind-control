@@ -45,7 +45,6 @@ async function initUserData() {
         if(userDataStorage) {
             userDataReady = JSON.parse(userDataStorage);
             store.userData = userDataReady;
-            console.log(userDataReady);
             
             store.appRole = userDataReady.role;
             store.isAuth = true;
