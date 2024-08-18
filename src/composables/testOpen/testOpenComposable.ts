@@ -5,12 +5,14 @@ import { useRoute, useRouter } from 'vue-router';
 import { getQuestionsStudent } from '@/api/questionsApi';
 import { getTestByIdStudent } from '@/api/testsApi';
 
-
+// Необходим для работы компонента открытого теста (Ученик / Учитель / Админ) 
 export default function useTestOpen() {
-
+    // #########################################   COMPOSABLES   #########################################
     const store = useMainStore();
     const route = useRoute();
     const router = useRouter();
+
+    // #########################################   DATA   #########################################
     const isLoadingSendTest = ref(false);
     const isLoadingInitialData = ref(false);
     const isShowConfirmDialog = ref(false);
@@ -18,6 +20,7 @@ export default function useTestOpen() {
     const testData: Ref<null | Test | TestStudent | TestTeacher> = ref(null);
     const draftAnswers: Ref<{answer: any, questionId: number}[]> = ref([]);
 
+    // #########################################   METHODS   #########################################
     function initDraftTestInProcess() {
         try {
             let draftTestInProcess: any = localStorage.getItem(`draft_test_${testData.value?.id}_in_process`);
@@ -37,25 +40,28 @@ export default function useTestOpen() {
         }
     }
 
+    // Открыть диалоговое окно для подтверждения создания результата теста (Ученик)
     function prepareConfirmTest() {
         try {
             isShowConfirmDialog.value = true;
-
+            console.log('prepareConfirmTest');
         } catch (err) {
-            console.error('/src/views/MainViews/TestOpenView.vue: prepareConfirmTest => ', err);
+            console.error(`${import.meta.url}: prepareConfirmTest => `, err);
             throw err;
         }
     }
 
+    // Подтвердить создания результата теста (Ученик)
     function confirmSendTest() {
         try {
             isLoadingSendTest.value = true;
-            
+            console.log('confirmSendTest');
         } catch (err) {
-            console.error('/src/views/MainViews/TestOpenView.vue: confirmSendTest => ', err);
+            console.error(`${import.meta.url}: confirmSendTest => `, err);
             throw err;
         } finally {
             isLoadingSendTest.value = false;
+            isShowConfirmDialog.value = false;
         }
     }
 
@@ -103,6 +109,8 @@ export default function useTestOpen() {
         }
     }
 
+
+    // #########################################   LIFECYCLE HOOKS   #########################################
     onMounted(async () => {
         // ЗАПРОС НА СЕРВЕР (STUDENT)
         if(store.appRole === 'student') {
