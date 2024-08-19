@@ -32,7 +32,7 @@
         <div class="pt-2">
             <span>Ответ:</span>
             <div v-if="props.questionData.type === 'checkbox'" class="w-full flex flex-column align-items-start pt-3 px-3">
-                <Tag class="mb-2" v-if="props.questionData.type === 'checkbox'" :value="answer.answer" v-for="answer in checkboxAnswers"></Tag>
+                <Tag class="mb-2" v-if="props.questionData.type === 'checkbox'" :value="answer" v-for="answer in checkboxAnswers"></Tag>
             </div>
             <div v-else class="block-answer px-5 py-1 mt-2 mx-2">{{ props.answerData.answer ?? '-' }}</div>
         </div>

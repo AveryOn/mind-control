@@ -51,9 +51,12 @@ export type QuestionStudent = {
 
 export type Answer = {
     id: number;
+    resultId: number;
     questionId: number;
-    answer: any;
-    isCorrect?: boolean;
+    answer: string;
+    isCorrect: null | boolean;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export type AnswerStudent = {
@@ -83,7 +86,12 @@ export type ResultForCheck = Result & {
         id: number;
         title: string;
         summary: string;
-        group: GroupTestInput | GroupTest;
+        group: {
+            id: number;
+            title: string;
+            createdAt: string;
+            updatedAt: string;
+        };
         questionsCount?: number;
         createdAt?: string;
     };

@@ -12,7 +12,7 @@
         </h1>
 
         <!-- КОНТЕНТНАЯ ЧАСТЬ -->
-        <section class="h-full overflow-auto px-5 pb-4 pt-3" style="border: 1px solid black;">
+        <section class="h-full overflow-auto px-5 pb-4 pt-3">
             <div class="relative h-full overflow-auto flex flex-column align-items-center py-6">
                 <questionItemByResultComp 
                 v-for="(question, index) in store.openResultForCheck?.questions" 
@@ -50,19 +50,21 @@
 </template>
 
 <script setup lang="ts">
+import { getResultByIdTchr } from '@/api/resultsApi';
 import questionItemByResultComp from '@/components/MainComponents/resultsCheck/questionItemByResultComp.vue';
 import { useMainStore } from '@/stores/mainStore';
 import type { Answer } from '@/types/testTypes';
 import { onMounted, ref, type Ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 const store = useMainStore();
+const route = useRoute();
 const router = useRouter();
 
 const isLoadingConfirmChecking: Ref<boolean> = ref<boolean>(false);
 const isShowConfirmDialog = ref(false);
 const draftResultCheck: Ref<LocalAnswer[]> = ref([])
-let keyStorageDraft = `draft_result_${store.openResultForCheck?.id}_test_${store.openResultForCheck?.testId}_check`;
+let keyStorageDraft = ref('');
 type LocalAnswer = { id: number; questionId: number; isCorrect?: boolean; };
 
 function determineDraftItem(answerId: number) {
@@ -80,7 +82,7 @@ function determineDraftItem(answerId: number) {
 function handlerConfirmCheckingTest() {
     isLoadingConfirmChecking.value = true;
     try {
-        // 
+        console.log(draftResultCheck.value);
     } catch (err) {
         console.error('/src/views/MainViews/ResultCheckView.vue: handlerConfirmCheckingTest => ', err);
         throw err;
@@ -93,9 +95,9 @@ function handlerConfirmCheckingTest() {
 
 function getDraftResultTestCheck(): LocalAnswer[] {
     try {
-        let rawData = localStorage.getItem(keyStorageDraft);
+        let rawData = localStorage.getItem(keyStorageDraft.value);
         if(!rawData) {
-            localStorage.setItem(keyStorageDraft, JSON.stringify([]));
+            localStorage.setItem(keyStorageDraft.value, JSON.stringify([]));
             return [];
         } else {
             return JSON.parse(rawData) as LocalAnswer[];
@@ -138,14 +140,22 @@ function handlerUpdateAnswer(updatedAnswer: Answer) {
     try {
         let result = getDraftResultTestCheck();
         draftResultCheck.value = updateDraftArray(updatedAnswer, result);
-        localStorage.setItem(keyStorageDraft, JSON.stringify(draftResultCheck.value));
+        localStorage.setItem(keyStorageDraft.value, JSON.stringify(draftResultCheck.value));
     } catch (err) {
         console.error('/src/views/MainViews/ResultCheckView.vue: handlerUpdateAnswer => ', err);
         throw err;
     }
 }
 
-onMounted(() => {
+onMounted(async () => {
+    try {
+        // Поулчение результата
+        const { data: { result }, meta } = await getResultByIdTchr({ testId: +route.params.testId, resultId: +route.params.resultId })
+        store.openResultForCheck = result;
+        keyStorageDraft.value = `draft_result_${store.openResultForCheck?.id}_test_${store.openResultForCheck?.testId}_check`;
+    } catch (err) {
+        throw err;
+    }
     draftResultCheck.value = getDraftResultTestCheck();
 });
 

@@ -1,4 +1,4 @@
-import type { HttpContentType, HttpAuthorization, ResponseGetTestByIdStudent, RequestCreationResultStd, RequestGetResultsTchr, ResponseCreationResultStd, ResponseGetResultsTchr } from "@/types/apiTypes";
+import type { HttpContentType, HttpAuthorization, ResponseGetTestByIdStudent, RequestCreationResultStd, RequestGetResultsTchr, ResponseCreationResultStd, ResponseGetResultsTchr, RequestGetResultByIdTchr, ResponseGetResultByIdTchr } from "@/types/apiTypes";
 import axios from 'axios';
 import { hostname } from "@/api/index";
 
@@ -39,6 +39,23 @@ export async function getResultsTchr({ testId, page, perPage }: RequestGetResult
         return { data, meta };
     } catch (err) {
         console.error('/src/api/resultsApi.ts: getResultsTchr => ', err);
+        throw err;
+    }
+}
+
+// Получить результат по ID (Учитель)
+export async function getResultByIdTchr({ testId, resultId }: RequestGetResultByIdTchr): Promise<ResponseGetResultByIdTchr> {
+    try {
+        const response = await axios.get(hostname + `/api/teahcer/test/${testId}/results/${resultId}`, {
+            headers: {
+                ...{ "Content-Type": 'application/x-www-form-urlencoded' } as HttpContentType,
+                ...{ "Authorization": 'Bearer ' + localStorage.getItem('token') } as HttpAuthorization,
+            }
+        });
+        const { data: { data, meta } } = response;
+        return { data, meta };
+    } catch (err) {
+        console.error('/src/api/resultsApi.ts: getResultByIdTchr => ', err);
         throw err;
     }
 }
