@@ -30,17 +30,19 @@ export default function useTestOpen() {
     // #########################################   METHODS   #########################################
     function initDraftTestInProcess() {
         try {
-            let draftTestInProcess: any = localStorage.getItem(`draft_test_${testData.value?.id}_in_process`);
-            if(!draftTestInProcess) {
-                draftTestInProcess = [];
-                store.currentTestQuestions.forEach((question) => {
-                    draftTestInProcess.push({ answer: null, questionId: question.id });
-                });
-                localStorage.setItem(`draft_test_${testData.value?.id}_in_process`, JSON.stringify(draftTestInProcess));
+            if(store.opennedTest && !store.opennedTest?.result) {
+                let draftTestInProcess: any = localStorage.getItem(`draft_test_${testData.value?.id}_in_process`);
+                if(!draftTestInProcess) {
+                    draftTestInProcess = [];
+                    store.currentTestQuestions.forEach((question) => {
+                        draftTestInProcess.push({ answer: null, questionId: question.id });
+                    });
+                    localStorage.setItem(`draft_test_${testData.value?.id}_in_process`, JSON.stringify(draftTestInProcess));
+                    return draftTestInProcess;
+                }
+                draftTestInProcess = JSON.parse(draftTestInProcess);
                 return draftTestInProcess;
             }
-            draftTestInProcess = JSON.parse(draftTestInProcess);
-            return draftTestInProcess;
         } catch (err) {
             console.error('/src/views/MainViews/TestOpenView.vue: initDraftTestInProcess => ', err);
             throw err;
@@ -62,16 +64,20 @@ export default function useTestOpen() {
     async function confirmSendTest() {
         try {
             isLoadingSendTest.value = true;
-            console.log('confirmSendTest', draftAnswers.value);
+            draftAnswers.value = draftAnswers.value.map((answ) => {
+                if(Array.isArray(answ.answer)) return { ...answ, answer: JSON.stringify(answ.answer) }
+                return answ;
+            })
             if(testData.value && store.userData) {
                 const { data, meta } = await createResultStudent({ 
                     answers: draftAnswers.value, 
                     duration: durationComplete.value, 
                     testId: testData.value.id, 
                 });
-                console.log(data);
             }
-        } catch (err) {
+            localStorage.removeItem(`draft_test_${+route.params.testId}_in_process`);
+            router.push({ name: 'tests' }).then(() => window.location.reload());
+        } catch (err) { 
             console.error(`${import.meta.url}: confirmSendTest => `, err);
             throw err;
         } finally {
@@ -127,8 +133,6 @@ export default function useTestOpen() {
     // #########################################   LIFECYCLE HOOKS   #########################################
     onMounted(async () => {
         await nextTick()
-        console.log(store.appRole);
-        
         // ЗАПРОС НА СЕРВЕР (STUDENT)
         if(store.appRole === 'student') {
             // Получение текущего теста по его ID и загрузка вопросов для текущего теста (Ученик)

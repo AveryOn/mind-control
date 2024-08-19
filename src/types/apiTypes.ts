@@ -257,6 +257,15 @@ export interface RequestGetResultByIdTchr {
     resultId: number;
 }
 
+// Объект данных, необходимый для подтверждения проверки результата (Учитель)
+export interface RequestCheckResultDataTchr {
+    check_date: string;
+    is_success: boolean;
+    result_answers: { id: number; questionId: number; isCorrect: boolean }[];
+    result_id: number;
+    test_id: number;
+}
+
 // Тело ответа при получении результатов теста (Учитель)
 export interface ResponseGetResultsTchr {
     meta: HttpMeta;

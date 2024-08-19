@@ -34,11 +34,35 @@
             </div>
         </Dialog>
 
+    
         <!-- ДОП ДЕЙСТВИЯ В ВЕРХНЕЙ ЧАСТИ ОКНА -->
-        <div class="w-20rem mt-2 ml-auto mr-5 gap-2 flex align-items-center">
+        <div class="w-full mt-3 px-5 gap-2 flex align-items-center">
+            <div class="mr-auto">
+                <!-- СОЗДАТЬ НОВЫЙ ТЕСТ (КНОПКА) -->
+                <Button 
+                v-if="store.appRole === 'teacher'"
+                class="px-3 mr-2" 
+                type="button" 
+                icon="pi pi-file-plus" 
+                text 
+                raised
+                @click="handlerOpenNewTestForm"
+                v-tooltip.right="'создать новый тест'"
+                ></Button>
+                <!-- ОТКРЫТЬ ЧЕРНОВИК СОЗДАНИЯ ТЕСТА  (КНОПКА) -->
+                <Button
+                v-if="isExistsDraftTest"
+                class="ml-1"
+                icon="pi pi-file-edit" 
+                text raised 
+                severity="warn"
+                @click="router.push({ name: 'createTest' })"
+                v-tooltip.right="'черновик'"
+                />
+            </div>
             <Button 
             v-if="store.appRole === 'teacher' && store.opennedGroup"
-            class="px-3" 
+            class="px-3 ml-auto" 
             type="button" 
             icon="pi pi-user-plus" 
             text 
@@ -46,7 +70,7 @@
             @click="isShowAddNewStudentInGroup = true"
             ></Button>
             <Select 
-            class="w-full"
+            class="w-20rem shadow-2"
             v-model="store.opennedGroup" 
             :options="store.groups" 
             optionLabel="title"
@@ -96,6 +120,7 @@ const route = useRoute();
 const router = useRouter();
 const store = useMainStore();
 
+const isExistsDraftTest = ref(false);
 const isLoadingData = ref(false);
 const isShowAddNewStudentInGroup = ref(false);
 const isLoadingAddedStudent = ref(false);
@@ -141,6 +166,18 @@ function handlerOpenTest(test: Test | TestTeacher) {
     }
 }
 
+// Обработчик открытия формы создания нового теста (Стирает черновик незавершенного теста если он есть)
+function handlerOpenNewTestForm() {
+    try {
+        localStorage.removeItem('draft_new_test');
+        localStorage.removeItem('draft_test_step');
+        router.push({ name: 'createTest' });
+    } catch (err) {
+        console.error('/src/views/MainViews/TestsView.vue: handlerOpenNewTestForm => ', err);
+        throw err;
+    }
+}
+
 watch(() => route.params.groupId, (newValue) => {
     if(+newValue !== +newValue) {
         store.opennedGroup = null;
@@ -149,7 +186,7 @@ watch(() => route.params.groupId, (newValue) => {
 
 onMounted(async () => {
     initSelectedGroup(route.params.groupId);
-
+    if(localStorage.getItem('draft_new_test')) isExistsDraftTest.value = true;
     // Получение списка тестов
     try {
         isLoadingData.value = true;

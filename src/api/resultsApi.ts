@@ -1,4 +1,4 @@
-import type { HttpContentType, HttpAuthorization, ResponseGetTestByIdStudent, RequestCreationResultStd, RequestGetResultsTchr, ResponseCreationResultStd, ResponseGetResultsTchr, RequestGetResultByIdTchr, ResponseGetResultByIdTchr } from "@/types/apiTypes";
+import type { HttpContentType, HttpAuthorization, ResponseGetTestByIdStudent, RequestCreationResultStd, RequestGetResultsTchr, ResponseCreationResultStd, ResponseGetResultsTchr, RequestGetResultByIdTchr, ResponseGetResultByIdTchr, RequestCheckResultDataTchr } from "@/types/apiTypes";
 import axios from 'axios';
 import { hostname } from "@/api/index";
 
@@ -56,6 +56,27 @@ export async function getResultByIdTchr({ testId, resultId }: RequestGetResultBy
         return { data, meta };
     } catch (err) {
         console.error('/src/api/resultsApi.ts: getResultByIdTchr => ', err);
+        throw err;
+    }
+}
+
+// Подтверждение проверки результата (Учитель)
+export async function checkResultTchr({ check_date, is_success, result_answers, result_id, test_id }: RequestCheckResultDataTchr): Promise<ResponseGetResultByIdTchr> {
+    try {
+        const response = await axios.post(hostname + `/api/teahcer/test/${test_id}/results/${result_id}/check`, {
+            check_date,
+            is_success,
+            result_answers,
+        }, {
+            headers: {
+                ...{ "Content-Type": 'application/json' } as HttpContentType,
+                ...{ "Authorization": 'Bearer ' + localStorage.getItem('token') } as HttpAuthorization,
+            }
+        });
+        const { data: { data, meta } } = response;
+        return { data, meta };
+    } catch (err) {
+        console.error('/src/api/resultsApi.ts: checkResultTchr => ', err);
         throw err;
     }
 }
