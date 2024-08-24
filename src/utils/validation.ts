@@ -1,5 +1,6 @@
 
 
+// Функция проверяет на существование запрещенных спецсимволов в строке. Возможно добавить в исключения некоторые спецсимволы, для их игнорирования при проверке 
 export function hasSpecSymbols(value: string, acceptableSymbols?: string): boolean {
     let unacceptableSymbols = `!@#$%^&*()_-=+|{}[]/?.>,<'\`"~ `;
     try {
