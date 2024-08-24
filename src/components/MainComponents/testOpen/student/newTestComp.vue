@@ -40,6 +40,11 @@ import { useMainStore } from '@/stores/mainStore';
 import type { Test, TestStudent, TestTeacher } from '@/types/testTypes';
 import { defineProps, defineEmits, computed } from 'vue';
 
+
+// #########################################   COMPOSABLES   #########################################
+const store = useMainStore();
+
+// #########################################   PROPS   #########################################
 const props = defineProps<{
     testData: null | Test | TestStudent | TestTeacher;
     meterValue: { label: string, value: number, color: string, icon: string }[];
@@ -48,6 +53,7 @@ const props = defineProps<{
     isLoadingSendTest: boolean;
 }>();
 
+// #########################################   EMITS   #########################################
 const emit = defineEmits({
     updateAnswer: (answer: { answer: any, questionId: number }, index: number) => true,
     closeConfirmDialog: () => true,
@@ -55,14 +61,12 @@ const emit = defineEmits({
     prepareConfirmTest: () => true,
 });
 
-
+// #########################################   COMPUTED   #########################################
 const computeHeaderConfirmDialog = computed(() => {
     if(props.meterValue[0].value < 100) return 'Вы ответили не на все вопросы. Завершить тест?';
     return 'Вы уверены, что хотите завершить тест?';
 })
 
-
-const store = useMainStore();
 </script>
 
 

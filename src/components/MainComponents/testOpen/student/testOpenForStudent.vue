@@ -54,6 +54,7 @@ import signCheckComp from '@/components/MainComponents/testOpen/student/signChec
 import type { Test, TestStudent, TestTeacher } from '@/types/testTypes';
 import { defineProps, defineEmits } from 'vue';
 
+// #########################################   PROPS   #########################################
 const props = defineProps<{
     testData: null | Test | TestStudent | TestTeacher;
     meterValue: { label: string, value: number, color: string, icon: string }[];
@@ -63,6 +64,7 @@ const props = defineProps<{
     isLoadingSendTest: boolean;
 }>();
 
+// #########################################   EMITS   #########################################
 const emit = defineEmits({
     updateAnswer: (answer: { answer: any, questionId: number }, index: number) => true,
     closeConfirmDialog: () => true,

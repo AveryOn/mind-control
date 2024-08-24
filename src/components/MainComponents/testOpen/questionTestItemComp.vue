@@ -75,16 +75,19 @@ import type { Question } from '@/types/testTypes';
 import { defineProps, defineEmits } from 'vue';
 import useQuestionTestItem from '@/composables/testOpen/questionItemComposable';
 
+// #########################################   PROPS   #########################################
 const props = defineProps<{
     questionData: Question;
     initialValue?: { answer: any, questionId: number },
 }>();
 
+
+// #########################################   EMITS   #########################################
 const emit = defineEmits({
     updateAnswer: (answer: { answer: any, questionId: number }) => true,
 });
 
-
+// #########################################   COMPOSABLES   #########################################
 const { 
     // Data
     textField,
