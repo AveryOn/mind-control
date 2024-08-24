@@ -91,15 +91,17 @@
 </template>
 
 <script setup lang="ts">
-import { getUsers } from '@/api/usersApi';
-import { useMainStore } from '@/stores/mainStore';
 import type { GroupTest } from '@/types/testTypes';
+import { useMainStore } from '@/stores/mainStore';
 import { formattedDateByTemplate } from '@/utils/timeUtils';
+import { getUsers } from '@/api/usersApi';
 import { onMounted, ref, type Ref } from 'vue';
 
-
+// #########################################   COMPOSABLES   #########################################
 const store = useMainStore();
 
+
+// #########################################   DATA   #########################################
 const selectedGroup: Ref<GroupTest | null> = ref(null);
 const isLoadingAddGroup = ref(false);
 const isLoadingData = ref(false); 
@@ -107,6 +109,8 @@ const isShowAddInGroup = ref(false);
 const page = ref(1);
 const perPage = ref(20);
 
+
+// #########################################   METHODS   #########################################
 function handlerAddStudentToGroup() {
     isLoadingAddGroup.value = true;
     try {
@@ -119,6 +123,8 @@ function handlerAddStudentToGroup() {
     }
 }
 
+
+// #########################################   LIFECYCLE HOOKS   #########################################
 onMounted(async () => {
     // Получение списка пользователей
     if(store.isAuth && store.appRole === 'teacher') {
