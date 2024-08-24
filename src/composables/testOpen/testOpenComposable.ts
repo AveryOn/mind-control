@@ -6,6 +6,8 @@ import { getQuestionsStudent } from '@/api/questionsApi';
 import { getTestByIdStudent, getTestByIdTeacher } from '@/api/testsApi';
 import { createResultStudent, getResultsTchr } from '@/api/resultsApi';
 import { nextTick } from 'vue';
+import { computeFilledPercent } from '@/utils/computed';
+
 
 // Необходим для работы компонента открытого теста (Ученик / Учитель / Админ) 
 export default function useTestOpen() {
@@ -67,36 +69,28 @@ export default function useTestOpen() {
             draftAnswers.value = draftAnswers.value.map((answ) => {
                 if(Array.isArray(answ.answer)) return { ...answ, answer: JSON.stringify(answ.answer) }
                 return answ;
-            })
+            });
             if(testData.value && store.userData) {
+                // Отправка запроса на создание
                 const { data, meta } = await createResultStudent({ 
                     answers: draftAnswers.value, 
                     duration: durationComplete.value, 
                     testId: testData.value.id, 
                 });
             }
+            // Очистка черновика
             localStorage.removeItem(`draft_test_${+route.params.testId}_in_process`);
             router.push({ name: 'tests' }).then(() => window.location.reload());
         } catch (err) { 
             console.error(`${import.meta.url}: confirmSendTest => `, err);
             throw err;
-        } finally {
-            isLoadingSendTest.value = false;
-            isShowConfirmDialog.value = false;
+        } finally { 
+            isLoadingSendTest.value = false; 
+            isShowConfirmDialog.value = false; 
         }
     }
 
-    function computeFilledPercent(currentFilledCount: number) {
-        try {
-            const total = store.currentTestQuestions.length;
-            let filledPerc =  Math.ceil(currentFilledCount / (total / 100));
-            return filledPerc
-        } catch (err) {
-            console.error('/src/views/MainViews/TestOpenView.vue: computeFilledPercent => ', err);
-            throw err;
-        }
-    }
-
+    // вычислить количество ответов на данный момент (Нужно для вычисления процента выполненности теста на момент выполнения)
     function countFilledState() {
         try {
             let countFilled = 0;
@@ -110,10 +104,13 @@ export default function useTestOpen() {
         }
     }
 
+    // 
     function updateAnswer({ answer, questionId }: { answer: any, questionId: number }, index: number) {
         try {
+            
             draftAnswers.value[index] = { answer: answer, questionId: questionId };
-            meterValue.value[0].value = computeFilledPercent(countFilledState());
+            // Обновление прогрессбара выполненности теста
+            meterValue.value[0].value = computeFilledPercent(countFilledState(), store.currentTestQuestions.length);
         } catch (err) {
             console.error('/src/views/MainViews/TestOpenView.vue: updateAnswer => ', err);
             throw err;
@@ -141,10 +138,12 @@ export default function useTestOpen() {
                 const { data: { test }, meta } = await getTestByIdStudent(+route.params.testId)
                 testData.value = test;
                 store.opennedTest = test;
-                const { data: { questions } } = await getQuestionsStudent(+route.params.testId);
-                store.currentTestQuestions = questions;
-                draftAnswers.value = initDraftTestInProcess();
-                meterValue.value[0].value = computeFilledPercent(countFilledState()) ?? 0;
+                if(!test.result) {
+                    const { data: { questions } } = await getQuestionsStudent(+route.params.testId);
+                    store.currentTestQuestions = questions;
+                    draftAnswers.value = initDraftTestInProcess();
+                    meterValue.value[0].value = computeFilledPercent(countFilledState(), store.currentTestQuestions.length) ?? 0;
+                }
             } catch (err) {
                 console.error('/src/views/MainViews/TestOpenView.vue: onMounted => ', err);
                 throw err;

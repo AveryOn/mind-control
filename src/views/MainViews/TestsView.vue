@@ -1,7 +1,5 @@
 <template>
-    <div 
-    class="w-full h-full overflow-hidden flex flex-column align-items-stretch" 
-    >
+    <div class="w-full h-full overflow-hidden flex flex-column align-items-stretch">
         <!-- ЗАГОЛОВОК -->
         <h1 class="viewer-header">
             <span v-if="store.opennedGroup">{{ store.opennedGroup?.title }} <span class="nest-piece">></span> </span>
@@ -109,104 +107,23 @@
 <script setup lang="ts">
 import welcomeTestListComp from '@/components/MainComponents/testList/welcomeTestListComp.vue';
 import testListComp from '@/components/MainComponents/testList/testListComp.vue';
-import { watch, ref, type Ref, onMounted, reactive, type Reactive } from 'vue';
-import type { GroupTest, Test, TestTeacher } from '@/types/testTypes';
-import { useMainStore } from '@/stores/mainStore';
-import { useRoute, useRouter } from 'vue-router';
-import type { Student } from '@/types/usersType';
-import { getTestsStudent, getTestsTeacher } from '@/api/testsApi';
+import useTestsView from '@/composables/tests/testsComposable';
 
-const route = useRoute();
-const router = useRouter();
-const store = useMainStore();
-
-const isExistsDraftTest = ref(false);
-const isLoadingData = ref(false);
-const isShowAddNewStudentInGroup = ref(false);
-const isLoadingAddedStudent = ref(false);
-const selectedStudent: Ref<Student | null> = ref(null);
-const pagination: Reactive<{page: number, perPage: number}> = reactive({
-    page: 1,
-    perPage: 10,
-});
-
-function handlerAddStudentToGroup() {
-    isLoadingAddedStudent.value = true;
-    try {
-        // 
-    } catch (err) {
-        console.error('/src/views/MainViews/TestsView.vue: handlerAddStudentToGroup => ', err);
-        
-    } finally {
-        isLoadingAddedStudent.value = false;
-    }
-}
-
-function initSelectedGroup(groupId: string | string[] | undefined) {
-    try {
-        if(groupId) {
-        store.groups.forEach((group: GroupTest) => {
-            if(group.id === +groupId) {
-                store.opennedGroup = group;
-            }
-        });
-    }
-    } catch (err) {
-        console.error('views/MainViews/TestsView.vue: initSelectedGroup => ', err);
-        throw err;
-    }
-}
-
-function handlerOpenTest(test: Test | TestTeacher) {
-    try {
-        router.push({ name: 'opennedTest', params: { testId: test.id } });
-    } catch (err) {
-        console.error('/src/views/MainViews/TestsView.vue: handlerOpenTest => ', err);
-        throw err;
-    }
-}
-
-// Обработчик открытия формы создания нового теста (Стирает черновик незавершенного теста если он есть)
-function handlerOpenNewTestForm() {
-    try {
-        localStorage.removeItem('draft_new_test');
-        localStorage.removeItem('draft_test_step');
-        router.push({ name: 'createTest' });
-    } catch (err) {
-        console.error('/src/views/MainViews/TestsView.vue: handlerOpenNewTestForm => ', err);
-        throw err;
-    }
-}
-
-watch(() => route.params.groupId, (newValue) => {
-    if(+newValue !== +newValue) {
-        store.opennedGroup = null;
-    }
-});
-
-onMounted(async () => {
-    initSelectedGroup(route.params.groupId);
-    if(localStorage.getItem('draft_new_test')) isExistsDraftTest.value = true;
-    // Получение списка тестов
-    try {
-        isLoadingData.value = true;
-        // Если роль teacher
-        if(store.appRole === 'teacher' && !store.tests.length) {
-            const { data: { tests }, meta } = await getTestsTeacher(pagination.page, pagination.perPage);
-            store.tests = tests;
-        } 
-        // Если роль student
-        else if(store.appRole === 'student' && !store.tests.length) {
-            // запрос для ученика
-            const { data: { tests }, meta } = await getTestsStudent(pagination.page, pagination.perPage);
-            store.tests = tests;
-        }
-    } catch (err) {
-        console.error(err);
-    } finally {
-        isLoadingData.value = false;
-    }
-})
+const { 
+    // Composables
+    router,
+    store,
+    // Data
+    isExistsDraftTest,
+    isLoadingData,
+    isShowAddNewStudentInGroup,
+    isLoadingAddedStudent,
+    selectedStudent,
+    // Methods
+    handlerAddStudentToGroup,
+    handlerOpenTest,
+    handlerOpenNewTestForm,
+} = useTestsView();
 
 </script>
 

@@ -69,8 +69,6 @@ const emit = defineEmits({
     confirmSendTest: () => true,
     prepareConfirmTest: () => true,
 });
-
-
 </script>
 
 <style scoped>
