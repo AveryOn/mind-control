@@ -1,8 +1,10 @@
 import type { Ref } from 'vue';
 import { onMounted, ref } from 'vue';
 
+// Необходим для работы questionTestItemComp.vue (Элемента вопроса в тесте)
 export default function useQuestionTestItem(props: any, emit: any) {
 
+    // #########################################   DATA   #########################################
     const textField: Ref<any> = ref('');
     const radioField: Ref<any> = ref(null);
     const checkboxAnswers: Ref<any> = ref<{ answer: string | number }[]>([]);
@@ -11,11 +13,17 @@ export default function useQuestionTestItem(props: any, emit: any) {
     const checkboxVariants: Ref<{ answer: string }[]> = ref([]);
 
 
+    // #########################################   METHODS   #########################################
+
+    // Обработчик ответа на вопрос
     function handlerAnswer() {
         try {
+            // Извлечение существующего черновика ответов на вопросы
             let draftAnswers: { answer: any, questionId: number }[] = JSON.parse(localStorage.getItem(`draft_test_${props.questionData.testId}_in_process`)!);
             draftAnswers = draftAnswers.map((answer) => {
+                // Поиск ответа в массиве черновика для его изменения
                 if(answer.questionId === props.questionData.id) {
+                    // Если тип вопроса checkbox то значение для этого ответа форматируется в JSON т.к это массив
                     if(props.questionData.type === 'checkbox') {
                         answer.answer = JSON.stringify(checkboxAnswers.value);
                         return answer;
@@ -28,6 +36,7 @@ export default function useQuestionTestItem(props: any, emit: any) {
                 }
                 return answer;
             });
+            // Обновление черновика в localStorage
             localStorage.setItem(`draft_test_${props.questionData.testId}_in_process`, JSON.stringify(draftAnswers));
             hasAnswer.value = true;
             let readyAnswer: any = { answer: null, questionId: null };
@@ -36,7 +45,7 @@ export default function useQuestionTestItem(props: any, emit: any) {
             if(props.questionData.type === 'text') readyAnswer = { answer: textField.value, questionId: props.questionData.id };
             emit('updateAnswer', readyAnswer, );
         } catch (err) {
-            console.error('/src/components/MainComponents/testOpen/questionTestItemComp.vue: handlerAnswer => ', err);
+            console.error('@/composables/testOpen/questionItemComposable.ts: handlerAnswer => ', err);
             throw err;
         }
     }
@@ -70,16 +79,17 @@ export default function useQuestionTestItem(props: any, emit: any) {
                 }
             }
         } catch (err) {
-            console.error('/src/components/MainComponents/testOpen/questionTestItemComp.vue: initQuestionData => ', err);
+            console.error('@/composables/testOpen/questionItemComposable.ts: initQuestionData => ', err);
             throw err;
         }
     }
 
+    // #########################################   LIFECYCLE HOOKS   #########################################
     onMounted(() => {
         try {
             initQuestionData();
         } catch (err) {
-            console.error('/src/components/MainComponents/testOpen/questionTestItemComp.vue: onMounted => ', err);
+            console.error('@/composables/testOpen/questionItemComposable.ts: onMounted => ', err);
             throw err;
         }
     });
