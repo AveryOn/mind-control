@@ -98,7 +98,7 @@
                         </div>
 
                         <!-- Обычный ОТВЕТ -->
-                        <span v-else class="answer-text w-max px-2 ml-2">
+                        <span v-else class="answer-text w-11 px-3">
                             {{ computeStateAnswer(question.id).answer?.answer }}
                         </span>
                     </div>
@@ -235,15 +235,19 @@ const computeSignTypeAnswer = computed(() => {
 }
 
 .answer-text {
-    background-color: rgba(212, 212, 212, 0.383);
+    background-color: rgba(211, 245, 255, 0.383);
     border-bottom: 2px solid var(--basic-border-color);
-    border-top-right-radius: 2px;
-    border-top-left-radius: 2px;
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+    text-wrap: pretty;
+
 }
 
 .state-question {
     border-radius: 4px;
     margin-top: 1rem;
+    user-select: none;
+    cursor: default;
 }
 .state-question.success {
     background-color: var(--result-item-hover-bg-success);

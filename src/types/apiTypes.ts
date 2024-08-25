@@ -265,6 +265,12 @@ export interface RequestGetResultByIdTchr {
     resultId: number;
 }
 
+// Объект необходимый для получения результата по ID (Ученик)
+export interface RequestGetResultByIdStd {
+    testId: number;
+    resultId: number;
+}
+
 // Объект данных, необходимый для подтверждения проверки результата (Учитель)
 export interface RequestCheckResultDataTchr {
     check_date: string;
@@ -366,6 +372,55 @@ export interface ResponseGetResultByIdTchr {
                 createdAt: string;
                 updatedAt: string;
             };
+        },
+    };
+}
+
+// Тело ответа при получении результата по его ID (Ученик)
+export interface ResponseGetResultByIdStd {
+    meta: HttpMeta;
+    data: {
+        result: {
+            id: number;
+            userId: number;
+            testId: number;
+            isSuccess: null | boolean;
+            isChecked: boolean;
+            checkDate: string | null;
+            duration: number;
+            successCount: null | number;
+            questionsCount: number;
+            createdAt: string;
+            updatedAt: string;
+            test: {
+                id: number;
+                title: string;
+                summary: string;
+                group: any;
+                questionsCount: number;
+                createdAt: string;
+                updatedAt: string;
+            };
+            questions: {
+                id: number;
+                testId: number;
+                number: number;
+                question: string;
+                type: 'text' | 'checkbox' | 'radio';
+                radioAnswers: { answer: string; isCorrect: boolean }[];
+                checkboxAnswers: { answer: string; isCorrect: boolean }[];
+                createdAt: string;
+                updatedAt: string;
+            }[];
+            answers: {
+                id: number;
+                resultId: number;
+                questionId: number;
+                answer: string;
+                isCorrect: null | boolean;
+                createdAt: string;
+                updatedAt: string;
+            }[];
         },
     };
 }

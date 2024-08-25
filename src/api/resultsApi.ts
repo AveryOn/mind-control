@@ -1,4 +1,4 @@
-import type { HttpContentType, HttpAuthorization, ResponseGetTestByIdStudent, RequestCreationResultStd, RequestGetResultsTchr, ResponseCreationResultStd, ResponseGetResultsTchr, RequestGetResultByIdTchr, ResponseGetResultByIdTchr, RequestCheckResultDataTchr, RequestGetResultsStd, ResponseGetResultsStd } from "@/types/apiTypes";
+import type { HttpContentType, HttpAuthorization, ResponseGetTestByIdStudent, RequestCreationResultStd, RequestGetResultsTchr, ResponseCreationResultStd, ResponseGetResultsTchr, RequestGetResultByIdTchr, ResponseGetResultByIdTchr, RequestCheckResultDataTchr, RequestGetResultsStd, ResponseGetResultsStd, RequestGetResultByIdStd, ResponseGetResultByIdStd } from "@/types/apiTypes";
 import axios from 'axios';
 import { hostname } from "@/api/index";
 
@@ -77,6 +77,23 @@ export async function getResultByIdTchr({ testId, resultId }: RequestGetResultBy
         return { data, meta };
     } catch (err) {
         console.error('/src/api/resultsApi.ts: getResultByIdTchr => ', err);
+        throw err;
+    }
+}
+
+// Получить результат по ID (Ученик)
+export async function getResultByIdStd({ testId, resultId }: RequestGetResultByIdStd): Promise<ResponseGetResultByIdStd> {
+    try {
+        const response = await axios.get(hostname + `/api/student/test/${testId}/results/${resultId}`, {
+            headers: {
+                ...{ "Content-Type": 'application/x-www-form-urlencoded' } as HttpContentType,
+                ...{ "Authorization": 'Bearer ' + localStorage.getItem('token') } as HttpAuthorization,
+            }
+        });
+        const { data: { data, meta } } = response;
+        return { data, meta };
+    } catch (err) {
+        console.error('/src/api/resultsApi.ts: getResultByIdStd => ', err);
         throw err;
     }
 }

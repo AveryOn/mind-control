@@ -58,7 +58,7 @@
             <!-- Блок информации по результатам запрошенного теста -->
             <resultsBlockComp 
             v-if="isShowResultsForTest" 
-            :test-name="'Пример Названия'"
+            :test-name="testName"
             :is-loading-data="isLoadingListResults"
             @open-result="handlerOpenResult"
             />
@@ -91,7 +91,7 @@ import { onMounted, reactive, ref, watch, type Ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import TestsView from './TestsView.vue';
 import { getTestsStudent } from '@/api/testsApi';
-import { getResultsStd } from '@/api/resultsApi';
+import { getResultByIdStd, getResultsStd } from '@/api/resultsApi';
 
 // #############################################   COMPOSABLES   #############################################
 const store = useMainStore();
@@ -100,6 +100,7 @@ const router = useRouter();
 
 
 // #############################################   DATA   #############################################
+const testName: Ref<string | null> = ref<string | null>(null);
 const isShowResultsForTest = ref(false);
 const isShowOpenResult = ref(false);
 const isLoadingOpenResult = ref(false);
@@ -138,20 +139,23 @@ function openStatisticsTest(testData: Test | TestTeacher) {
 }
 
 // Обработчик открытия результата
-function handlerOpenResult(resultId: number) {
+async function handlerOpenResult(resultId: number) {
     try {
         isLoadingOpenResult.value = true;
         // Установка query-параметра
         router.push({ query: { ...route.query, 'open_result_id': resultId } });
         isShowResultsForTest.value = false;
         isShowOpenResult.value = true;
-        // Запрос на сервер...
-        setTimeout(() => {
-            isLoadingOpenResult.value = false;
-        },1600);
+        const testId: any = route.query['open_statistic_test_id'];
+        if(testId && +testId === +testId) {
+            const { data: { result }, meta } = await getResultByIdStd({ resultId, testId: +testId });
+            store.openResultStudent = result;
+        }
     } catch (err) {
         console.error('views/MainViews/StatisticsView.vue: handlerOpenResult => ', err);
         throw err;
+    } finally {
+        isLoadingOpenResult.value = false;
     }
 }
 
@@ -161,6 +165,9 @@ async function handlerFetchResults(testId: number) {
         isLoadingListResults.value = true;
         const { data: { results } , meta } = await getResultsStd({ testId, page: paginationResults.page, perPage: paginationResults.perPage });
         store.statisticsResultsStudents = results;
+        testList.value.forEach((test) => {
+            if(test.id === testId) testName.value = test.title;
+        })
     } catch (err) {
         console.error('views/MainViews/StatisticsView.vue: handlerFetchResults => ', err);
         throw err;
@@ -249,6 +256,13 @@ onMounted(async () => {
     // Если и open_statistic_test_id И open_result_id существуют, то открывается окно с данными результата
     else if (route.query['open_statistic_test_id'] && route.query['open_result_id']) {
         isShowOpenResult.value = true;
+        try {
+            // Получение данных результата с сервера по его ID
+            await handlerOpenResult(+route.query['open_result_id']);
+        } catch (err) {
+            console.error('views/MainViews/StatisticsView.vue: onMounted[handlerOpenResult] => ', err);
+            throw err;
+        }
     } 
     // Если нет query-параметров отключаются все окна касаемые статистики теста
     else {
