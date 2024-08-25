@@ -19,6 +19,7 @@ export function computeMinutesByMs(milliseconds: number | undefined) {
     }
 }
 
+// Форматирования даты по шаблону
 export function formattedDateByTemplate(date: string | Date | null | undefined, template?: string ) {
     try {
         if(date) {

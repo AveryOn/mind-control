@@ -50,6 +50,11 @@
 
     /* STATISTICS */
     --statistic-block-bg: white;
+    --result-item-border-success: rgb(117, 228, 117);
+    --result-item-border-failed: rgb(254, 135, 135);
+    --result-item-hover-bg-success: rgb(227, 255, 235);
+    --result-item-hover-bg-failed: rgb(255, 232, 232);
+    --result-item-transition: 0.7s;
     
     transition: all var(--duration-color) ease !important;
 }

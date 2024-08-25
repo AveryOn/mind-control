@@ -1,6 +1,9 @@
 <template>
     <div class="statistic-block w-full h-max flex flex-column align-items-center py-3 mt-3">
 
+        <!-- Заголовок -->
+        <h2>Сводка результатов по тесту {{ props.testName }}</h2>
+
         <!-- Фильтр панель -->
         <div class="w-full flex align-items-center justify-content-start gap-2 mb-3">
 
@@ -40,15 +43,18 @@
             />
         </div>
 
+        <!-- Отрисовка результатов -->
         <ul class="w-full">
             <li 
-            class="w-full flex align-items-center justify-content-start px-3 py-2 shadow-2" 
+            class="result-list-item w-full flex align-items-center justify-content-start px-3 py-2 shadow-2 gap-3" 
             :class="computeClassResult(result.isSuccess)"
             v-for="result in store.statisticsResultsStudents" 
             :key="result.id"
             >
-                <div>{{ computeStateSignResult(result.isSuccess) }}</div>
-                {{ result.createdAt }}
+                <span class="light-text font-italic"># {{ result.id }}</span>
+                <span>{{ computeStateSignResult(result.isSuccess) }}</span>
+                <span class="ml-auto">{{ formattedDateByTemplate(result.createdAt) }}</span>
+                
             </li>
         </ul>
     </div>
@@ -57,10 +63,14 @@
 <script setup lang="ts">
 import { useMainStore } from '@/stores/mainStore';
 import type { FilterMode } from '@/types/statisticTypes';
-import { computed, ref } from 'vue';
+import { formattedDateByTemplate } from '@/utils/timeUtils';
+import { computed, ref, defineProps } from 'vue';
 
 const store = useMainStore();
 
+const props = defineProps<{
+    testName: string;
+}>();
 
 const fromDate = ref();
 const toDate = ref();
@@ -111,7 +121,26 @@ function requestFilter(mode: FilterMode, payload: any) {
 </script>
 
 <style scoped>
-.success {
-    color: green;
+.result-list-item {
+    border-radius: 3px;
+    margin-bottom: 0.4rem;
+    cursor: pointer;
+    transition: background-color var(--result-item-transition) ease;
+}
+.result-list-item.success {
+    border: 1px solid var(--result-item-border-success);
+    border-left: 4px solid var(--result-item-border-success);
+}
+.result-list-item.success:hover {
+    background-color: var(--result-item-hover-bg-success);
+    transition: background-color var(--result-item-transition) ease;
+}
+.result-list-item.failed {
+    border: 1px solid var(--result-item-border-failed);
+    border-left: 4px solid var(--result-item-border-failed);
+}
+.result-list-item.failed:hover {
+    background-color: var(--result-item-hover-bg-failed);
+    transition: background-color var(--result-item-transition) ease;
 }
 </style>
