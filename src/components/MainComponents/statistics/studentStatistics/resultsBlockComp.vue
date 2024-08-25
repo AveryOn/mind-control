@@ -2,11 +2,10 @@
     <div class="statistic-block w-full h-max flex flex-column align-items-center py-3 mt-3">
 
         <!-- Заголовок -->
-        <h2>Сводка результатов по тесту {{ props.testName }}</h2>
+        <h2 class="font-light mb-3 w-full" style="font-size: 1.3rem;">Сводка результатов по тесту <span class="font-normal font-italic ml-1">{{ props.testName }}</span></h2>
 
         <!-- Фильтр панель -->
         <div class="w-full flex align-items-center justify-content-start gap-2 mb-3">
-
             <!-- Выбор Даты ОТ -->  
             <DatePicker 
             v-model="fromDate" 
@@ -32,7 +31,6 @@
             :minDate="minDateForTo"
             />
 
-
             <Select 
             class="ml-2"
             v-model="selectedStatusFilter" 
@@ -42,6 +40,9 @@
             placeholder="Статус результата" 
             />
         </div>
+
+        <!-- Подзаголовок -->
+        <h3 class="light-text w-full mb-3 pb-1 cursor-auto text-lg" style="border-bottom:1px dotted var(--basic-border-color); user-select: none">Результаты</h3>
 
         <!-- Отрисовка результатов -->
         <ul class="w-full">

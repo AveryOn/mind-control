@@ -1,0 +1,23 @@
+
+:root {
+    --p-datepicker-panel-background: var(--basic-bg) !important;
+    --p-datepicker-panel-color: var(--basic-fg) !important;
+    --p-datepicker-panel-border-color: var(--basic-border-color) !important;
+
+    /* header */
+    --p-datepicker-header-background: var(--basic-bg) !important;
+    --p-datepicker-header-color: var(--basic-fg) !important;
+    --p-datepicker-header-border-color: var(--basic-border-color) !important;
+
+    --p-datepicker-today-color: rgb(255, 255, 255) !important;
+    --p-datepicker-date-color: var(--basic-fg) !important;
+    --p-datepicker-week-day-color: var(--subtitle-text) !important;
+    --p-datepicker-select-year-color: var(--basic-fg) !important;
+    --p-datepicker-select-month-color: var(--basic-fg) !important;
+
+}
+
+.p-datepicker-day-selected {
+    background: var(--basic-color-fg) !important;
+    color: var(--basic-fg) !important;
+}

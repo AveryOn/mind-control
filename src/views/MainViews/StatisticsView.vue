@@ -44,7 +44,7 @@
             </div>
 
             <!-- Блок информации по результатам запрошенного теста -->
-            <resultsBlockComp v-if="isShowResultsForTest" />
+            <resultsBlockComp v-if="isShowResultsForTest" :test-name="'Пример Названия'"/>
 
             <!-- БЛОК ОБЩЕЙ СТАТИСТИКИ ЗА КАКОЕ-ТО ВРЕМЯ -->
             <div class="w-full my-4">
@@ -98,13 +98,12 @@ const testList: Ref<Test[]> = ref<Test[]>([
     },
 ]);
 
+// Открыть результаты теста
 function openStatisticsTest(testData: Test) {
     try {
         // 
-        console.log('asfjiajsf');
-
         router.push({ query: { 'open_statistic_test_id': testData.id } });
-        isShowResultsForTest.value = true
+        isShowResultsForTest.value = true;
     } catch (err) {
         console.error('views/MainViews/StatisticsView.vue: openStatisticsTest => ', err);
         throw err;
@@ -112,6 +111,8 @@ function openStatisticsTest(testData: Test) {
 }
 
 onMounted(() => {
+    // Получение списка тестов (STUDENTS)
+
     // Если при загрузке есть query-параметр open_statistic_test_id то выполняем запрос результатов по тесту
     if(route.query['open_statistic_test_id']) {
         isShowResultsForTest.value = true;

@@ -1,7 +1,7 @@
 <template>
     <article 
-    class="checked-test flex flex-column align-items-center justify-content-around shadow-1 py-2" 
-    :class="'failed'"                    
+    class="checked-test flex flex-column align-items-center justify-content-around py-2"
+    :class="computeClassTest"
     @click="emit('openStatisticsTest', props.testData)"
     >
         <!-- Название теста -->
@@ -22,7 +22,10 @@
 
 <script setup lang="ts">
 import type { Test } from '@/types/testTypes';
-import { defineProps, defineEmits } from 'vue';
+import { defineProps, defineEmits, computed } from 'vue';
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
 
 const props = defineProps<{
     testData: Test;
@@ -31,6 +34,17 @@ const props = defineProps<{
 const emit = defineEmits({
     openStatisticsTest: (testData: Test) => true,
 });
+
+// Вычисление классов для карточки теста
+const computeClassTest = computed(() => {
+    const classList = { openned: false };
+    if(route.query['open_statistic_test_id']) {
+        if(+route.query['open_statistic_test_id'] === props.testData.id) {
+            classList.openned = true;
+        }
+    }
+    return classList;
+})
 
 </script>
 
@@ -41,28 +55,24 @@ const emit = defineEmits({
     display: inline-block;
     flex: 0 0 auto;
     background-color: var(--basic-bg);
-    transition: all .7s ease;
+    transition: all .4s ease;
     cursor: pointer;
     border-radius: var(--statistic-checked-test-radius);
     color: var(--statistic-checked-test-fg);
+    background-color: rgb(228, 228, 228);
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
 }
-.checked-test.success {
-    background-color: var(--statistic-checked-test-success-bg);
-}
-.checked-test.success:hover {
-    background-color: var(--statistic-checked-test-success-hover-bg);
-    transition: all .7s ease;
-}
-.checked-test.failed {
-    background-color: var(--statistic-checked-test-failed-bg);
-}
-
-.checked-test.failed:hover {
-    background-color: var(--statistic-checked-test-failed-hover-bg);
-    transition: all .7s ease;
+.checked-test:hover {
+    box-shadow: none;
+    transition: all .4s ease;
 }
 .checked-test + .checked-test {
     margin-left: .8rem;
+}
+
+.checked-test.openned {
+    box-shadow: none;
+    transition: all .4s ease;
 }
 
 .info-qs-block {
