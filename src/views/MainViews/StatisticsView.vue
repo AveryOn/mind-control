@@ -32,16 +32,19 @@
 
             <!-- БЛОК СПИСКА ВЫПОЛНЕННЫХ ПРОВЕРЕННЫХ ТЕСТОВ  -->
             <div class="list-block w-full mt-3">
-                <h1 class="font-medium text-3xl">Вывести статистику по тесту</h1>
+                <h1 class="font-medium text-3xl mb-2">Вывести статистику по тесту</h1>
                 <div class="checked-tests-block statistic-block pt-3 pb-2 px-3">
                     <testCheckedItemComp
                     v-for="test in testList" 
                     @open-statistics-test="(testData: Test) => openStatisticsTest(testData)"
                     :test-data="test"
-                    :key="test"
+                    :key="test.id"
                     />
                 </div>
             </div>
+
+            <!-- Блок информации по результатам запрошенного теста -->
+            <resultsBlockComp v-if="isShowResultsForTest" />
 
             <!-- БЛОК ОБЩЕЙ СТАТИСТИКИ ЗА КАКОЕ-ТО ВРЕМЯ -->
             <div class="w-full my-4">
@@ -54,15 +57,20 @@
 </template>
 
 <script setup lang="ts">
+import resultsBlockComp from '@/components/MainComponents/statistics/studentStatistics/resultsBlockComp.vue';
 import { useMainStore } from '@/stores/mainStore';
 import testCheckedItemComp from '@/components/MainComponents/statistics/testCheckedItemComp.vue';
 import pieComp from '@/components/MainComponents/statistics/pieComp.vue';
 import barComp from '@/components/MainComponents/statistics/barComp.vue';
 import type { Test } from '@/types/testTypes';
-import { ref, type Ref } from 'vue';
+import { onMounted, ref, type Ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
 const store = useMainStore();
+const route = useRoute();
+const router = useRouter();
 
+const isShowResultsForTest = ref(false);
 const testList: Ref<Test[]> = ref<Test[]>([
     { 
         id: 1,
@@ -88,17 +96,29 @@ const testList: Ref<Test[]> = ref<Test[]>([
         participants: [{ id: 1, createdAt: '124124', login: 'alex@123', name: 'Alex Some', updatedAt: '123124' }],
         questions: [{number: 1, question: 'How many time?', type: 'text'}],
     },
-
 ]);
 
 function openStatisticsTest(testData: Test) {
     try {
         // 
+        console.log('asfjiajsf');
+
+        router.push({ query: { 'open_statistic_test_id': testData.id } });
+        isShowResultsForTest.value = true
     } catch (err) {
         console.error('views/MainViews/StatisticsView.vue: openStatisticsTest => ', err);
         throw err;
     }
 }
+
+onMounted(() => {
+    // Если при загрузке есть query-параметр open_statistic_test_id то выполняем запрос результатов по тесту
+    if(route.query['open_statistic_test_id']) {
+        isShowResultsForTest.value = true;
+    } else {
+        console.log('NO');
+    }
+});
 
 </script>
 

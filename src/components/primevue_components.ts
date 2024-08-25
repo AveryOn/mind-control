@@ -25,6 +25,8 @@ import MeterGroup from 'primevue/metergroup';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import ProgressSpinner from 'primevue/progressspinner';
+import DatePicker from 'primevue/datepicker';
+import FloatLabel from 'primevue/floatlabel';
 
 
 export default [
@@ -55,4 +57,6 @@ export default [
     DataTable,
     Column,
     ProgressSpinner,
+    DatePicker,
+    FloatLabel,
 ] as any[]
