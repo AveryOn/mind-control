@@ -252,6 +252,13 @@ export interface RequestGetResultsTchr {
     perPage?: number;
 }
 
+// Объект необходимый для получения результатов теста (Ученик)
+export interface RequestGetResultsStd {
+    testId: number;
+    page?: number;
+    perPage?: number;
+}
+
 // Объект необходимый для получения результата по ID (Учитель)
 export interface RequestGetResultByIdTchr {
     testId: number;
@@ -269,6 +276,26 @@ export interface RequestCheckResultDataTchr {
 
 // Тело ответа при получении результатов теста (Учитель)
 export interface ResponseGetResultsTchr {
+    meta: HttpMeta;
+    data: {
+        results: {
+            id: number;
+            userId: number;
+            testId: number;
+            isSuccess: null | boolean;
+            isChecked: boolean;
+            checkDate: string | null;
+            duration: number;
+            successCount: null | number;
+            questionsCount: number;
+            createdAt: string;
+            updatedAt: string;
+        }[]
+    };
+}
+
+// Тело ответа при получении результатов теста (Ученик)
+export interface ResponseGetResultsStd {
     meta: HttpMeta;
     data: {
         results: {

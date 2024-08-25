@@ -48,7 +48,7 @@
                     v-else-if="testList.length && !isLoadingListTests"
                     v-show="testList.length"
                     v-for="test in testList" 
-                    @open-statistics-test="(testData: Test) => openStatisticsTest(testData)"
+                    @open-statistics-test="(testData: Test | TestTeacher) => openStatisticsTest(testData)"
                     :test-data="test"
                     :key="test.id"
                     />
@@ -91,6 +91,7 @@ import { onMounted, reactive, ref, watch, type Ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import TestsView from './TestsView.vue';
 import { getTestsStudent } from '@/api/testsApi';
+import { getResultsStd } from '@/api/resultsApi';
 
 // #############################################   COMPOSABLES   #############################################
 const store = useMainStore();
@@ -114,15 +115,19 @@ const testList: Ref<TestTeacher[]> = ref<TestTeacher[]>([
     //     questions: [{number: 1, question: 'How many time?', type: 'text'}],
     // },
 ]);
-const pagination = reactive({
+const paginationTests = reactive({
     page: 1,
     perPage: 15,
-})
+});
+const paginationResults = reactive({
+    page: 1,
+    perPage: 15,
+});
 
 
 // #############################################   METHODS   #############################################
 // Открыть результаты теста
-function openStatisticsTest(testData: Test) {
+function openStatisticsTest(testData: Test | TestTeacher) {
     try {
         router.push({ query: { 'open_statistic_test_id': testData.id } });
         isShowResultsForTest.value = true;
@@ -151,15 +156,16 @@ function handlerOpenResult(resultId: number) {
 }
 
 // Получение списка результов текущего теста
-function handlerFetchResults() {
+async function handlerFetchResults(testId: number) {
     try {
         isLoadingListResults.value = true;
-        setTimeout(() => {
-            isLoadingListResults.value = false;
-        }, 1500);
+        const { data: { results } , meta } = await getResultsStd({ testId, page: paginationResults.page, perPage: paginationResults.perPage });
+        store.statisticsResultsStudents = results;
     } catch (err) {
         console.error('views/MainViews/StatisticsView.vue: handlerFetchResults => ', err);
         throw err;
+    } finally {
+        isLoadingListResults.value = false;
     }
 }
 
@@ -167,7 +173,7 @@ function handlerFetchResults() {
 async function handlerFetchListTests() {
     try {
         isLoadingListTests.value = true;
-        const { data: { tests }, meta } = await getTestsStudent(pagination.page, pagination.perPage, true);
+        const { data: { tests }, meta } = await getTestsStudent(paginationTests.page, paginationTests.perPage, true);
         testList.value = tests;
     } catch (err) {
         console.error('views/MainViews/StatisticsView.vue: handlerFetchListTests => ', err);
@@ -202,7 +208,7 @@ watch(() => route.query['open_result_id'], (newId, oldId) => {
 });
 
 // Наблюдение за изменением параметра запроса open_statistic_test_id
-watch(() => route.query['open_statistic_test_id'], (newId, oldId) => {
+watch(() => route.query['open_statistic_test_id'], async (newId, oldId) => {
     // Если при изменении open_statistic_test_id его НЕ существует то скрываем все блоки касаемые информации теста
     if(!newId) {
         if(newId !== oldId) {
@@ -213,7 +219,7 @@ watch(() => route.query['open_statistic_test_id'], (newId, oldId) => {
     // Если при изменении open_statistic_test_id он существует, то открываем блок результатов данного теста
     else if(!!newId) {
         isShowResultsForTest.value = true;
-        handlerFetchResults();
+        await handlerFetchResults(+newId);
     }
 });
 
@@ -224,13 +230,20 @@ onMounted(async () => {
     try {
         await handlerFetchListTests();
     } catch (err) {
+        console.error('views/MainViews/StatisticsView.vue: onMounted[handlerFetchListTests] => ', err);
         throw err;
     }
 
     // Если при загрузке есть query-параметр open_statistic_test_id то выполняем запрос результатов по тесту
     if(route.query['open_statistic_test_id'] && !route.query['open_result_id']) {
         isShowResultsForTest.value = true;
-        handlerFetchResults();
+        // Получение списка результатов по ID теста
+        try {
+            await handlerFetchResults(+route.query['open_statistic_test_id']);
+        } catch (err) {
+            console.error('views/MainViews/StatisticsView.vue: onMounted[handlerFetchResults] => ', err);
+            throw err;
+        }
     } 
 
     // Если и open_statistic_test_id И open_result_id существуют, то открывается окно с данными результата

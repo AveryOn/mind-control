@@ -18,18 +18,18 @@
 </template>
 
 <script setup lang="ts">
-import type { Test } from '@/types/testTypes';
+import type { Test, TestTeacher } from '@/types/testTypes';
 import { defineProps, defineEmits, computed } from 'vue';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
 
 const props = defineProps<{
-    testData: Test;
+    testData: Test | TestTeacher;
 }>();
 
 const emit = defineEmits({
-    openStatisticsTest: (testData: Test) => true,
+    openStatisticsTest: (testData: Test | TestTeacher) => true,
 });
 
 // Вычисление классов для карточки теста

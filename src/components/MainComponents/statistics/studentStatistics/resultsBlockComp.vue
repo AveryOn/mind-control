@@ -7,7 +7,7 @@
         <!-- Фильтр панель -->
         <div class="w-full flex align-items-center justify-content-start gap-2 mb-3">
             <!-- Выбор Даты ОТ -->  
-            <DatePicker 
+            <DatePicker
             v-model="fromDate" 
             dateFormat="dd/mm/yy" 
             showIcon 
@@ -34,9 +34,9 @@
             class="ml-2"
             v-model="selectedStatusFilter" 
             :options="statusOptionsFilter" 
-            optionLabel="label" 
+            optionLabel="label"
             optionValue="value" 
-            placeholder="Статус результата" 
+            placeholder="Статус результатов" 
             />
         </div>
 
@@ -57,6 +57,8 @@
 
         <!-- Отрисовка результатов -->
         <ul v-else class="w-full">
+
+            <h3 class="light-text w-max mx-auto" v-show="!store.statisticsResultsStudents.length">Результатов для данного теста пока еще нет</h3>
 
             <li 
             class="result-list-item w-full flex align-items-center justify-content-start px-3 py-2 shadow-2 gap-3" 

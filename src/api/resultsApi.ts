@@ -1,4 +1,4 @@
-import type { HttpContentType, HttpAuthorization, ResponseGetTestByIdStudent, RequestCreationResultStd, RequestGetResultsTchr, ResponseCreationResultStd, ResponseGetResultsTchr, RequestGetResultByIdTchr, ResponseGetResultByIdTchr, RequestCheckResultDataTchr } from "@/types/apiTypes";
+import type { HttpContentType, HttpAuthorization, ResponseGetTestByIdStudent, RequestCreationResultStd, RequestGetResultsTchr, ResponseCreationResultStd, ResponseGetResultsTchr, RequestGetResultByIdTchr, ResponseGetResultByIdTchr, RequestCheckResultDataTchr, RequestGetResultsStd, ResponseGetResultsStd } from "@/types/apiTypes";
 import axios from 'axios';
 import { hostname } from "@/api/index";
 
@@ -26,6 +26,27 @@ export async function createResultStudent({ answers, duration, testId }: Request
 export async function getResultsTchr({ testId, page, perPage }: RequestGetResultsTchr): Promise<ResponseGetResultsTchr> {
     try {
         const response = await axios.get(hostname + `/api/teahcer/test/${testId}/results`, {
+            params: {
+                page,
+                per_page: perPage,
+            },
+            headers: {
+                ...{ "Content-Type": 'application/x-www-form-urlencoded' } as HttpContentType,
+                ...{ "Authorization": 'Bearer ' + localStorage.getItem('token') } as HttpAuthorization,
+            }
+        });
+        const { data: { data, meta } } = response;
+        return { data, meta };
+    } catch (err) {
+        console.error('/src/api/resultsApi.ts: getResultsTchr => ', err);
+        throw err;
+    }
+}
+
+// Получить результаты теста (Ученик)
+export async function getResultsStd({ testId, page, perPage }: RequestGetResultsStd): Promise<ResponseGetResultsStd> {
+    try {
+        const response = await axios.get(hostname + `/api/student/test/${testId}/results`, {
             params: {
                 page,
                 per_page: perPage,
