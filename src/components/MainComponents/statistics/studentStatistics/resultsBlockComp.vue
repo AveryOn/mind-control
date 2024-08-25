@@ -41,10 +41,23 @@
         </div>
 
         <!-- Подзаголовок -->
-        <h3 class="light-text w-full mb-3 pb-1 cursor-auto text-lg" style="border-bottom:1px dotted var(--basic-border-color); user-select: none">Результаты</h3>
+        <h3 class="light-text w-full mb-3 pb-1 cursor-auto text-lg" style="border-bottom:1px dotted var(--basic-border-color); user-select: none">
+            Результаты
+        </h3>
+
+        <!-- Спиннер загрузки данных -->
+        <ProgressSpinner 
+        v-if="props.isLoadingData" 
+        style="width: 40px; height: 40px" 
+        strokeWidth="4" 
+        fill="transparent"
+        animationDuration=".5s" 
+        aria-label="Custom ProgressSpinner" 
+        />
 
         <!-- Отрисовка результатов -->
-        <ul class="w-full">
+        <ul v-else class="w-full">
+
             <li 
             class="result-list-item w-full flex align-items-center justify-content-start px-3 py-2 shadow-2 gap-3" 
             :class="computeClassResult(result.isSuccess)"
@@ -66,13 +79,13 @@ import { useMainStore } from '@/stores/mainStore';
 import type { FilterMode } from '@/types/statisticTypes';
 import { formattedDateByTemplate, fromNow } from '@/utils/timeUtils';
 import { computed, ref, defineProps, defineEmits } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
 
 const store = useMainStore();
 
 
 const props = defineProps<{
     testName: string;
+    isLoadingData: boolean;
 }>();
 
 const emit = defineEmits({

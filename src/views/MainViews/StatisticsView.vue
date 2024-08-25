@@ -34,7 +34,9 @@
             <div class="list-block w-full mt-3">
                 <h1 class="font-medium text-3xl mb-2">Вывести статистику по тесту</h1>
                 <div class="checked-tests-block statistic-block pt-3 pb-2 px-3">
+                    <h2 class="light-text text-lg w-max mx-auto mb-2" v-show="!testList.length">Здесь будут отображаться тесты, которые вы выполнили</h2>
                     <testCheckedItemComp
+                    v-show="testList.length"
                     v-for="test in testList" 
                     @open-statistics-test="(testData: Test) => openStatisticsTest(testData)"
                     :test-data="test"
@@ -47,13 +49,14 @@
             <resultsBlockComp 
             v-if="isShowResultsForTest" 
             :test-name="'Пример Названия'"
+            :is-loading-data="isLoadingListResults"
             @open-result="handlerOpenResult"
             />
 
             <!-- Блок данных открытого результата -->
             <openResultComp 
             v-else-if="isShowOpenResult" 
-            :is-loading-data="isLoadingOprnResult"
+            :is-loading-data="isLoadingOpenResult"
             />
 
             <!-- БЛОК ОБЩЕЙ СТАТИСТИКИ ЗА КАКОЕ-ТО ВРЕМЯ -->
@@ -86,28 +89,13 @@ const router = useRouter();
 // #############################################   DATA   #############################################
 const isShowResultsForTest = ref(false);
 const isShowOpenResult = ref(false);
-const isLoadingOprnResult = ref(false);
+const isLoadingOpenResult = ref(false);
+const isLoadingListResults = ref(false);
 const testList: Ref<Test[]> = ref<Test[]>([
     { 
         id: 1,
         title: 'Tested Test',
         summary: 'Something Tested Summary',
-        group: { id: 1, createdAt: '123', title: 'Frontend', updatedAt: '123' },
-        participants: [{ id: 1, createdAt: '124124', login: 'alex@123', name: 'Alex Some', updatedAt: '123124' }],
-        questions: [{number: 1, question: 'How many time?', type: 'text'}],
-    },
-    { 
-        id: 2,
-        title: 'Second Test',
-        summary: 'Something Second Summary',
-        group: { id: 1, createdAt: '123', title: 'Frontend', updatedAt: '123' },
-        participants: [{ id: 1, createdAt: '124124', login: 'alex@123', name: 'Alex Some', updatedAt: '123124' }],
-        questions: [{number: 1, question: 'How many time?', type: 'text'}],
-    },
-    { 
-        id: 3,
-        title: 'Third Test',
-        summary: 'Something Third Summary',
         group: { id: 1, createdAt: '123', title: 'Frontend', updatedAt: '123' },
         participants: [{ id: 1, createdAt: '124124', login: 'alex@123', name: 'Alex Some', updatedAt: '123124' }],
         questions: [{number: 1, question: 'How many time?', type: 'text'}],
@@ -130,17 +118,30 @@ function openStatisticsTest(testData: Test) {
 // Обработчик открытия результата
 function handlerOpenResult(resultId: number) {
     try {
-        isLoadingOprnResult.value = true;
+        isLoadingOpenResult.value = true;
         // Установка query-параметра
         router.push({ query: { ...route.query, 'open_result_id': resultId } });
         isShowResultsForTest.value = false;
         isShowOpenResult.value = true;
         // Запрос на сервер...
         setTimeout(() => {
-            isLoadingOprnResult.value = false;
+            isLoadingOpenResult.value = false;
         },1600);
     } catch (err) {
         console.error('views/MainViews/StatisticsView.vue: openStatisticsTest => ', err);
+        throw err;
+    }
+}
+
+// Выполнение запроса на сервер для получения списка результов текущего теста
+function handlerFetchResults() {
+    try {
+        isLoadingListResults.value = true;
+        setTimeout(() => {
+            isLoadingListResults.value = false;
+        }, 1500);
+    } catch (err) {
+        console.error('views/MainViews/StatisticsView.vue: handlerFetchResults => ', err);
         throw err;
     }
 }
@@ -167,7 +168,24 @@ watch(() => route.query['open_result_id'], (newId, oldId) => {
             isShowOpenResult.value = false;
         }
     }
-})
+});
+
+// Наблюдение за изменением параметра запроса open_statistic_test_id
+watch(() => route.query['open_statistic_test_id'], (newId, oldId) => {
+    // Если при изменении open_statistic_test_id его НЕ существует то скрываем все блоки касаемые информации теста
+    if(!newId) {
+        if(newId !== oldId) {
+            isShowResultsForTest.value = false;
+            isShowOpenResult.value = false;
+        }
+    }
+    // Если при изменении open_statistic_test_id он существует, то открываем блок результатов данного теста
+    else if(!!newId) {
+        isShowResultsForTest.value = true;
+        handlerFetchResults();
+    }
+});
+
 
 
 // #############################################   LIFECYCLE HOOKS   #############################################
@@ -177,6 +195,7 @@ onMounted(() => {
     // Если при загрузке есть query-параметр open_statistic_test_id то выполняем запрос результатов по тесту
     if(route.query['open_statistic_test_id'] && !route.query['open_result_id']) {
         isShowResultsForTest.value = true;
+        handlerFetchResults();
     } 
 
     // Если и open_statistic_test_id И open_result_id существуют, то открывается окно с данными результата
