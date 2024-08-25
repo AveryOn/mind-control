@@ -134,7 +134,6 @@ function getDraftResultTestCheck(): LocalAnswer[] {
 function updateDraftArray({ id, questionId, isCorrect }: Answer, draftArray: LocalAnswer[]): LocalAnswer[] {
     try {
         if(!draftArray.length) {
-            console.log('!draftArray.length');
             draftArray.push({ id, questionId, isCorrect });
             return draftArray;
         } 

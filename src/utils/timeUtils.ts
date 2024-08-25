@@ -6,9 +6,9 @@
 import moment from '@/plugins/momentPlugin';
 
 // Получить из кол-ва миллисекунд кол-во минут
-export function computeMinutesByMs(milliseconds: number | undefined) {
+export function computeMinutesByMs(milliseconds: number | undefined | null) {
     try {
-        if(milliseconds) {
+        if(milliseconds !== undefined && milliseconds !== null) {
             const minutes = Math.ceil(milliseconds / 60000);
             return minutes;
         } 

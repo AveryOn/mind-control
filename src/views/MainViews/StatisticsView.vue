@@ -51,7 +51,10 @@
             />
 
             <!-- Блок данных открытого результата -->
-            <openResultComp v-else-if="isShowOpenResult"/>
+            <openResultComp 
+            v-else-if="isShowOpenResult" 
+            :is-loading-data="isLoadingOprnResult"
+            />
 
             <!-- БЛОК ОБЩЕЙ СТАТИСТИКИ ЗА КАКОЕ-ТО ВРЕМЯ -->
             <div class="w-full my-4">
@@ -83,6 +86,7 @@ const router = useRouter();
 // #############################################   DATA   #############################################
 const isShowResultsForTest = ref(false);
 const isShowOpenResult = ref(false);
+const isLoadingOprnResult = ref(false);
 const testList: Ref<Test[]> = ref<Test[]>([
     { 
         id: 1,
@@ -126,11 +130,15 @@ function openStatisticsTest(testData: Test) {
 // Обработчик открытия результата
 function handlerOpenResult(resultId: number) {
     try {
+        isLoadingOprnResult.value = true;
         // Установка query-параметра
         router.push({ query: { ...route.query, 'open_result_id': resultId } });
         isShowResultsForTest.value = false;
         isShowOpenResult.value = true;
-
+        // Запрос на сервер...
+        setTimeout(() => {
+            isLoadingOprnResult.value = false;
+        },1600);
     } catch (err) {
         console.error('views/MainViews/StatisticsView.vue: openStatisticsTest => ', err);
         throw err;

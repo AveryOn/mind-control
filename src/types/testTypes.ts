@@ -1,8 +1,8 @@
 import type { Student } from "./usersType";
 
 export type QuestionTypes =  'text' | 'checkbox' | 'radio';
-export type RadioAnswer = { answer: string, isCorrect?: boolean };
-export type CheckboxAnswer = { answer: string, isCorrect?: boolean };
+export type RadioAnswer = { answer: string, isCorrect?: boolean, is_correct?: boolean };
+export type CheckboxAnswer = { answer: string, isCorrect?: boolean, is_correct?: boolean };
 export type RadioAnswerStudent = { answer: string };
 export type CheckboxAnswerStudent = { answer: string };
 export type GroupTest = { 
@@ -35,6 +35,8 @@ export type Question = {
     type: QuestionTypes;
     radioAnswers?: RadioAnswer[];
     checkboxAnswers?: CheckboxAnswer[];
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 export type QuestionStudent = {
@@ -98,6 +100,37 @@ export type ResultForCheck = Result & {
     questions: Question[];
     answers: Answer[];
     student: Student;
+}
+
+// Данные результата которые получает ученик
+export interface ResultOpenStudent {
+    id: number;
+    userId: number;
+    testId: number;
+    isSuccess: null | boolean;
+    successCount: null | number;
+    questionsCount: number;
+    isChecked: boolean;
+    checkDate: string | null;
+    duration: number;
+    createdAt: string;
+    updatedAt: string;
+    test: {
+        id: number;
+        title: string;
+        summary: string;
+        group: {
+            id: number;
+            title: string;
+            createdAt: string;
+            updatedAt: string;
+        };
+        questionsCount?: number;
+        createdAt?: string;
+        updatedAt?: string;
+    };
+    questions: Question[];
+    answers: Answer[];
 }
 
 export type Test = {
