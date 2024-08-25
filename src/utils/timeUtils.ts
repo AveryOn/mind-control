@@ -19,6 +19,18 @@ export function computeMinutesByMs(milliseconds: number | undefined) {
     }
 }
 
+// Вычислить сколько времени прошло
+export function fromNow(date: string | Date | null | undefined) {
+    try {
+        if(date) {
+            return moment(date).utcOffset('+03:00').fromNow();
+        }
+    } catch (err) {
+        console.error('/src/utils/timeUtils.ts: fromNow => ', err);
+        throw err;
+    }
+}
+
 // Форматирования даты по шаблону
 export function formattedDateByTemplate(date: string | Date | null | undefined, template?: string ) {
     try {

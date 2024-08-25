@@ -2,7 +2,7 @@
     <div class="statistic-block w-full h-max flex flex-column align-items-center py-3 mt-3">
 
         <!-- Заголовок -->
-        <h2 class="font-light mb-3 w-full" style="font-size: 1.3rem;">Сводка результатов по тесту <span class="font-normal font-italic ml-1">{{ props.testName }}</span></h2>
+        <h2 class="font-light mb-3 w-full" style="font-size: 1.3rem;">Сводка результатов по тесту -<span class="font-normal font-italic ml-1">{{ props.testName }}</span></h2>
 
         <!-- Фильтр панель -->
         <div class="w-full flex align-items-center justify-content-start gap-2 mb-3">
@@ -12,11 +12,10 @@
             dateFormat="dd/mm/yy" 
             showIcon 
             iconDisplay="input" 
-            :placeholder="'От'"
+            :placeholder="'Дата (От)'"
             @date-select="(date: Date) => requestFilter('from-date', date)"
             @update:modelValue="(value) => value ?? (minDateForTo = undefined)"
             />
-   
 
             <!-- Разделитель -->
             <span class="text-2xl">-</span>
@@ -26,7 +25,7 @@
             v-model="toDate" 
             dateFormat="dd/mm/yy" 
             showIcon 
-            :placeholder="'До'"
+            :placeholder="'Дата (До)'"
             iconDisplay="input" 
             :minDate="minDateForTo"
             />
@@ -51,11 +50,12 @@
             :class="computeClassResult(result.isSuccess)"
             v-for="result in store.statisticsResultsStudents" 
             :key="result.id"
+            @click="() => openResult(result.id)"
             >
                 <span class="light-text font-italic"># {{ result.id }}</span>
                 <span>{{ computeStateSignResult(result.isSuccess) }}</span>
-                <span class="ml-auto">{{ formattedDateByTemplate(result.createdAt) }}</span>
-                
+                <span class="light-text ml-auto">{{ `( ${fromNow(result.createdAt)} )` }}</span>
+                <span>{{ formattedDateByTemplate(result.createdAt) }}</span>
             </li>
         </ul>
     </div>
@@ -64,14 +64,20 @@
 <script setup lang="ts">
 import { useMainStore } from '@/stores/mainStore';
 import type { FilterMode } from '@/types/statisticTypes';
-import { formattedDateByTemplate } from '@/utils/timeUtils';
-import { computed, ref, defineProps } from 'vue';
+import { formattedDateByTemplate, fromNow } from '@/utils/timeUtils';
+import { computed, ref, defineProps, defineEmits } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
 const store = useMainStore();
+
 
 const props = defineProps<{
     testName: string;
 }>();
+
+const emit = defineEmits({
+    openResult: (resultId: number) => true,
+})
 
 const fromDate = ref();
 const toDate = ref();
@@ -105,15 +111,31 @@ const computeStateSignResult = computed(() => {
 
 // Запрос данных по фильтрации
 function requestFilter(mode: FilterMode, payload: any) {
-    if(mode === 'from-date') {
-        minDateForTo.value = payload; // минимальная допустимая дата для toDate
-        toDate.value = undefined;
+    try {
+        if(mode === 'from-date') {
+            minDateForTo.value = payload; // минимальная допустимая дата для toDate
+            toDate.value = undefined;
+        }
+        else if(mode === 'to-date') {
+            console.log(mode);
+        }
+        else if(mode === 'complete-status') {
+            console.log(mode);
+        }
+    } catch (err) {
+        console.error('/src/components/MainComponents/statistics/studentStatistics/resultsBlockComp.vue:  requestFilter => ', err);
+        throw err;
     }
-    else if(mode === 'to-date') {
-        console.log(mode);
-    }
-    else if(mode === 'complete-status') {
-        console.log(mode);
+
+}
+
+// открыть результат теста (Для просмотра данных результата)
+function openResult(resultId: number) {
+    try {
+        emit('openResult', resultId);  
+    } catch (err) {
+        console.error('/src/components/MainComponents/statistics/studentStatistics/resultsBlockComp.vue:  openResult => ', err);
+        throw err;
     }
 }
 

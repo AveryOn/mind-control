@@ -44,7 +44,14 @@
             </div>
 
             <!-- Блок информации по результатам запрошенного теста -->
-            <resultsBlockComp v-if="isShowResultsForTest" :test-name="'Пример Названия'"/>
+            <resultsBlockComp 
+            v-if="isShowResultsForTest" 
+            :test-name="'Пример Названия'"
+            @open-result="handlerOpenResult"
+            />
+
+            <!-- Блок данных открытого результата -->
+            <openResultComp v-else-if="isShowOpenResult"/>
 
             <!-- БЛОК ОБЩЕЙ СТАТИСТИКИ ЗА КАКОЕ-ТО ВРЕМЯ -->
             <div class="w-full my-4">
@@ -58,19 +65,24 @@
 
 <script setup lang="ts">
 import resultsBlockComp from '@/components/MainComponents/statistics/studentStatistics/resultsBlockComp.vue';
+import openResultComp from '@/components/MainComponents/statistics/studentStatistics/openResultComp.vue';
 import { useMainStore } from '@/stores/mainStore';
 import testCheckedItemComp from '@/components/MainComponents/statistics/testCheckedItemComp.vue';
 import pieComp from '@/components/MainComponents/statistics/pieComp.vue';
 import barComp from '@/components/MainComponents/statistics/barComp.vue';
 import type { Test } from '@/types/testTypes';
-import { onMounted, ref, type Ref } from 'vue';
+import { onMounted, ref, watch, type Ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
+// #############################################   COMPOSABLES   #############################################
 const store = useMainStore();
 const route = useRoute();
 const router = useRouter();
 
+
+// #############################################   DATA   #############################################
 const isShowResultsForTest = ref(false);
+const isShowOpenResult = ref(false);
 const testList: Ref<Test[]> = ref<Test[]>([
     { 
         id: 1,
@@ -98,10 +110,11 @@ const testList: Ref<Test[]> = ref<Test[]>([
     },
 ]);
 
+
+// #############################################   METHODS   #############################################
 // Открыть результаты теста
 function openStatisticsTest(testData: Test) {
     try {
-        // 
         router.push({ query: { 'open_statistic_test_id': testData.id } });
         isShowResultsForTest.value = true;
     } catch (err) {
@@ -110,14 +123,62 @@ function openStatisticsTest(testData: Test) {
     }
 }
 
+// Обработчик открытия результата
+function handlerOpenResult(resultId: number) {
+    try {
+        // Установка query-параметра
+        router.push({ query: { ...route.query, 'open_result_id': resultId } });
+        isShowResultsForTest.value = false;
+        isShowOpenResult.value = true;
+
+    } catch (err) {
+        console.error('views/MainViews/StatisticsView.vue: openStatisticsTest => ', err);
+        throw err;
+    }
+}
+
+// #############################################   WATCH   #############################################
+// Наблюдение за изменением параметра запроса open_result_id
+watch(() => route.query['open_result_id'], (newId, oldId) => {
+    // Если при изменении open_result_id он существует то открываем результат
+    if(!!newId) {
+        if(newId !== oldId) {
+            isShowResultsForTest.value = false;
+            isShowOpenResult.value = true;
+        }
+    } 
+    // Если при изменении open_result_id он НЕ существует
+    else {
+        // Если существует open_statistic_test_id то открывает список результатов открытого теста
+        if(!!route.query['open_statistic_test_id']) {
+            isShowResultsForTest.value = true;
+            isShowOpenResult.value = false;
+        }
+        else {
+            isShowResultsForTest.value = false;
+            isShowOpenResult.value = false;
+        }
+    }
+})
+
+
+// #############################################   LIFECYCLE HOOKS   #############################################
 onMounted(() => {
     // Получение списка тестов (STUDENTS)
 
     // Если при загрузке есть query-параметр open_statistic_test_id то выполняем запрос результатов по тесту
-    if(route.query['open_statistic_test_id']) {
+    if(route.query['open_statistic_test_id'] && !route.query['open_result_id']) {
         isShowResultsForTest.value = true;
-    } else {
-        console.log('NO');
+    } 
+
+    // Если и open_statistic_test_id И open_result_id существуют, то открывается окно с данными результата
+    else if (route.query['open_statistic_test_id'] && route.query['open_result_id']) {
+        isShowOpenResult.value = true;
+    } 
+    // Если нет query-параметров отключаются все окна касаемые статистики теста
+    else {
+        isShowResultsForTest.value = false;
+        isShowOpenResult.value = false;
     }
 });
 

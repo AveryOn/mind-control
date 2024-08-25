@@ -5,18 +5,15 @@
     @click="emit('openStatisticsTest', props.testData)"
     >
         <!-- Название теста -->
-        <h3 class="text-lg font-medium">{{ props.testData.title }}</h3>
+        <h3 class="text-lg font-medium mt-2">{{ props.testData.title }}</h3>
         
         <!-- Инфор о кол-ве вопросов -->
-        <div class="info-qs-block flex align-items-center py-1 px-2 border-round-sm" v-tooltip.right="'количество вопросов'">
+        <div class="info-qs-block flex align-items-center py-1 px-2 my-auto border-round-sm" v-tooltip.right="'количество вопросов'">
             <span class=" mr-2">
                 <i class="pi pi-list" style="font-size: 1.7rem;"></i> 
             </span> 
             <span class="qs-count">{{ props.testData.questionsCount }}</span>
         </div>
-
-        <!-- Название теста -->
-        <h3 class="text-lg font-medium" v-tooltip.right="'верные ответы'">1 / {{ props.testData.questionsCount}}</h3>
     </article>
 </template>
 
