@@ -41,10 +41,10 @@ export async function getTestsTeacher(page?: number, per_page?: number): Promise
 }
 
 // Получить список тестов (Ученик)
-export async function getTestsStudent(page?: number, per_page?: number): Promise<ResponseGetTestsTeacher> {
+export async function getTestsStudent(page?: number, per_page?: number, only_checked?: boolean): Promise<ResponseGetTestsTeacher> {
     try {
         const response = await axios.get(hostname + '/api/student/tests', {
-            params: { page, per_page, },
+            params: { page, per_page, only_checked },
             headers: {
                 ...{ "Content-Type": 'application/x-www-form-urlencoded' } as HttpContentType,
                 ...{ "Authorization": 'Bearer ' + localStorage.getItem('token') } as HttpAuthorization,

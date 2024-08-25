@@ -34,8 +34,18 @@
             <div class="list-block w-full mt-3">
                 <h1 class="font-medium text-3xl mb-2">Вывести статистику по тесту</h1>
                 <div class="checked-tests-block statistic-block pt-3 pb-2 px-3">
-                    <h2 class="light-text text-lg w-max mx-auto mb-2" v-show="!testList.length">Здесь будут отображаться тесты, которые вы выполнили</h2>
+                    <!-- Спиннер загрузки данных -->
+                    <ProgressSpinner 
+                    v-if="isLoadingListTests" 
+                    style="width: 30px; height: 30px" 
+                    strokeWidth="4" 
+                    fill="transparent"
+                    animationDuration=".5s" 
+                    aria-label="Custom ProgressSpinner" 
+                    />
+                    <h2 v-else-if="!testList.length && !isLoadingListTests" class="light-text text-lg w-max mx-auto mb-2" v-show="!testList.length">Здесь будут отображаться тесты, которые вы выполнили</h2>
                     <testCheckedItemComp
+                    v-else-if="testList.length && !isLoadingListTests"
                     v-show="testList.length"
                     v-for="test in testList" 
                     @open-statistics-test="(testData: Test) => openStatisticsTest(testData)"
@@ -76,9 +86,11 @@ import { useMainStore } from '@/stores/mainStore';
 import testCheckedItemComp from '@/components/MainComponents/statistics/testCheckedItemComp.vue';
 import pieComp from '@/components/MainComponents/statistics/pieComp.vue';
 import barComp from '@/components/MainComponents/statistics/barComp.vue';
-import type { Test } from '@/types/testTypes';
-import { onMounted, ref, watch, type Ref } from 'vue';
+import type { Test, TestTeacher } from '@/types/testTypes';
+import { onMounted, reactive, ref, watch, type Ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import TestsView from './TestsView.vue';
+import { getTestsStudent } from '@/api/testsApi';
 
 // #############################################   COMPOSABLES   #############################################
 const store = useMainStore();
@@ -91,16 +103,21 @@ const isShowResultsForTest = ref(false);
 const isShowOpenResult = ref(false);
 const isLoadingOpenResult = ref(false);
 const isLoadingListResults = ref(false);
-const testList: Ref<Test[]> = ref<Test[]>([
-    { 
-        id: 1,
-        title: 'Tested Test',
-        summary: 'Something Tested Summary',
-        group: { id: 1, createdAt: '123', title: 'Frontend', updatedAt: '123' },
-        participants: [{ id: 1, createdAt: '124124', login: 'alex@123', name: 'Alex Some', updatedAt: '123124' }],
-        questions: [{number: 1, question: 'How many time?', type: 'text'}],
-    },
+const isLoadingListTests = ref(false);
+const testList: Ref<TestTeacher[]> = ref<TestTeacher[]>([
+    // { 
+    //     id: 1,
+    //     title: 'Tested Test',
+    //     summary: 'Something Tested Summary',
+    //     group: { id: 1, createdAt: '123', title: 'Frontend', updatedAt: '123' },
+    //     participants: [{ id: 1, createdAt: '124124', login: 'alex@123', name: 'Alex Some', updatedAt: '123124' }],
+    //     questions: [{number: 1, question: 'How many time?', type: 'text'}],
+    // },
 ]);
+const pagination = reactive({
+    page: 1,
+    perPage: 15,
+})
 
 
 // #############################################   METHODS   #############################################
@@ -128,12 +145,12 @@ function handlerOpenResult(resultId: number) {
             isLoadingOpenResult.value = false;
         },1600);
     } catch (err) {
-        console.error('views/MainViews/StatisticsView.vue: openStatisticsTest => ', err);
+        console.error('views/MainViews/StatisticsView.vue: handlerOpenResult => ', err);
         throw err;
     }
 }
 
-// Выполнение запроса на сервер для получения списка результов текущего теста
+// Получение списка результов текущего теста
 function handlerFetchResults() {
     try {
         isLoadingListResults.value = true;
@@ -143,6 +160,20 @@ function handlerFetchResults() {
     } catch (err) {
         console.error('views/MainViews/StatisticsView.vue: handlerFetchResults => ', err);
         throw err;
+    }
+}
+
+// Получение списка тестов
+async function handlerFetchListTests() {
+    try {
+        isLoadingListTests.value = true;
+        const { data: { tests }, meta } = await getTestsStudent(pagination.page, pagination.perPage, true);
+        testList.value = tests;
+    } catch (err) {
+        console.error('views/MainViews/StatisticsView.vue: handlerFetchListTests => ', err);
+        throw err;
+    } finally {
+        isLoadingListTests.value = false;
     }
 }
 
@@ -187,10 +218,14 @@ watch(() => route.query['open_statistic_test_id'], (newId, oldId) => {
 });
 
 
-
 // #############################################   LIFECYCLE HOOKS   #############################################
-onMounted(() => {
-    // Получение списка тестов (STUDENTS)
+onMounted(async () => {
+    // Получение списка тестов (STUDENT)
+    try {
+        await handlerFetchListTests();
+    } catch (err) {
+        throw err;
+    }
 
     // Если при загрузке есть query-параметр open_statistic_test_id то выполняем запрос результатов по тесту
     if(route.query['open_statistic_test_id'] && !route.query['open_result_id']) {

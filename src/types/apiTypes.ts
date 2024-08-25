@@ -123,6 +123,7 @@ export interface CreationTestData {
         createdAt: string;
         updatedAt: string;
     };
+    result?: null;
 }
 
 export interface TestForStudent {

@@ -161,7 +161,7 @@ export interface TestTeacher {
         createdAt: string;
         updatedAt: string;
     };
-    result: null;
+    result?: null;
 } 
 
 export interface TestStudent {
