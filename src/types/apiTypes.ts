@@ -57,6 +57,26 @@ export type LoginOutputData = {
     password: string;
 }
 
+export type LogUpOutputData = {
+    name: string;
+    login: string;
+    password: string;
+}
+
+export interface LogUpInputData {
+    meta: HttpMeta;
+    data: {
+        user: {
+            id: number;
+            name: string;
+            login: string;
+            role: Role;
+            createdAt: string;
+            updatedAt: string;
+        };
+    }
+}
+
 // ==============  USERS  =================
 export interface FetchedUserData {
     meta: HttpMeta;

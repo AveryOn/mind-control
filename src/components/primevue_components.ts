@@ -27,6 +27,7 @@ import Column from 'primevue/column';
 import ProgressSpinner from 'primevue/progressspinner';
 import DatePicker from 'primevue/datepicker';
 import FloatLabel from 'primevue/floatlabel';
+import Toast from 'primevue/toast';
 
 
 export default [
@@ -59,4 +60,5 @@ export default [
     ProgressSpinner,
     DatePicker,
     FloatLabel,
+    Toast,
 ] as any[]

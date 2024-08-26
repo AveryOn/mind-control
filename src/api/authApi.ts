@@ -1,4 +1,4 @@
-import type { HttpAuthorization, HttpContentType, LoginInputData, LoginOutputData } from "@/types/apiTypes";
+import type { HttpAuthorization, HttpContentType, LoginInputData, LoginOutputData, LogUpInputData, LogUpOutputData } from "@/types/apiTypes";
 import { hostname } from "@/api/index";
 import axios from "axios";
 
@@ -8,11 +8,31 @@ export async function loginApi({ login, password }: LoginOutputData): Promise<Lo
         const response = await axios.post(hostname + '/api/auth/login', {
             login,
             password,
+        }, {
+            headers: { "Content-Type": 'application/json' } as HttpContentType,
         });
         const { data: { data, meta } } = response;
         return { data, meta };
     } catch (err) {
         console.error('/src/api/authApi.ts: loginApi => ', err);
+        throw err
+    }
+}
+
+// Регистрация в системе
+export async function logUpApi({ login, name, password }: LogUpOutputData): Promise<LogUpInputData> {
+    try {
+        const response = await axios.post(hostname + '/api/auth/logup', {
+            name,
+            login,
+            password,
+        }, {
+            headers: { "Content-Type": 'application/json' } as HttpContentType,
+        });
+        const { data: { data, meta } } = response;
+        return { data, meta };
+    } catch (err) {
+        console.error('/src/api/authApi.ts: logUpApi => ', err);
         throw err;
     }
 }

@@ -1,11 +1,12 @@
 <template>
     <div id="login-container" class="login-container relative w-full h-full flex flex-column align-items-center justify-content-center">
+        <Toast />
         <h1 class="form-title mb-4">
             Войти
             <i class="pi pi-sign-in ml-1" style="font-size: 1.3rem; color: var(--basic-color-fg); font-weight: 900"></i>
         </h1>
 
-        <form @submit.prevent class="w-5 flex flex-column align-items-center justify-content-center">
+        <form @submit.prevent @keyup.enter="handlerConfirmForm" class="w-5 flex flex-column align-items-center justify-content-center">
             <!-- Login -->
             <InputGroup class="mb-4 shadow-2 border-round-lg">
                 <InputGroupAddon>
@@ -15,6 +16,7 @@
                 placeholder="Логин" 
                 v-model="login"
                 :invalid="isInvalidLogin"
+                @update:model-value="isInvalidLogin = false"
                 />
                 <InputGroupAddon>
                     <i class="pi pi-question-circle light-text cursor-pointer" v-tooltip.right="`- мин. 3 символа \n - запрещены спецсимволы`"></i>
@@ -31,6 +33,7 @@
                 type="password"
                 v-model="password"
                 :invalid="isInvalidPassword"
+                @update:model-value="isInvalidPassword = false"
                 />
                 <InputGroupAddon>
                     <i class="pi pi-question-circle light-text cursor-pointer" v-tooltip.right="'мин. 6 символов'"></i>
@@ -51,14 +54,16 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
 import gsap from 'gsap';
+import type { LoginInputData } from '@/types/apiTypes';
+import { useRouter } from 'vue-router';
+import { useMainStore } from '@/stores/mainStore';
+import { useToast } from 'primevue/usetoast';
 import { onMounted, ref, type Ref } from 'vue';
 import { loginApi } from '@/api/authApi';
-import type { LoginInputData } from '@/types/apiTypes';
-import { useMainStore } from '@/stores/mainStore';
 import { hasSpecSymbols } from '@/utils/validation';
 
+const toast = useToast();
 const store = useMainStore();
 const router = useRouter();
 
@@ -85,13 +90,17 @@ function validationForm(): boolean {
             isInvalidLogin.value = true;
             isValid = false;
         }
-        if(!password) {
+        if(password.value && password.value.length < 6) {
+            isInvalidPassword.value = true;
+            isValid = false;
+        }
+        if(!password.value) {
             isInvalidPassword.value = true;
             isValid = false;
         }
         return isValid;
     } catch (err) {
-        console.error('/src/views/LoginViews/LoginView.vue: handlerConfirmForm => ', err);
+        console.error('/src/views/LoginViews/LoginView.vue: validationForm => ', err);
         throw err;
     }
 }
@@ -101,17 +110,18 @@ async function handlerConfirmForm(): Promise<void> {
     isLoadingConfirmData.value = true;
     try {
         if(validationForm()) {
-            const { data, meta }: LoginInputData = await loginApi({ login: login.value, password: password.value });
-            if(data) {
-                localStorage.setItem('user_data', JSON.stringify(data.user));
-                localStorage.setItem('token', data.token.token);
+            const { data: { token, user }, meta }: LoginInputData = await loginApi({ login: login.value, password: password.value })
+            if (user) {
+                localStorage.setItem('user_data', JSON.stringify(user));
+                localStorage.setItem('token', token.token);
                 store.isAuth = true;
-                store.appRole = data.user.role;
-                store.userData = data.user;
+                store.appRole = user.role;
+                store.userData = user;
                 router.push({ name: 'main' });
             }
         }
     } catch (err) {
+        toast.add({ severity: 'error', summary: 'Ошибка', detail: 'Не удалось авторизоваться в системе', life: 3000 });
         console.error('/src/views/LoginViews/LoginView.vue: handlerConfirmForm => ', err);
         throw err;
     } finally {

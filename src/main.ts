@@ -8,6 +8,7 @@ import PrimeVue from 'primevue/config';
 import Aura from '@primevue/themes/aura';
 import 'primeicons/primeicons.css';
 import Tooltip from 'primevue/tooltip';
+import ToastService from 'primevue/toastservice';
 // Styles
 import './styles/main.css';
 import '../node_modules/primeflex/primeflex.css';
@@ -40,6 +41,7 @@ app.use(PrimeVue, {
         },
     }
 });
+app.use(ToastService)
 app.mount('#app');
 
 
