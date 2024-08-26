@@ -21,7 +21,7 @@ const store = useMainStore();
 async function handlerLogout() {
     try {
         await logoutApi();
-        router.push({ name: 'reception' });
+        router.push({ name: 'reception' }).then(() => window.location.reload());
         localStorage.removeItem('user_data');
         localStorage.removeItem('token');
     } catch (err) {
