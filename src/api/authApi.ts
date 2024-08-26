@@ -54,3 +54,19 @@ export async function logoutApi(): Promise<LoginInputData> {
     }
 }
 
+// Проверка доступа к системе
+export async function checkAccess() {
+    try {
+        const response = await axios.get(hostname + '/api/auth/check', {
+            headers: {
+                ...{ "Content-Type": 'application/x-www-form-urlencoded' } as HttpContentType,
+                ...{ "Authorization": 'Bearer ' + localStorage.getItem('token') } as HttpAuthorization,
+            }
+        });
+        const { data: { data, meta } } = response;
+        return { data, meta };
+    } catch (err) {
+        console.error('/src/api/authApi.ts: checkAccess => ', err);
+        throw err;
+    }
+}
