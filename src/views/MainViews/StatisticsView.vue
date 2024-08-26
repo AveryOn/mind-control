@@ -13,19 +13,19 @@
                 <!-- ОБЩЕЕ КОЛ_ВО ТЕСТОВ -->
                 <div class="statistic-block flex align-items-center">
                     <h1 class="font-medium">Всего тестов:</h1>
-                    <span class="statistic-block-num-value ml-3">15</span>
+                    <span class="statistic-block-num-value ml-3">NaN</span>
                 </div>
 
                 <!-- КОЛ_ВО ВЫПОЛНЕННЫХ ТЕСТОВ -->
                 <div class="statistic-block flex align-items-center">
                     <h1 class="font-medium">Выполненных тестов:</h1>
-                    <span class="statistic-block-num-value ml-3">5</span>
+                    <span class="statistic-block-num-value ml-3">NaN</span>
                 </div>
 
                 <!-- КОЛ_ВО ТЕСТОВ КОТОРЫЕ ОЖИДАЮТ ПРОВЕРКИ -->
                 <div class="statistic-block flex align-items-center">
                     <h1 class="font-medium">Ожидают проверки:</h1>
-                    <span class="statistic-block-num-value ml-3">2</span>
+                    <span class="statistic-block-num-value ml-3">NaN</span>
                 </div>
                 <pieComp />
             </div>
