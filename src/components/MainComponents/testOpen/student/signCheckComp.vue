@@ -11,15 +11,28 @@
             </span>
             <div class="flex flex-column align-content-center pt-3 px-3">
                 <span class="font-light text-center">Для того чтобы увидеть результаты теста перейдите в раздел статистики</span>
-                <Button
-                class="w-max mt-3 mx-auto"
-                label="Статистика" 
-                text 
-                raised 
-                size="small"
-                icon="pi pi-chart-bar"
-                @click="router.push({ name: 'statistics', query: { 'open_statistic_test_id': props.testData?.id, 'open_result_id': props.testData?.result?.id } })"
-                />
+                <div class="flex gap-3">
+                    <!-- КНОПКА Статистика -->
+                    <Button
+                    class="w-max mt-3 mx-auto"
+                    label="Статистика" 
+                    text 
+                    raised
+                    size="small"
+                    icon="pi pi-chart-bar"
+                    @click="router.push({ name: 'statistics', query: { 'open_statistic_test_id': props.testData?.id, 'open_result_id': props.testData?.result?.id } })"
+                    />
+                    <!-- КНОПКА Пройти заново -->
+                    <Button
+                    class="w-max mt-3 mx-auto"
+                    label="Пройти заново" 
+                    text 
+                    raised
+                    size="small"
+                    icon="pi pi-play"
+                    @click="handlerOpenReplayTest"
+                    />
+                </div>
             </div>
         </div>
     </div>
@@ -35,6 +48,18 @@ const router = useRouter();
 const props = defineProps<{
     testData: null | Test | TestStudent | TestTeacher;
 }>();
+
+// Обработчик открытия страницы повторного прохождения теста
+function handlerOpenReplayTest() {
+    try {
+        router.push({ query: { replay: 'true' } });
+    } catch (err) {
+        console.error('/src/components/MainComponents/testOpen/student/signCheckComp.vue:  handlerOpenReplayTest => ', err);
+        throw err;
+    }
+}
+
+
 
 </script>
 

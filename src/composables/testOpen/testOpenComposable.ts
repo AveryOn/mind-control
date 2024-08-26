@@ -1,6 +1,6 @@
 import { useMainStore } from '@/stores/mainStore';
 import type { Result, Test, TestStudent, TestTeacher } from '@/types/testTypes';
-import { onBeforeUnmount, onMounted, reactive, ref, type Ref } from 'vue';
+import { onBeforeUnmount, onMounted, reactive, ref, watch, type Ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { getQuestionsStudent } from '@/api/questionsApi';
 import { getTestByIdStudent, getTestByIdTeacher } from '@/api/testsApi';
@@ -32,7 +32,7 @@ export default function useTestOpen() {
     // #########################################   METHODS   #########################################
     function initDraftTestInProcess() {
         try {
-            if(store.opennedTest && !store.opennedTest?.result) {
+            if(store.opennedTest && (!store.opennedTest?.result || route.query['replay'] === 'true')) {
                 let draftTestInProcess: any = localStorage.getItem(`draft_test_${testData.value?.id}_in_process`);
                 if(!draftTestInProcess) {
                     draftTestInProcess = [];
@@ -94,7 +94,7 @@ export default function useTestOpen() {
     function countFilledState() {
         try {
             let countFilled = 0;
-            draftAnswers.value.forEach((answer) => {
+            draftAnswers.value?.forEach((answer) => {
                 if(!!answer.answer) countFilled++;
             });
             return countFilled;
@@ -126,50 +126,67 @@ export default function useTestOpen() {
         }
     }
 
+    // Обращение к серверу для получения полезных данных и их инициализация в компоненте (STUDENT)
+    async function mountedInitDataStd() {
+        // Получение текущего теста по его ID и загрузка вопросов для текущего теста (Ученик)
+        try {
+            isLoadingInitialData.value = true;
+            const { data: { test }, meta } = await getTestByIdStudent(+route.params.testId)
+            testData.value = test;
+            store.opennedTest = test;
+            if(!test.result || route.query['replay'] === 'true') {
+                const { data: { questions } } = await getQuestionsStudent(+route.params.testId);
+                store.currentTestQuestions = questions;
+                draftAnswers.value = initDraftTestInProcess();
+                meterValue.value[0].value = computeFilledPercent(countFilledState(), store.currentTestQuestions.length) ?? 0;
+            }
+        } catch (err) {
+            console.error('/src/views/MainViews/TestOpenView.vue: mountedInitData => ', err);
+            throw err;
+        } finally {
+            isLoadingInitialData.value = false;
+        }
+    }
+
+    // Обращение к серверу для получения полезных данных и их инициализация в компоненте (ADMIN | TEACHER)
+    async function mountedInitDataTchr() {
+        // Получение результатов для текущего теста (Учитель)
+        try {
+            isLoadingInitialData.value = true;
+            // Получение теста
+            const { data: { test } } = await getTestByIdTeacher(+route.params.testId);
+            testData.value = test;
+            store.opennedTest = test;
+            // Получение результатов теста   
+            const { data: { results }, meta } = await getResultsTchr({ testId: testData.value?.id, page: pagination.page, perPage: pagination.perPage });
+            store.resultsTestForTeacher = results;
+        } catch (err) {
+            console.error('/src/views/MainViews/TestOpenView.vue: mountedInitDataTchr => ', err);
+            throw err;
+        } finally {
+            isLoadingInitialData.value = false;
+        }
+    }
+
+    // #########################################   WATCH   #########################################
+    // Инициализация данных для Ученика если страница открывается с query-параметром reply (STUDENT)
+    watch(() => route.query['replay'], async (newValue) => {
+        if(newValue === 'true' && store.appRole === 'student') {
+            await mountedInitDataStd();
+        }
+    });
 
     // #########################################   LIFECYCLE HOOKS   #########################################
     onMounted(async () => {
         await nextTick()
-        // ЗАПРОС НА СЕРВЕР (STUDENT)
+        // Обращение к серверу для получения полезных данных и их инициализация в компоненте (STUDENT)
         if(store.appRole === 'student') {
-            // Получение текущего теста по его ID и загрузка вопросов для текущего теста (Ученик)
-            try {
-                isLoadingInitialData.value = true;
-                const { data: { test }, meta } = await getTestByIdStudent(+route.params.testId)
-                testData.value = test;
-                store.opennedTest = test;
-                if(!test.result) {
-                    const { data: { questions } } = await getQuestionsStudent(+route.params.testId);
-                    store.currentTestQuestions = questions;
-                    draftAnswers.value = initDraftTestInProcess();
-                    meterValue.value[0].value = computeFilledPercent(countFilledState(), store.currentTestQuestions.length) ?? 0;
-                }
-            } catch (err) {
-                console.error('/src/views/MainViews/TestOpenView.vue: onMounted => ', err);
-                throw err;
-            } finally {
-                isLoadingInitialData.value = false;
-            }
+            // Получение текущего теста по его ID и загрузка вопросов для текущего теста (STUDENT)
+            await mountedInitDataStd();
         } 
-        // ЗАПРОС НА СЕРВЕР (TEACHER)
+        // Обращение к серверу для получения полезных данных и их инициализация в компоненте (ADMIN | TEACHER)
         else if (store.appRole === 'teacher') {
-            
-            // Получение результатов для текущего теста (Учитель)
-            try {
-                isLoadingInitialData.value = true;
-                // Получение теста
-                const { data: { test } } = await getTestByIdTeacher(+route.params.testId);
-                testData.value = test;
-                store.opennedTest = test;     
-                // Получение результатов теста   
-                const { data: { results }, meta } = await getResultsTchr({ testId: testData.value?.id, page: pagination.page, perPage: pagination.perPage });
-                store.resultsTestForTeacher = results;
-            } catch (err) {
-                console.error('/src/views/MainViews/TestOpenView.vue: onMounted => ', err);
-                throw err;
-            } finally {
-                isLoadingInitialData.value = false;
-            }
+            await mountedInitDataTchr();
         }
     });
     onBeforeUnmount(() => {

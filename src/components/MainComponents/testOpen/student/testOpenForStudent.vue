@@ -20,7 +20,7 @@
 
         <!-- НОВЫЙ ТЕСТ -->
         <NewTestComp 
-        v-else-if="!props.testData?.result && !props.isLoadingInitialData"
+        v-else-if="(!props.testData?.result && !props.isLoadingInitialData) || route.query['replay'] === 'true'"
         :test-data="props.testData"
         :meter-value="props.meterValue"
         :is-loading-initial-data="props.isLoadingInitialData"
@@ -53,6 +53,10 @@ import signNocheckComp from '@/components/MainComponents/testOpen/student/signNo
 import signCheckComp from '@/components/MainComponents/testOpen/student/signCheckComp.vue';
 import type { Test, TestStudent, TestTeacher } from '@/types/testTypes';
 import { defineProps, defineEmits } from 'vue';
+import { useRoute } from 'vue-router';
+
+// #########################################   COMPOSABLES   #########################################
+const route = useRoute();
 
 // #########################################   PROPS   #########################################
 const props = defineProps<{
