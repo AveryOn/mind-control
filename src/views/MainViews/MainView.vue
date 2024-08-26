@@ -85,7 +85,11 @@ onBeforeMount( async () => {
                 store.students = data.users
             }
         })
-        .finally(() => isLoadingData.value = false)
+        .finally(() => {
+            setTimeout(() => {
+                isLoadingData.value = false;
+            }, 500);
+        })
         .catch((err) => {
             console.error('/src/views/MainViews/MainView.vue: onBeforeMount => ', err);
         });
@@ -93,22 +97,7 @@ onBeforeMount( async () => {
 </script>
 
 <style scoped>
-.stub-loading-app {
-    background-color: white;
-    z-index: 99999999;
-}
-.loading-icon {
-    animation: blink 3s infinite;
-    color:rgb(199, 199, 163);
-}
-@keyframes blink {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
+
 .main-container {
     position: absolute;
     width: 100%;

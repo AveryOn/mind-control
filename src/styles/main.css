@@ -25,6 +25,23 @@
     font-family: var(--font);
 }
 
+.stub-loading-app {
+    background-color: var(--basic-bg);
+    z-index: 99999999;
+}
+.loading-icon {
+    animation: blink 2.8s infinite;
+    color:rgb(199, 199, 163);
+}
+@keyframes blink {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
 body {
     background-color: var(--basic-bg);
     color: var(--basic-fg);

@@ -1,16 +1,21 @@
 <template>
-    <div class="app">
-        <RouterView />
+    <span v-if="isLoadingData" class="stub-loading-app fixed right-0 bottom-0 left-0 top-0 flex align-items-center justify-content-center">
+        <i class="loading-icon pi pi-verified" style="font-size: 5rem; color: var(--warn-color);"></i>
+    </span>
+    <div class="app" v-else>
+        <RouterView/>
     </div>
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, onMounted } from "vue";
+import { onBeforeMount, onMounted, ref } from "vue";
 import { checkAccess } from "./api/authApi";
 import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
 const router = useRouter();
+
+const isLoadingData = ref(true);
 
 // Перенаправление на страницу логин
 function redirectToLogin() {
@@ -27,6 +32,7 @@ function redirectToMain() {
 }
 
 onBeforeMount(async () => {
+    // Проверка доступа к системе
     checkAccess()
         .then((response) => {
             if (response.meta?.status !== 200) {
@@ -36,7 +42,12 @@ onBeforeMount(async () => {
                 redirectToMain();
             }
         })
-        .catch(() => redirectToLogin());
+        .catch(() => redirectToLogin())
+        .finally(() => {
+            setTimeout(() => {
+                isLoadingData.value = false;
+            }, 500);
+        });
 })
 onMounted(() => {
     document.documentElement.classList = 'theme-light';    

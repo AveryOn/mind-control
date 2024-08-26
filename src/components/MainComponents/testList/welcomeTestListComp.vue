@@ -2,7 +2,7 @@
     <div 
     class="w-full h-full flex flex-column align-items-center gap-3 justify-content-center"
     >
-        <h1 class="light-text">Здесь будут отображаться все тесты</h1>
+        <h1 class="light-text">Здесь будут отображаться тесты</h1>
         <div class="w-max">
             <ConfirmPopup>
                 <template #container="{ message, acceptCallback, rejectCallback }">
@@ -15,7 +15,9 @@
                     </div>
                 </template>
             </ConfirmPopup>
+
             <Button 
+            v-if="store.appRole === 'teacher'"
             label="Создать" 
             icon="pi pi-plus" 
             text raised 
@@ -24,7 +26,7 @@
             />
 
             <Button
-            v-if="isExistsDraftTest"
+            v-if="isExistsDraftTest && store.appRole === 'teacher'"
             class="ml-4"
             label="Черновик" 
             icon="pi pi-file-edit" 
@@ -41,8 +43,11 @@
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useConfirm } from "primevue/useconfirm";
-const confirm = useConfirm();
+import { useMainStore } from '@/stores/mainStore';
 
+
+const confirm = useConfirm();
+const store = useMainStore();
 const router = useRouter();
 
 const isExistsDraftTest = ref(false);
