@@ -179,6 +179,7 @@ export interface TestStudent {
         updatedAt: string;
     };
     result: {
+        id?: number;
         isChecked: boolean;
         checkDate: string | null;
         isSuccess: boolean | null;

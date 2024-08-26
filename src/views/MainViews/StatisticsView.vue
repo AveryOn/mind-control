@@ -106,16 +106,7 @@ const isShowOpenResult = ref(false);
 const isLoadingOpenResult = ref(false);
 const isLoadingListResults = ref(false);
 const isLoadingListTests = ref(false);
-const testList: Ref<TestTeacher[]> = ref<TestTeacher[]>([
-    // { 
-    //     id: 1,
-    //     title: 'Tested Test',
-    //     summary: 'Something Tested Summary',
-    //     group: { id: 1, createdAt: '123', title: 'Frontend', updatedAt: '123' },
-    //     participants: [{ id: 1, createdAt: '124124', login: 'alex@123', name: 'Alex Some', updatedAt: '123124' }],
-    //     questions: [{number: 1, question: 'How many time?', type: 'text'}],
-    // },
-]);
+const testList: Ref<TestTeacher[]> = ref<TestTeacher[]>([]);
 const paginationTests = reactive({
     page: 1,
     perPage: 15,

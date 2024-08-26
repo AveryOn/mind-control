@@ -18,7 +18,7 @@
                 raised 
                 size="small"
                 icon="pi pi-chart-bar"
-                @click="router.push({ name: 'statistics' })"
+                @click="router.push({ name: 'statistics', query: { 'open_statistic_test_id': props.testData?.id, 'open_result_id': props.testData?.result?.id } })"
                 />
             </div>
         </div>
