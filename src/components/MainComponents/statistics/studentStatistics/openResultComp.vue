@@ -32,6 +32,12 @@
                     <span class="font-bold">{{  formattedDateByTemplate(store.openResultStudent?.checkDate)  }}</span>
                 </span>
     
+                <!-- Инфо о Проценте выполнения теста -->
+                <span class="info-chunk flex flex-column align-items-center gap-2" v-tooltip.bottom="'Процент выполнения'">
+                    <i class="pi pi-percentage" style="font-size: 1.7rem;"></i>
+                    <span class="font-bold">{{ computeFilledPercent(store.openResultStudent?.successCount!, store.openResultStudent?.questionsCount!) }}</span>
+                </span>
+
                 <!-- Инфо о Времени выполнения теста -->
                 <span class="info-chunk flex flex-column align-items-center gap-2" v-tooltip.bottom="'Время выполнения'">
                     <i class="pi pi-clock" style="font-size: 1.7rem;"></i>
@@ -119,6 +125,7 @@
 <script setup lang="ts">
 import { useMainStore } from '@/stores/mainStore';
 import type { QuestionTypes } from '@/types/testTypes';
+import { computeFilledPercent } from '@/utils/computed';
 import { computeMinutesByMs, formattedDateByTemplate, fromNow } from '@/utils/timeUtils';
 import { computed, defineProps } from 'vue';
 

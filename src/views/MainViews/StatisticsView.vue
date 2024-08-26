@@ -224,41 +224,44 @@ watch(() => route.query['open_statistic_test_id'], async (newId, oldId) => {
 
 // #############################################   LIFECYCLE HOOKS   #############################################
 onMounted(async () => {
-    // Получение списка тестов (STUDENT)
-    try {
-        await handlerFetchListTests();
-    } catch (err) {
-        console.error('views/MainViews/StatisticsView.vue: onMounted[handlerFetchListTests] => ', err);
-        throw err;
-    }
-
-    // Если при загрузке есть query-параметр open_statistic_test_id то выполняем запрос результатов по тесту
-    if(route.query['open_statistic_test_id'] && !route.query['open_result_id']) {
-        isShowResultsForTest.value = true;
-        // Получение списка результатов по ID теста
+    // Инициализация данных (STUDENT)
+    if(store.appRole === 'student') {
         try {
-            await handlerFetchResults(+route.query['open_statistic_test_id']);
+            // Получение списка тестов (STUDENT)
+            await handlerFetchListTests();
         } catch (err) {
-            console.error('views/MainViews/StatisticsView.vue: onMounted[handlerFetchResults] => ', err);
+            console.error('views/MainViews/StatisticsView.vue: onMounted[handlerFetchListTests] => ', err);
             throw err;
         }
-    } 
-
-    // Если и open_statistic_test_id И open_result_id существуют, то открывается окно с данными результата
-    else if (route.query['open_statistic_test_id'] && route.query['open_result_id']) {
-        isShowOpenResult.value = true;
-        try {
-            // Получение данных результата с сервера по его ID
-            await handlerOpenResult(+route.query['open_result_id']);
-        } catch (err) {
-            console.error('views/MainViews/StatisticsView.vue: onMounted[handlerOpenResult] => ', err);
-            throw err;
+    
+        // Если при загрузке есть query-параметр open_statistic_test_id то выполняем запрос результатов по тесту
+        if(route.query['open_statistic_test_id'] && !route.query['open_result_id']) {
+            isShowResultsForTest.value = true;
+            // Получение списка результатов по ID теста
+            try {
+                await handlerFetchResults(+route.query['open_statistic_test_id']);
+            } catch (err) {
+                console.error('views/MainViews/StatisticsView.vue: onMounted[handlerFetchResults] => ', err);
+                throw err;
+            }
+        } 
+    
+        // Если и open_statistic_test_id И open_result_id существуют, то открывается окно с данными результата
+        else if (route.query['open_statistic_test_id'] && route.query['open_result_id']) {
+            isShowOpenResult.value = true;
+            try {
+                // Получение данных результата с сервера по его ID
+                await handlerOpenResult(+route.query['open_result_id']);
+            } catch (err) {
+                console.error('views/MainViews/StatisticsView.vue: onMounted[handlerOpenResult] => ', err);
+                throw err;
+            }
+        } 
+        // Если нет query-параметров отключаются все окна касаемые статистики теста
+        else {
+            isShowResultsForTest.value = false;
+            isShowOpenResult.value = false;
         }
-    } 
-    // Если нет query-параметров отключаются все окна касаемые статистики теста
-    else {
-        isShowResultsForTest.value = false;
-        isShowOpenResult.value = false;
     }
 });
 

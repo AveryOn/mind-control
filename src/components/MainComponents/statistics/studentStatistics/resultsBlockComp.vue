@@ -69,6 +69,7 @@
             >
                 <span class="light-text font-italic"># {{ result.id }}</span>
                 <span>{{ computeStateSignResult(result.isSuccess) }}</span>
+                <span class="light-text percent-complete">{{ computeFilledPercent(result.successCount!, result.questionsCount!) }}%</span>
                 <span class="light-text ml-auto">{{ `( ${fromNow(result.createdAt)} )` }}</span>
                 <span>{{ formattedDateByTemplate(result.createdAt) }}</span>
             </li>
@@ -79,6 +80,7 @@
 <script setup lang="ts">
 import { useMainStore } from '@/stores/mainStore';
 import type { FilterMode } from '@/types/statisticTypes';
+import { computeFilledPercent } from '@/utils/computed';
 import { formattedDateByTemplate, fromNow } from '@/utils/timeUtils';
 import { computed, ref, defineProps, defineEmits } from 'vue';
 
@@ -86,7 +88,7 @@ const store = useMainStore();
 
 
 const props = defineProps<{
-    testName: string;
+    testName: string | null;
     isLoadingData: boolean;
 }>();
 
@@ -180,5 +182,10 @@ function openResult(resultId: number) {
 .result-list-item.failed:hover {
     background-color: var(--result-item-hover-bg-failed);
     transition: background-color var(--result-item-transition) ease;
+}
+.percent-complete {
+    background-color: rgba(212, 212, 212, 0.383);
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
 }
 </style>
